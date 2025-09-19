@@ -7,7 +7,7 @@
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
+    "primary": "#E65C1A",
     "light": "#07C983",
     "dark": "#0D9373",
     "anchors": {
@@ -18,12 +18,12 @@
   "topbarLinks": [
     {
       "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "url": "mailto:support@revve.ai"
     }
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "url": "https://app.revve.ai"
   },
   "tabs": [
     {
@@ -84,8 +84,7 @@
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://linkedin.com/company/mintlify"
+    "x": "https://x.com/revve-ai",
+    "linkedin": "https://www.linkedin.com/company/revve-ai"
   }
 }
