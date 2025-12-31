@@ -1,12 +1,15 @@
-# Getting Started: Create Your First Chatbot
+---
+title: 'Getting Started: Create Your First Chat AI Agent'
+description: 'Start building awesome chat AI agent in under 5 minutes'
+---
 
-Learn how to create and configure your first AI-powered chatbot in Revve. This guide takes you from zero to a working customer support bot in under 30 minutes.
+Learn how to create and configure your first AI-powered AI agent in Revve. This guide takes you from zero to a working customer support bot in under 30 minutes.
 
 ---
 
 ## What You'll Build
 
-By the end of this guide, you'll have a fully functional chatbot that can:
+By the end of this guide, you'll have a fully functional AI agent that can:
 
 - Answer customer questions using AI
 - Pull information from your knowledge base
@@ -19,7 +22,7 @@ By the end of this guide, you'll have a fully functional chatbot that can:
 
 Before you begin, make sure you have:
 
-- A Revve account with chatbot creation permissions
+- A Revve account with AI agent creation permissions
 - Access to your team dashboard
 - For **Website bots**: Your website URL
 - For **Zalo bots**: A Zalo Official Account connected to Revve
@@ -27,27 +30,27 @@ Before you begin, make sure you have:
 
 ---
 
-## Step 1: Access the Chatbot Dashboard
+## Step 1: Access the AI agent Dashboard
 
 1. Log in to your Revve account
 2. Select your team from the dropdown (if you have multiple teams)
-3. Click **Chatbots** in the left sidebar
+3. Click **AI agents** in the left sidebar
 
-You'll see a list of existing chatbots (if any) and a button to create a new one.
+You'll see a list of existing AI agents (if any) and a button to create a new one.
 
-![Chatbot Dashboard](https://github.com/Revve-AI/revve-web/raw/guides/docs/guides/img_3.png)
+![AI agent Dashboard](https://github.com/Revve-AI/revve-web/raw/guides/docs/guides/img_3.png)
 
 ---
 
-## Step 2: Start Creating Your Chatbot
+## Step 2: Start Creating Your AI agent
 
-Click the **"Create New Chatbot"** button. You'll see two options:
+Click the **"Create New AI agent"** button. You'll see two options:
 
 ### Option A: Auto-Create from Website (Recommended)
 
-Best for: Website chatbots where you want to get started quickly
+Best for: Website AI agents where you want to get started quickly
 
-This option automatically builds your chatbot by analyzing your website content.
+This option automatically builds your AI agent by analyzing your website content.
 
 1. Enter your website URL (e.g., `https://yourcompany.com`)
 2. Click **"Create"**
@@ -87,17 +90,17 @@ Best for: Non-website channels (Zalo, Messenger) or when you want full control
 
 **Our recommendation:** Start with **Simple Prompt**. It's easier to set up and handles most customer support scenarios well. You can always create a Conversational Flow bot later for specific use cases.
 
-3. Click **"Create Chatbot"**
+3. Click **"Create AI agent"**
 
 ---
 
 ## Step 3: Configure Basic Settings
 
-After creation, you'll land on the chatbot configuration page. Let's set up the essentials.
+After creation, you'll land on the AI agent configuration page. Let's set up the essentials.
 
 ### Navigate to Basic Settings
 
-Click the **"Basic"** tab in the chatbot navigation menu.
+Click the **"Basic"** tab in the AI agent navigation menu.
 
 ![Basic Settings Tab](img_6.png)
 
@@ -259,7 +262,7 @@ For your first bot, we recommend adding at least one of these:
 
 ---
 
-## Step 5: Test Your Chatbot
+## Step 5: Test Your AI agent
 
 Before going live, test your bot to make sure it works correctly.
 
@@ -298,7 +301,7 @@ Run through these tests to verify your bot is working:
 
 Once you're happy with testing, it's time to deploy your bot.
 
-### For Website Chatbots
+### For Website AI agents
 
 1. Go to the **"Installation"** tab
 2. Copy the embed code
@@ -306,7 +309,7 @@ Once you're happy with testing, it's time to deploy your bot.
 
 ![Installation Code](img_10.png)
 
-### For Zalo / Messenger Chatbots
+### For Zalo / Messenger AI agents
 
 Your bot is automatically connected once you've linked your account. Verify by:
 
@@ -318,7 +321,7 @@ Your bot is automatically connected once you've linked your account. Verify by:
 
 ## What's Next?
 
-Congratulations! Your chatbot is now live. Here's what to do next:
+Congratulations! Your AI agent is now live. Here's what to do next:
 
 ### Immediate Next Steps
 
@@ -338,9 +341,9 @@ Congratulations! Your chatbot is now live. Here's what to do next:
 
 ## Quick Reference
 
-### Chatbot Creation Checklist
+### AI agent Creation Checklist
 
-- [ ] Created chatbot (auto or manual)
+- [ ] Created AI agent (auto or manual)
 - [ ] Selected AI model
 - [ ] Set language(s)
 - [ ] Chose tone

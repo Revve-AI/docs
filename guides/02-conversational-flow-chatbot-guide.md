@@ -1,4 +1,7 @@
-# Conversational Flow Chatbot Guide
+---
+title: 'Conversational Flow Chatbot Guide'
+description: 'Build Multi-Step Customer Support Experiences with Visual Flow Builder'
+---
 
 ## Build Multi-Step Customer Support Experiences with Visual Flow Builder
 

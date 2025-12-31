@@ -1,4 +1,7 @@
-# Knowledge Base & Script Management Guide
+---
+title: Knowledge Base & Script Management Guide
+description: How to ground your AI agent answer in up to date knowledge
+---
 
 ## Keep Your Chatbot Smart and Up-to-Date
 
