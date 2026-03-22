@@ -23,7 +23,8 @@
   ],
   "topbarCtaButton": {
     "name": "Book a Demo",
-    "url": "https://www.revve.ai/request-demo"
+    "url": "https://www.revve.ai/request-demo",
+    "style": "roundedRectangle"
   },
   "tabs": [],
   "anchors": [],
