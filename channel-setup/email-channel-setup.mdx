@@ -1,0 +1,93 @@
+---
+
+title: "Email Channel Setup"
+description: "Connect email accounts and configure how your Chat Agent handles email conversations."
+---
+
+> **Setup Required:** This channel requires initial technical setup by your account administrator before you can configure it here. This includes connecting a Mailgun or Gmail account and configuring email domains. Contact your Revve team or administrator to get started.
+
+Once your administrator has completed the initial setup, you can configure the following settings directly from the dashboard:
+
+- Select which connected email account the agent uses
+- Add business domains to identify team members in email threads
+- Set default BCC recipients for CRM logging
+- Toggle behavior settings like "Pause when human joins" and "Outbound email only"
+
+Revve AI Chat Agents can operate over email, automatically responding to inbound emails or following up on outbound campaigns. This guide covers how to connect your email account and configure email-specific behavior.
+
+When you create a Chat Agent with the **Email** channel type, the configuration tabs include an **Email Settings** tab instead of the Appearance tab used by website agents.
+
+---
+
+## Accessing Email Settings
+
+1. Navigate to **Agents > Chat Agents**.
+2. Select your email Chat Agent (or create a new one with the Email channel type).
+3. Click the **Email Settings** tab.
+
+![Email Settings tab showing email account, business domains, BCC recipients, and behavior toggles](/screenshots/email-settings.png)
+
+---
+
+## Email Settings Fields
+
+| Setting | Description |
+|---------|-------------|
+| **Email Account** | Select the email account that the agent will use to send and receive messages. This dropdown lists all email accounts that have been connected in your team's Settings. |
+| **Business Domains** | Add your company's email domains (e.g., `yourcompany.com`). When someone with a matching domain sends an email in a thread, the agent recognizes it as a human team member rather than a customer. This is important for the "Pause when human joins" feature. |
+| **Default BCC Recipients** | Add email addresses that will automatically receive copies of all outgoing emails sent by the agent. This is useful for logging emails in your CRM (e.g., a HubSpot BCC address) or keeping team members informed. |
+| **Pause when human joins** | When enabled, the agent stops responding in an email thread as soon as someone from your business domains replies. This prevents the agent from interfering when a human team member takes over a conversation. |
+| **Outbound email only** | When enabled, the agent only responds in email conversations that were started by Revve (outbound). It will not respond to inbound emails initiated by customers. This is useful for agents designed specifically for outbound follow-up campaigns. |
+
+---
+
+## Setup Steps
+
+### 1. Connect an Email Account
+
+Before configuring an email Chat Agent, you need to connect at least one email account in your team settings.
+
+1. Go to **Settings** in the left sidebar.
+2. Navigate to the email integrations section.
+3. Connect your email account (Gmail, Microsoft 365, or other supported providers).
+4. Return to the Chat Agent's **Email Settings** tab and select the connected account from the **Email Account** dropdown.
+
+### 2. Configure Business Domains
+
+Add all of your company's email domains so the agent can distinguish between customer emails and team member emails.
+
+1. In the **Business Domains** field, type your domain (e.g., `yourcompany.com`).
+2. Click **Add** to add it to the list.
+3. Repeat for any additional domains your team uses.
+
+### 3. Set Up BCC Recipients (Optional)
+
+If you want copies of all outgoing agent emails sent to specific addresses:
+
+1. In the **Default BCC Recipients** field, enter the email address.
+2. Click **Add**.
+3. Common use cases include CRM BCC addresses for automatic email logging.
+
+### 4. Configure Behavior Toggles
+
+Review and set the behavior toggles based on your use case:
+
+- **For customer support agents:** Enable "Pause when human joins" so the agent steps aside when a team member replies.
+- **For outbound follow-up agents:** Enable "Outbound email only" to restrict the agent to only respond in threads it initiated.
+- **For general email agents:** You may want both toggles disabled so the agent responds to all email threads assigned to it.
+
+---
+
+## Best Practices
+
+- **Always add your business domains.** This ensures the agent correctly identifies when a human team member has joined a conversation, which is critical for the pause behavior to work properly.
+- **Use BCC for CRM integration.** If you use HubSpot, Salesforce, or another CRM, add the CRM's BCC email address to automatically log all agent emails in your CRM's contact records.
+- **Start with "Outbound email only" for new agents.** If you are testing a new email agent, enabling this setting reduces risk by limiting the agent to only conversations your team initiated.
+- **Monitor the Inbox.** Email conversations handled by the agent appear in your team's Inbox, where you can review the agent's responses and intervene if needed.
+
+---
+
+## Next Steps
+
+- [Set up SMS channel](./sms-channel-setup)
+- [Set up WhatsApp channel](./whatsapp-channel-setup)

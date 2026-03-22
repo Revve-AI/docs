@@ -1,0 +1,74 @@
+---
+
+title: "Knowledge Base Overview"
+description: "Understand how your AI agent uses your content to deliver accurate, helpful answers."
+---
+
+Your Revve AI chat agent is only as good as the information it has access to. The **Knowledge Base** is where you provide that information -- it is the content library your agent searches every time a visitor asks a question.
+
+## How It Works
+
+When a visitor sends a message, your agent does not simply generate a response from scratch. Instead, it searches your knowledge base to find the most relevant content, then uses that content to craft a precise, accurate answer. This approach is sometimes called **retrieval-augmented generation** -- but in practice, it simply means your agent looks up the answer in your content before responding.
+
+Think of it like giving your agent a well-organized reference manual. The better the manual, the better the answers.
+
+## Where to Find the Knowledge Base
+
+There are two places to manage knowledge in Revve AI:
+
+| Location | What it does |
+|---|---|
+| **Sidebar > Knowledge Base** | The global knowledge hub for your entire team. Add, organize, and manage all your content sources in one place. All agents across your account can pull from this shared library. |
+| **Chat Agent > Knowledge tab** | The agent-specific view. Attach or detach knowledge sources for a particular agent, manage that agent's FAQs, and configure search settings. |
+
+![The Knowledge tab inside a chat agent, showing the Knowledge Base, FAQs, and Settings sub-tabs](/screenshots/knowledge-base-tab.png)
+
+## Content Types
+
+Your knowledge base supports three types of content:
+
+### 1. Web Pages
+
+Add URLs from your website, help center, or any publicly accessible page. Revve will fetch the page content and make it searchable by your agent. You can also set up **website crawlers** to automatically discover and index all pages on a domain.
+
+### 2. Documents
+
+Upload files such as PDFs, Word documents (DOCX), or plain text files (TXT). This is useful for product guides, internal policies, onboarding materials, or any content that is not published on a website.
+
+### 3. FAQs (Frequently Asked Questions)
+
+Create question-and-answer pairs that your agent can reference directly. FAQs are ideal for common questions with definitive answers, such as pricing, business hours, return policies, or account setup steps.
+
+## How Content Feeds Into Responses
+
+When your agent receives a question, it follows this process:
+
+1. **Search** -- The agent searches across all attached knowledge sources (web pages, documents, and FAQs) to find content that matches the question.
+2. **Rank** -- The most relevant pieces of content are selected and ranked.
+3. **Respond** -- The agent uses the top-ranked content to compose a response in natural language, tailored to the visitor's question.
+
+This means your agent will not make up answers. If the information is in your knowledge base, the agent will find and use it. If the information is missing, the question may be flagged as a **knowledge gap** so you can fill it later.
+
+## Global Knowledge Base vs. Agent Knowledge
+
+The **global Knowledge Base** (accessible from the sidebar) is your team-wide content library. It contains all web pages, documents, and FAQs across your account.
+
+The **Knowledge tab** inside each chat agent lets you control which sources from the global library are attached to that specific agent. This means:
+
+- You can have a large, shared knowledge base for your team.
+- Each agent only uses the sources you explicitly attach to it.
+- FAQs can be shared across multiple agents.
+
+## Tips
+
+- **Start with your most common questions.** Review your support tickets or chat logs and add content that addresses the top 10-20 questions your customers ask.
+- **Keep content up to date.** Outdated information leads to incorrect answers. Use website crawlers with scheduled re-crawling to keep web-based content fresh automatically.
+- **Use FAQs for precision.** If a question has a single correct answer, add it as an FAQ. The agent will prioritize FAQ matches for those specific questions.
+- **Review knowledge gaps regularly.** The Gaps section shows you exactly what your agent could not answer, so you know what content to add next.
+
+## Next Steps
+
+- [Adding Web Pages and Documents](./adding-web-pages-and-documents) -- Learn how to upload files and add web content.
+- [Managing FAQs](./managing-faqs) -- Create and organize question-and-answer pairs.
+- [Knowledge Gaps](./knowledge-gaps) -- Find and fill gaps in your agent's knowledge.
+- [Knowledge Base Settings](./knowledge-base-settings) -- Configure search behavior for your agent.

@@ -1,0 +1,64 @@
+---
+
+title: "Knowledge Base Settings"
+description: "Configure how your agent searches the knowledge base to find the best answers."
+---
+
+The Knowledge Base Settings control how your chat agent searches through your content when answering questions. These settings are configured per agent, so you can fine-tune the behavior for each agent independently.
+
+## Accessing Knowledge Settings
+
+1. Open your chat agent from the **Agents > Chat Agents** list.
+2. Click the **Knowledge** tab.
+3. Click the **Settings** sub-tab.
+4. Click **Start Editing** if you are not already in editing mode.
+
+![The Knowledge Settings tab showing the Advanced Search toggle](/screenshots/knowledge-settings.png)
+
+**Note:** Changes to knowledge settings take effect immediately. There is no need to publish a new version.
+
+## Settings Reference
+
+### Advanced Search
+
+| Setting | Description |
+|---|---|
+| **Advanced Search toggle** | When enabled, activates enhanced search capabilities for faster and more accurate knowledge retrieval. |
+
+**What Advanced Search does:** Advanced Search improves how your agent finds relevant content in your knowledge base. With this setting enabled, the search process uses additional techniques to match visitor questions with the right content, even when the wording does not match exactly.
+
+**When to enable it:**
+
+- You have a large knowledge base with many sources.
+- Your visitors ask questions in varied or unexpected ways.
+- You want the most accurate content matching available.
+
+**When you might leave it off:**
+
+- You have a small, focused knowledge base where simple matching is sufficient.
+- You want to keep response times as fast as possible for very simple use cases.
+
+## How Search Works Behind the Scenes
+
+When a visitor asks your agent a question, the search process works in several steps:
+
+1. **Understanding the question** -- The agent analyzes the visitor's message to understand what they are asking about.
+2. **Searching the knowledge base** -- The agent searches across all attached sources (web pages, documents, and FAQs) to find content that matches the question.
+3. **Ranking results** -- The most relevant pieces of content are ranked by how well they match the question.
+4. **Generating a response** -- The agent uses the top-ranked content to compose a natural, helpful answer.
+
+Advanced Search enhances steps 2 and 3, making the matching and ranking more sophisticated.
+
+## Tips
+
+- **Start with Advanced Search enabled.** For most use cases, Advanced Search provides better results with no downside. You can always turn it off later if needed.
+- **Pair settings with good content.** Search settings can only improve how existing content is found. If the answer is not in your knowledge base, no search setting will help -- add the missing content first.
+- **Test after making changes.** After adjusting settings, use the **Preview** tab on your chat agent to test how the agent responds to various questions. This helps you verify that the changes improved behavior.
+- **Review knowledge gaps.** If your agent is still missing questions after enabling Advanced Search, check the [Knowledge Gaps](./knowledge-gaps) page. The issue is likely missing content rather than a search configuration problem.
+
+## Related Topics
+
+- [Knowledge Base Overview](./knowledge-base-overview) -- Understand the full knowledge base system.
+- [Adding Web Pages and Documents](./adding-web-pages-and-documents) -- Add content for your agent to search.
+- [Managing FAQs](./managing-faqs) -- Create precise question-and-answer pairs.
+- [Knowledge Gaps](./knowledge-gaps) -- Find and fill gaps in your agent's knowledge.

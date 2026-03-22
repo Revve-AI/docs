@@ -1,85 +1,105 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Documentation",
+  "name": "Revve AI",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
   },
-  "favicon": "/favicon.ico",
+  "favicon": "/logo/light.svg",
   "colors": {
     "primary": "#E65C1A",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "light": "#F0845C",
+    "dark": "#C44D14",
     "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
+      "from": "#E65C1A",
+      "to": "#C44D14"
     }
   },
   "topbarLinks": [
     {
-      "name": "Support",
-      "url": "mailto:support@revve.ai"
+      "name": "Website",
+      "url": "https://www.revve.ai"
     }
   ],
   "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://app.revve.ai"
+    "name": "Book a Demo",
+    "url": "https://www.revve.ai/request-demo"
   },
-  "tabs": [
-    {
-      "name": "API Reference",
-      "url": "api-reference"
-    }
-  ],
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://revve.ai/docs"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://revve.ai/blog"
-    }
-  ],
+  "tabs": [],
+  "anchors": [],
   "navigation": [
     {
-      "group": "Get Started",
+      "group": "Getting Started",
       "pages": [
-        "introduction",
-        "quickstart",
-        "development"
+        "getting-started/what-is-a-chat-agent",
+        "getting-started/creating-your-first-chat-agent",
+        "getting-started/understanding-engine-types",
+        "getting-started/publishing-and-versioning"
       ]
     },
     {
-      "group": "Essentials",
+      "group": "General Configuration",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "general-configuration/configuring-agent-identity",
+        "general-configuration/choosing-an-llm-model",
+        "general-configuration/welcome-messages-and-conversation-starters",
+        "general-configuration/language-and-tone-settings"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "Channel Setup",
       "pages": [
-        "api-reference/introduction"
+        "channel-setup/website-appearance-and-styling",
+        "channel-setup/website-installation",
+        "channel-setup/website-bubble-messages",
+        "channel-setup/email-channel-setup",
+        "channel-setup/sms-channel-setup",
+        "channel-setup/whatsapp-channel-setup",
+        "channel-setup/zalo-channel-setup",
+        "channel-setup/messenger-channel-setup"
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "Inbox",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "inbox/inbox-overview",
+        "inbox/managing-conversations",
+        "inbox/filtering-and-searching",
+        "inbox/conversation-analysis-panel",
+        "inbox/human-takeover"
+      ]
+    },
+    {
+      "group": "History & Analytics",
+      "pages": [
+        "history-analytics/chat-history",
+        "history-analytics/exporting-conversations",
+        "history-analytics/analytics-dashboard",
+        "history-analytics/daily-reports"
+      ]
+    },
+    {
+      "group": "Knowledge Base",
+      "pages": [
+        "knowledge-base/knowledge-base-overview",
+        "knowledge-base/adding-web-pages-and-documents",
+        "knowledge-base/managing-faqs",
+        "knowledge-base/knowledge-gaps",
+        "knowledge-base/knowledge-base-settings"
+      ]
+    },
+    {
+      "group": "Conversational Flow",
+      "pages": [
+        "conversational-flow/flow-editor-overview",
+        "conversational-flow/creating-and-connecting-nodes",
+        "conversational-flow/global-nodes-and-prompts",
+        "conversational-flow/flow-node-features"
       ]
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/revve-ai",
+    "website": "https://www.revve.ai",
     "linkedin": "https://www.linkedin.com/company/revve-ai"
   }
 }

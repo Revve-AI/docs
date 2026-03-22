@@ -1,0 +1,53 @@
+---
+
+title: "Choosing an LLM Model"
+description: "Select the AI provider and model that powers your Chat Agent's responses."
+---
+
+Your Chat Agent's intelligence comes from a large language model (LLM). On the **Basic** tab, you can select which AI provider and model your agent uses. The model you choose affects response quality, speed, and capabilities.
+
+![AI Provider and Model dropdowns on the Basic settings tab](/screenshots/chatbot-basic-settings.png)
+
+## Provider and Model Fields
+
+| Field | Description |
+|-------|-------------|
+| **AI Provider** | The company providing the language model. Currently set to **OpenAI** for all agents. |
+| **Model** | The specific model version used to generate responses. Different models offer different tradeoffs in quality, speed, and cost. |
+
+## Available Models
+
+| Model | Description |
+|-------|-------------|
+| **GPT-4o** | A multimodal model optimized for speed and efficiency. Good balance of quality and response time. |
+| **GPT-4.1** | An improved version of GPT-4 with better instruction following, longer context handling, and more accurate responses. Recommended for most use cases. |
+| **GPT-5** | The latest and most capable model. Best for complex conversations that require advanced reasoning. |
+
+## How to Select a Model
+
+1. Navigate to **Agents > Chat Agents** in the sidebar and select your agent.
+2. Click the **Basic** tab.
+3. Click **Start Editing** if not already in edit mode.
+4. Locate the **AI Provider** and **Model** dropdowns in the left column.
+5. Click the **Model** dropdown and select your preferred model.
+6. Click **Save Changes**.
+
+## How the Model Affects Your Agent
+
+The model determines how well your agent:
+
+- **Follows instructions** -- More advanced models adhere more closely to the objectives and role you define.
+- **Handles complex questions** -- Newer models are better at multi-step reasoning, understanding nuance, and providing accurate answers.
+- **Responds quickly** -- Lighter models like GPT-4o tend to respond faster, while more powerful models may take slightly longer.
+
+## Tips
+
+- **Start with GPT-4.1** for most agents. It offers the best balance of quality, speed, and cost for typical customer-facing interactions.
+- **Use GPT-5 for complex use cases** such as technical support, multi-step workflows, or conversations that require deep reasoning.
+- **Use GPT-4o if speed is critical** and the conversations are relatively straightforward (e.g., FAQ-style responses).
+- **Test before publishing.** After changing the model, use the Preview tab to test how your agent responds. Different models may interpret the same instructions slightly differently.
+
+## Related
+
+- [Configuring Agent Identity](./configuring-agent-identity) -- set the name, description, and role that guide the model.
+- [Language and Tone Settings](./language-and-tone-settings) -- configure language and communication style that work with the model.

@@ -1,0 +1,64 @@
+---
+
+title: "Exporting Conversations"
+description: "Download your chat history as CSV files for offline analysis and reporting."
+---
+
+Revve AI lets you export your chat history data as CSV files so you can analyze conversations in spreadsheets, import them into BI tools, or share reports with your team.
+
+## How to Export
+
+1. Navigate to **History > Chat History** in the left sidebar.
+2. Apply any filters you need (date range, Chat Agent, evaluation status, etc.). The export will respect your current filters.
+3. Click the **Export CSV** button at the bottom of the table.
+4. Choose one of two options from the dropdown menu:
+
+![Export CSV dropdown showing Current Page and All Data options](/screenshots/chat-history-export-csv.png)
+
+| Option | What It Does |
+|--------|-------------|
+| **Export Current Page** | Exports only the rows currently visible on the page. The number of rows depends on your page size setting (5 to 50 rows). |
+| **Export All Data** | Exports every conversation that matches your current filters, regardless of pagination. This can include hundreds or thousands of rows. |
+
+## How the Export Works
+
+Exports are processed in the background. After you click an export option:
+
+1. You will see a confirmation message: **"Export queued! You will receive an email when ready."**
+2. The system prepares your CSV file and sends it to the email address associated with your account.
+3. Check your inbox (and spam folder if needed) for an email from Revve containing your download link.
+
+This background processing means you do not need to keep the page open while the export runs. You can continue working in Revve or close the tab.
+
+## What Data Is Included
+
+The exported CSV includes key fields for each conversation:
+
+| Field | Description |
+|-------|-------------|
+| **Chat Agent** | The name of the Chat Agent that handled the conversation. |
+| **Contact Name** | The visitor's name, if known. |
+| **Contact Phone** | The visitor's phone number, if available. |
+| **Contact Email** | The visitor's email address, if available. |
+| **Category** | The AI-generated conversation category. |
+| **Saved Contact** | Whether the visitor was saved as a contact (Yes/No). |
+| **Human Responder** | The team member who responded, if a human took over. |
+| **Rating** | The visitor's feedback rating, if provided. |
+| **AI Evaluation** | Whether the conversation passed or failed AI evaluation. |
+| **Created At** | The date and time the conversation started. |
+
+## Using Exports for Reporting
+
+Here are some practical ways to use your exported data:
+
+- **Weekly performance summaries** -- Export the past week's conversations filtered by a specific Chat Agent, then calculate metrics like total conversations, escalation rate, and average rating in a spreadsheet.
+- **Quality audits** -- Export conversations that failed AI evaluation to review common failure patterns and improve your agent's prompt or knowledge base.
+- **Contact analysis** -- Export conversations where contacts were saved to analyze lead quality and conversion trends.
+- **Team performance** -- Filter by "Responded By" to export conversations handled by specific team members and compare response patterns.
+
+## Tips
+
+- Always set your date range and filters before exporting to avoid downloading more data than you need.
+- The **Export All Data** option is ideal for monthly or quarterly reports where you want a comprehensive dataset.
+- The **Export Current Page** option is useful for quick spot-checks or when you only need a small sample.
+- If you regularly need the same type of export, bookmark the Chat History page with your filters applied -- the filter settings are preserved in the URL.

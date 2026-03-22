@@ -1,0 +1,136 @@
+---
+
+title: "Flow Node Features"
+description: "Per-node settings for contact collection, meeting scheduling, human escalation, testimonials, tools, and automation."
+---
+
+Each node in the Conversational Flow editor can be customized with feature toggles and configuration options that control what the AI agent can do at that particular stage of the conversation. This guide covers every setting available in the node configuration panel.
+
+## Opening the Node Configuration Panel
+
+Click on any node in the canvas while in editing mode. The configuration panel slides open on the right side of the screen.
+
+![The node configuration panel showing the node name, global node toggle, instruction editor, and feature switches](/screenshots/flow-node-config-panel.png)
+
+The panel is divided into several sections, described below.
+
+## Node Name and Color
+
+At the top of the panel, the node's name is displayed. Click on the name to edit it inline. Next to the name, a **color picker** button lets you change the node's background and border color on the canvas, making it easy to visually group or distinguish different types of nodes.
+
+## Global Node
+
+The **Global Node** toggle makes this node accessible from any other node in the flow. When enabled, a **Condition** field appears where you define when the AI should jump to this node. See [Global Nodes and Prompts](./global-nodes-and-prompts) for details.
+
+## Node Passthrough
+
+The **Node Passthrough** toggle controls whether the AI can automatically traverse through this node to the next one in a single message. When a visitor's input satisfies the current node's requirements and also matches a transition condition, the AI can skip ahead without waiting for another reply.
+
+| Setting | Description |
+|---------|-------------|
+| **Node Passthrough** (toggle) | Enables or disables automatic multi-node traversal at this node. |
+| **Max Depth** | When passthrough is enabled, this sets the maximum number of nodes the AI can traverse in one turn. The default is 5. Setting a lower value gives you tighter control. |
+
+This is useful for nodes that simply route the conversation (for example, a quick decision point) where pausing for a visitor response would feel unnatural.
+
+## Instruction
+
+The **Instruction** field is the core of each node. This is where you write the AI prompt that tells the agent what to do when the conversation reaches this stage.
+
+- Write in plain language. For example: "Greet the visitor warmly. Ask how you can help them today."
+- You can use Markdown formatting for structure (headings, bullet points, bold text).
+- Keep instructions focused on what the agent should accomplish at this specific stage. General rules (tone, safety, etc.) belong in the [global prompt](./global-nodes-and-prompts).
+
+## Contact Collection
+
+Nodes with the **Contact Collection** type automatically prompt the visitor to provide their contact information. When this feature is active on a node, the configuration panel expands to show a **Contact Configuration** section where you can customize:
+
+| Setting | Description |
+|---------|-------------|
+| **Required fields** | Choose which fields the agent should collect (for example, name, email, phone number). |
+| **Field labels and prompts** | Customize how the agent asks for each piece of information. |
+| **Validation rules** | Set rules for what constitutes a valid entry (for example, a properly formatted email address). |
+
+![A Contact Collection node on the canvas](/screenshots/flow-node-capture-contact.png)
+
+The collected information is saved automatically to the contact record in Revve AI.
+
+## Schedule Meeting
+
+Nodes with the **Schedule Meeting** type enable calendar-based booking directly within the conversation. When this feature is active, the panel shows a **Calendar App** selector where you choose which connected calendar integration the agent should use.
+
+| Setting | Description |
+|---------|-------------|
+| **Calendar App** | Select the calendar integration (for example, Google Calendar, Calendly) that the agent will use to check availability and create bookings. |
+
+![A Schedule Meeting node on the canvas](/screenshots/flow-node-schedule-meeting.png)
+
+The agent will present available time slots to the visitor and handle the booking process within the chat.
+
+## Render Testimonial
+
+The **Render Testimonial** toggle (available on Normal Conversation nodes) allows the agent to display customer testimonials during the conversation. This can help build trust with new prospects by showing social proof at the right moment.
+
+This toggle is only visible on nodes that are not configured for Contact Collection or Schedule Meeting.
+
+## Human Escalation
+
+The **Human Escalation** toggle equips the node with the ability to transfer the conversation to a live human agent. When enabled, the AI gains access to a built-in handoff tool and can initiate the transfer when appropriate.
+
+| Behavior | Description |
+|----------|-------------|
+| **Toggle on** | The AI can decide to escalate based on the conversation context (for example, the visitor explicitly asks for a human, or the AI cannot answer the question). |
+| **Toggle off** | The AI will not offer or perform a handoff at this node. |
+
+This toggle is only visible on nodes that are not configured for Contact Collection or Schedule Meeting.
+
+## Tools
+
+The **Tools** section lets you assign specific tools to a node. Tools are integrations or capabilities that the AI can invoke during the conversation -- for example, looking up customer data, querying an external system, or performing a calculation.
+
+Click **Add** to browse and attach available tools. Only the tools assigned to a node (plus any globally configured tools) are available to the AI when the conversation is at that stage. This gives you fine-grained control over what the agent can do at each step.
+
+## Automation
+
+The **Automation** section lets you define actions that happen automatically when the conversation reaches this node. Click **Add** to create an automation rule.
+
+A common use is setting custom contact fields. For example, when a visitor reaches a "Qualified Lead" node, you could automatically set a "Lead Status" field to "Qualified" on their contact record.
+
+Automations can also be configured on individual transitions (see [Creating and Connecting Nodes](./creating-and-connecting-nodes)).
+
+## Duplicating and Deleting Nodes
+
+At the bottom of the configuration panel, two buttons are available:
+
+| Action | Description |
+|--------|-------------|
+| **Duplicate Node** | Creates an exact copy of the node (including its instruction and settings) and places it on the canvas. Transitions are not copied. |
+| **Delete Node** | Permanently removes the node and all transitions connected to it. You will be asked to confirm before the deletion proceeds. |
+
+## Summary of Node Settings
+
+| Setting | Available On | Purpose |
+|---------|-------------|---------|
+| Global Node | All nodes | Makes the node reachable from any point in the flow |
+| Node Passthrough | All nodes | Allows automatic multi-node traversal |
+| Instruction | All nodes | AI prompt for this conversation stage |
+| Contact Collection | Contact Collection nodes | Collects visitor contact details |
+| Schedule Meeting | Schedule Meeting nodes | Books meetings via connected calendar |
+| Render Testimonial | Normal Conversation nodes | Displays customer testimonials |
+| Human Escalation | Normal Conversation nodes | Enables live-agent handoff |
+| Tools | All nodes | Assigns specific tool capabilities |
+| Automation | All nodes | Triggers automatic actions (e.g., setting fields) |
+
+## Best Practices
+
+- **Enable only what you need on each node.** Turning on features you do not need adds complexity without benefit.
+- **Place Contact Collection early in the flow** if capturing visitor information is a priority, but only after the visitor has shown enough interest -- collecting details too early can feel intrusive.
+- **Use Human Escalation on nodes where the AI is most likely to reach its limits**, such as complex technical support or sensitive topics.
+- **Assign tools sparingly.** Giving the AI access to too many tools at a single node can slow down responses and increase the chance of the wrong tool being called.
+- **Test each node's behavior in the Preview tab** after making changes to verify the agent behaves as expected.
+
+## Next Steps
+
+- [Flow Editor Overview](./flow-editor-overview) -- Return to the editor basics.
+- [Creating and Connecting Nodes](./creating-and-connecting-nodes) -- Review how to build your flow structure.
+- [Global Nodes and Prompts](./global-nodes-and-prompts) -- Set up cross-cutting behaviors.

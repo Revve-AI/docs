@@ -1,0 +1,120 @@
+---
+
+title: "Publishing & Versioning"
+description: "How drafts, publishing, and version history keep your live agent safe while you iterate."
+---
+
+Revve uses a **draft-based editing workflow** to protect your live agent from accidental changes. This guide explains how drafts, publishing, and version history work.
+
+## How It Works
+
+Your Chat Agent always has two states:
+
+1. **Published version** — The version currently serving live conversations. Visitors interact with this version.
+2. **Working draft** — Your in-progress changes. Only visible to you in the dashboard, never to visitors.
+
+Changes you make in edit mode are saved to the **draft**. They don't affect the live agent until you **publish**.
+
+## Editing Workflow
+
+### 1. Start Editing
+
+From any Chat Agent page, click the **Start Editing** button in the top-right corner to enter edit mode.
+
+When you start editing:
+- A **working draft** is created based on the current published version.
+- An **editing lock** is acquired so other team members can't edit simultaneously.
+- The top bar turns yellow showing: `Editing: Working draft (based on v1)`.
+- A timer shows how long you have the editing lock.
+
+### 2. Make Changes
+
+Navigate between tabs (Basic, Appearance, Knowledge, Advanced Settings, etc.) and make your changes. Click **Save Changes** on each tab to save your edits to the draft.
+
+<Warning>
+Saving changes updates your draft, not the live agent. Visitors won't see any changes until you publish.
+</Warning>
+### 3. Stop Editing or Publish
+
+When you're done, you have two choices:
+
+- **Publish** — Click the **Publish** button to create a new version and make your changes live.
+- **Stop Editing** — Click **Stop Editing** to release the editing lock. Your draft is preserved and you (or a teammate) can resume editing later.
+
+If you navigate away without saving, you'll see a "Leave without saving?" confirmation dialog.
+
+## Publishing a New Version
+
+### From the Top Bar
+
+While in edit mode, click the **Publish** button in the top-right corner. You can add an optional publish note to describe your changes.
+
+### From the Versions Tab
+
+Navigate to the **Versions** tab to see your draft and all published versions.
+
+![Versions tab showing the current draft and published version history](/screenshots/chatbot-versions.png)
+
+The Versions tab shows:
+
+**Your Draft**
+- **Based on** — Which published version the draft was branched from (e.g., "v1").
+- **Created** — When the draft was created.
+- **Publish** button — Click to publish this draft as a new version.
+
+**Published Versions**
+A table of all previously published versions:
+
+| Column | Description |
+|--------|-------------|
+| **Version** | Version number (v1, v2, v3...) with an "Active" badge on the current live version. |
+| **Note** | The publish note you added when publishing. |
+| **Published by** | The team member who published this version. |
+| **Published** | When the version was published. |
+| **View** | Click to inspect the configuration of a past version (read-only). |
+
+## Version History
+
+Every time you publish, a new **immutable version** is created. This gives you a complete audit trail of your agent's configuration over time.
+
+### Viewing a Past Version
+
+Click **View** on any published version to inspect its configuration. The page enters **read-only mode** so you can review settings without accidentally modifying anything.
+
+### Active Version
+
+The version with the **Active** badge is the one currently serving live conversations. When you publish a new version, it automatically becomes the active version.
+
+## Draft Lifecycle
+
+| State | What it means |
+|-------|---------------|
+| **No draft** | The agent is using its latest published version. Click "Start Editing" to create a draft. |
+| **Draft exists, not editing** | A draft was created but no one is actively editing. The draft is preserved. Click "Start Editing" to resume. |
+| **Draft exists, editing** | Someone is actively editing. The top bar shows the editor's name and a lock timer. |
+
+### Editing Lock
+
+Only one person can edit a Chat Agent at a time. When you start editing:
+- Other team members see "Ready to edit" with the option to start editing (which would release your lock).
+- The lock has a time limit shown in the top bar (e.g., "Only you can edit until Mar 19, 1:41 PM").
+- If you stop editing or the lock expires, the draft becomes available for others.
+
+## Best Practices
+
+1. **Write publish notes** — Describe what you changed (e.g., "Updated greeting message and added FAQ about pricing"). This helps your team understand the history.
+
+2. **Test before publishing** — Use the **Preview** tab to test your agent with sample conversations before making changes live.
+
+3. **Publish incrementally** — Make small, focused changes and publish frequently rather than batching many changes into one version. This makes it easier to identify which change caused an issue.
+
+4. **Review in Versions** — If your agent's behavior changes unexpectedly, use the Versions tab to compare the current version with a previous one and identify what changed.
+
+## Summary
+
+```
+Start Editing → Make Changes → Save Changes (to draft) → Publish (goes live)
+                                                        → Stop Editing (draft preserved)
+```
+
+Your live agent is always safe. Drafts let you experiment freely, and the version history gives you a complete record of every change.

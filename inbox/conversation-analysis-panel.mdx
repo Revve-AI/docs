@@ -1,0 +1,89 @@
+---
+
+title: "Conversation Analysis Panel"
+description: "Understanding the right-side panel that displays agent info, contact data, AI analysis, tickets, evaluation, and comments."
+---
+
+When you select a conversation in the Inbox, the right-side panel displays detailed information organized into several collapsible sections. This panel gives you everything you need to understand the conversation context at a glance.
+
+## Panel Sections
+
+### Agent Information
+
+At the top of the panel, you will see the **Chat Agent** that handled this conversation:
+
+- **Agent name** with a link to the agent's configuration page
+- **Channel icon** showing the communication channel (website, SMS, WhatsApp, etc.)
+- **Agent description** providing context about the agent's purpose
+- **Agent version** if versioning is enabled (e.g., "v2" or "Draft")
+
+### Contact Information
+
+For known contacts (visitors who have shared their details), this section displays:
+
+| Field | Description |
+|-------|-------------|
+| **Name** | The contact's name, linked to their full contact profile. Click to open in a new tab. |
+| **Email** | The contact's email address (click to copy) |
+| **Phone** | The contact's phone number (click to copy) |
+
+If the visitor is anonymous (no contact information captured), this section is hidden.
+
+### Boot Data
+
+If the Chat Agent was configured with boot data (custom data passed when the chat widget loads), this section shows the key-value pairs. This is useful for understanding the context the visitor had when starting the conversation. You can toggle between a formatted view and a raw data view.
+
+### Root URL
+
+If the conversation started on a website, this section shows the page URL where the visitor initiated the chat. Click the link to visit that page.
+
+### Metadata
+
+If the conversation has global or thread-level metadata attached, you can expand this section to view it. Metadata is organized into:
+
+- **Global metadata** -- shared across all conversations for the contact
+- **Thread metadata** -- specific to this conversation
+
+### Analysis and Summary
+
+This is one of the most valuable sections. When your Chat Agent has analysis configured, this section shows:
+
+- **Summary** -- an AI-generated summary of the conversation, rendered in formatted text with support for headings, lists, and links
+- **Analysis Results** -- structured data extracted by the AI based on your analysis configuration (e.g., conversation category, lead qualification score, extracted fields)
+
+Click the expand arrow to view the full analysis.
+
+### Visitor Feedback
+
+If the visitor left a rating at the end of the conversation, this section displays:
+
+- Star rating (1-5)
+- Written feedback message (if provided)
+- Timestamp of when the feedback was submitted
+
+### Tickets
+
+The Tickets section lets you create and manage support tickets linked to the conversation:
+
+- Click **New** to create a ticket directly from the conversation
+- Existing tickets are displayed with their status
+- Click the expand arrow to collapse or expand the section
+
+### AI Evaluation
+
+This section provides quality control for your AI agent's performance:
+
+- **Mark as failed** -- toggle this switch if the AI agent did not handle the conversation correctly
+- Use this to track and improve your agent's accuracy over time
+
+### Comments
+
+At the bottom of the panel, the **Comments** section is where your team can leave internal notes. See [Managing Conversations](./managing-conversations) for details on how to use comments.
+
+## Tips
+
+- **Expand the Analysis and Summary section** after reviewing a conversation to quickly understand what happened without reading every message.
+- **Click the contact name** to jump to their full contact profile, where you can see all their conversations and contact history.
+- **Use the Agent link** to quickly navigate to the Chat Agent's configuration if you need to adjust its behavior based on conversation outcomes.
+- **Mark conversations as failed** when the AI makes mistakes -- this data helps you identify patterns and improve your agent's instructions.
+- **Check the Root URL** to understand the context of website conversations -- knowing which page the visitor was on can explain their questions.

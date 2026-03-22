@@ -1,0 +1,104 @@
+---
+
+title: "Website Installation"
+description: "How to install the Revve AI chat widget on your website using JavaScript or WordPress."
+---
+
+<Tip>
+**No external setup needed.** The website channel requires no external account setup. You can configure and deploy your chat widget entirely from the Revve dashboard.
+</Tip>
+Once you have configured your Chat Agent's appearance and behavior, the next step is to install it on your website. Revve AI provides two installation methods: a JavaScript snippet for any website, and a dedicated WordPress plugin.
+
+To access installation instructions, navigate to **Agents > Chat Agents**, select your website Chat Agent, and click the **Installation** tab.
+
+---
+
+## Installation Methods
+
+![Installation tab showing JavaScript embed code and WordPress plugin instructions](/screenshots/website-installation.png)
+
+### JavaScript (Any Website)
+
+The JavaScript method works on any website where you can add custom HTML. Copy the embed code from the Installation tab and paste it into your website's HTML.
+
+**Steps:**
+
+1. In the Installation tab, locate the JavaScript embed code block.
+2. Click the **copy** button in the top-right corner of the code block to copy the snippet to your clipboard.
+3. Paste the code into your website's HTML, just before the closing `</body>` tag.
+4. Save and publish your website changes.
+
+The embed code includes your unique chatbot ID and automatically loads the chat widget script. The code looks like this:
+
+```html
+<script>
+(function() {
+    window.RevveConfig = {
+      chatbotId: "your-chatbot-id-here",
+      // Optional: Override API host (for development/self-hosted)
+      // apiHost: "https://app.revve.ai",
+      // Optional: Enable debug logging
+      // debug: true,
+      // Optional: Hide launcher button on load (show programmatically later)
+      // hideLauncher: false
+    };
+
+    var embedScript = document.createElement('script');
+    embedScript.src = "https://d26hsuee5yd7xd.cloudfront.net/assets/embed.min.js";
+    embedScript.setAttribute('data-no-defer', '');
+    document.head.appendChild(embedScript);
+})();
+</script>
+```
+
+### Configuration Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| **chatbotId** | String (required) | Your unique Chat Agent identifier. This is pre-filled in the embed code. |
+| **apiHost** | String (optional) | Override the API endpoint. Only needed for self-hosted or development environments. |
+| **debug** | Boolean (optional) | Set to `true` to enable debug logging in the browser console. Useful for troubleshooting. |
+| **hideLauncher** | Boolean (optional) | Set to `true` to hide the chat button on page load. Use this if you want to trigger the widget programmatically (e.g., from a custom button on your page). |
+
+---
+
+### WordPress
+
+For WordPress sites, Revve AI provides a dedicated plugin for easier installation.
+
+**Steps:**
+
+1. In the Installation tab, click the **Download WordPress Plugin** button.
+2. In your WordPress admin, go to **Plugins > Add New > Upload Plugin**.
+3. Upload the downloaded plugin file and click **Install Now**.
+4. Activate the plugin.
+5. Go to **WP Admin > Settings > Revve Options**.
+6. Enter your Chat Agent ID (shown on the Installation tab) and click **Save**.
+
+The plugin will automatically add the chat widget to all pages of your WordPress site.
+
+---
+
+## Best Practices
+
+- **Test before going live.** After installation, visit your website in an incognito/private browser window to verify the widget appears and works correctly.
+- **Check mobile.** Make sure the widget looks and functions properly on mobile devices.
+- **Use debug mode during setup.** Enable `debug: true` in the config while testing to see helpful messages in your browser's developer console. Remove it before going live.
+- **One widget per page.** Only install one Revve chat widget per page. Installing multiple widgets on the same page may cause conflicts.
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Widget does not appear | Verify the embed code is placed before the closing `</body>` tag. Check that the chatbot ID is correct and that the Chat Agent has been published. |
+| Widget appears but does not respond | Ensure your Chat Agent is configured with a valid AI provider and model in the Basic tab. Check the Dashboard for any error messages. |
+| Widget loads slowly | The embed script is loaded asynchronously and should not block your page. If you experience slowness, check your network tab for any failed requests. |
+
+---
+
+## Next Steps
+
+- [Customize widget appearance](./website-appearance-and-styling)
+- [Configure bubble messages](./website-bubble-messages)

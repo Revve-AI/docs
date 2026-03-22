@@ -1,0 +1,127 @@
+---
+
+title: "Analytics Dashboard"
+description: "Monitor agent productivity, conversation volume, and escalation trends across your team."
+---
+
+The **Analytics** section provides dashboards that help you understand how your AI and human agents are performing. To access it, expand the **Analytics** section in the left sidebar. You will find three sub-pages:
+
+| Page | What It Covers |
+|------|---------------|
+| **Overview** | Real-time operations status, today's performance summary, and 7-day trends for conversations, tickets, and escalations. |
+| **AI Agents** | AI effectiveness KPIs, per-agent performance, response time analysis, conversation heatmaps, and escalation patterns. |
+| **Human Agents** | Team summary, agent leaderboard, workload distribution, ticket trends, and response time analysis. |
+
+## Overview Page
+
+The Overview page (also called **Agent Productivity**) gives you a live snapshot of your operations. It auto-refreshes every 5 minutes, or you can click the **refresh button** in the top-right corner to update manually.
+
+![Analytics Overview showing real-time status, today's performance, and channel distribution charts](/screenshots/analytics-overview.png)
+
+### Real-Time Status
+
+Four cards at the top show your current operational state:
+
+| Metric | Description |
+|--------|-------------|
+| **Active Conversations** | The number of conversation threads currently open. |
+| **Queue Depth** | How many conversations are waiting for a human response. |
+| **Avg Wait Time** | The average time visitors spend waiting in the queue. |
+| **Agents Online** | The number of team members currently available to respond. |
+
+### Today's Performance (vs Yesterday)
+
+A set of summary cards compares today's numbers to yesterday. Each card shows the current value and the percentage change. Metrics include:
+
+| Metric | Description |
+|--------|-------------|
+| **Total Conversations** | All conversations started today. |
+| **Containment Rate** | Percentage of conversations resolved without human intervention. |
+| **Escalation Rate** | Percentage of conversations handed off to a human agent. |
+| **Avg Resolution Time** | Average time from conversation start to close. |
+| **Open Tickets** | Currently open support tickets. |
+| **In Progress Tickets** | Tickets being actively worked on. |
+| **Closed Tickets** | Tickets resolved today. |
+| **Overdue Tickets** | Tickets that have been open for more than 48 hours. |
+
+### Conversation Distribution (Last 7 Days)
+
+Two charts show conversation volume broken down by channel:
+
+- **Conversation Mix** -- A pie chart showing the percentage split across channels (Website, SMS, WhatsApp, Messenger, Email, Zalo, Zalo OA).
+- **Conversation Trend** -- A stacked bar chart showing daily volume by channel over the past 7 days.
+
+### Ticket Distribution (Last 7 Days)
+
+Two charts show ticket activity:
+
+- **Daily Ticket Status** -- A bar chart showing tickets grouped by status (Open, In Progress, Closed) for each day.
+- **Ticket Trend** -- A bar chart showing daily ticket volume broken down by channel.
+
+### Escalation Trends (Last 7 Days)
+
+- **Escalation Trend** -- A line or bar chart showing the number of escalations per day.
+- **Escalations by Channel** -- A horizontal bar chart showing which channels generate the most escalations.
+
+## AI Agents Page
+
+The **AI Agents** page focuses on how well your AI agents are performing. Use the **date range selector** in the top-right corner to choose a time period (defaults to the last 7 days).
+
+### AI Effectiveness KPIs
+
+Summary cards showing key metrics such as total AI conversations, containment rate, and average messages per conversation.
+
+### Agent Performance Table
+
+A table listing each Chat Agent with its individual performance metrics, so you can compare agents side by side.
+
+### Response Performance
+
+Two side-by-side charts:
+
+- **Response Time Histogram** -- Shows the distribution of AI response times, along with the average response time in seconds.
+- **Messages Per Conversation** -- Shows the distribution of how many messages are exchanged in a typical AI conversation, along with the overall average.
+
+### Conversations by Day
+
+A chart showing daily conversation volume broken down by individual Chat Agent, so you can see which agents are handling the most traffic.
+
+### Conversation Heatmap
+
+A heatmap showing when conversations happen throughout the week -- which days and hours see the highest volume. Use this to understand peak traffic patterns.
+
+### Escalation Heatmap
+
+A heatmap showing when escalations to human agents occur. Identifying peak escalation times helps you staff human agents during the hours they are needed most.
+
+## Human Agents Page
+
+The **Human Agents** page tracks the performance of your human team members. Use the **date range selector** in the top-right corner to choose a time period.
+
+### Team Summary
+
+Summary cards showing overall team metrics such as total conversations handled by humans, tickets processed, and average response time.
+
+### Agent Leaderboard
+
+A ranked table of team members showing who is handling the most conversations and tickets. Use this to identify top performers and balance workload.
+
+### Workload Distribution
+
+A chart showing how conversations and tickets are distributed across team members, helping you spot uneven workloads.
+
+### Ticket Trend
+
+A chart showing ticket creation and resolution trends over the selected time period.
+
+### Response Time Analysis
+
+A chart showing human agent response times. This helps you identify bottlenecks and set expectations for your team's responsiveness.
+
+## Tips
+
+- Check the **Overview** page at the start of each day to see your real-time queue depth and ensure adequate staffing.
+- Use the **AI Agents** page to compare agent performance after making changes to prompts or knowledge bases -- look for improvements in containment rate and evaluation pass rate.
+- The **Conversation Heatmap** on the AI Agents page is valuable for deciding when to schedule human agents, since it shows exactly when your visitors are most active.
+- The **Escalation Trends** chart helps you identify whether changes to your AI agents are reducing or increasing the need for human intervention over time.
+- All analytics pages have a manual **refresh button** if you need the latest data without waiting for the auto-refresh cycle.

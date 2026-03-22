@@ -1,0 +1,108 @@
+---
+
+title: "WhatsApp Channel Setup"
+description: "Connect your WhatsApp Business profile to enable your Chat Agent to communicate via WhatsApp."
+---
+
+> **Setup Required:** This channel requires initial technical setup by your account administrator before you can configure it here. This includes setting up a Meta Business account, verifying your WhatsApp Business number, and connecting it to Revve. Contact your Revve team or administrator to get started.
+
+Once your administrator has completed the initial setup, you can configure the following settings directly from the dashboard:
+
+- Select which connected WhatsApp Business profile the agent uses
+- Configure outbound message templates for campaigns
+- Set up the agent's prompt, knowledge base, languages, and behavior
+- Publish the agent to start handling WhatsApp conversations
+
+Revve AI Chat Agents can communicate through WhatsApp Business, allowing you to engage with customers on one of the world's most popular messaging platforms. This guide covers how to connect your WhatsApp Business profile and configure your WhatsApp Chat Agent.
+
+When you create a Chat Agent with the **WhatsApp** channel type, a **Channel Settings** tab appears where you assign your WhatsApp profile.
+
+---
+
+## Accessing Channel Settings
+
+1. Navigate to **Agents > Chat Agents**.
+2. Select your WhatsApp Chat Agent (or create a new one with the WhatsApp channel type).
+3. Click the **Channel Settings** tab.
+
+![WhatsApp Channel Settings showing the WhatsApp Profile dropdown](/screenshots/whatsapp-channel-settings.png)
+
+---
+
+## Channel Settings Fields
+
+| Setting | Description |
+|---------|-------------|
+| **WhatsApp Profile** | Select the WhatsApp Business profile that the agent will use for sending and receiving messages. The dropdown lists all WhatsApp profiles that have been connected in your team's Settings. |
+
+---
+
+## Setup Steps
+
+### 1. Connect WhatsApp Business in Team Settings
+
+Before you can assign a WhatsApp profile to a Chat Agent, you need to connect your WhatsApp Business account.
+
+1. Go to **Settings** in the left sidebar.
+2. Navigate to the WhatsApp integration section.
+3. Follow the prompts to connect your WhatsApp Business account. This typically involves authenticating through Meta Business Suite and granting the necessary permissions.
+4. Once connected, your WhatsApp Business profiles will appear in the integration settings.
+
+### 2. Assign a WhatsApp Profile
+
+1. Open your WhatsApp Chat Agent and go to the **Channel Settings** tab.
+2. Click the **WhatsApp Profile** dropdown.
+3. Select the WhatsApp Business profile you want this agent to use.
+4. Save your changes.
+
+### 3. Configure Outbound Templates (Optional)
+
+If your WhatsApp agent will initiate conversations (outbound messaging), you may need to configure message templates. WhatsApp requires approved templates for outbound messages sent outside the 24-hour customer service window.
+
+To configure outbound templates:
+
+1. Go to the **Basic** tab of your WhatsApp Chat Agent.
+2. Click **Outbound Templates** in the left sidebar.
+3. Click **Create Your First Template** to set up message templates for outbound campaigns.
+
+### 4. Publish the Agent
+
+After assigning a WhatsApp profile and configuring your agent, publish it to make it live. Incoming WhatsApp messages to the connected profile will be routed to this agent.
+
+---
+
+## WhatsApp Messaging Rules
+
+WhatsApp enforces specific messaging rules that affect how your Chat Agent operates:
+
+| Rule | Description |
+|------|-------------|
+| **24-hour service window** | After a customer sends a message, you have 24 hours to respond with free-form messages. After 24 hours, you must use approved message templates. |
+| **Template messages** | Outbound messages sent outside the 24-hour window must use pre-approved templates. Configure these in the Outbound Templates section. |
+| **Business verification** | Your WhatsApp Business account should be verified through Meta to access higher messaging limits and display a verified badge. |
+
+---
+
+## Best Practices
+
+- **Use dedicated profiles per agent.** Assign each WhatsApp Chat Agent its own WhatsApp Business profile to prevent routing conflicts.
+- **Prepare outbound templates in advance.** If your agent will initiate conversations, create and submit message templates for approval before launching campaigns, as the approval process can take time.
+- **Respect the 24-hour window.** Design your agent's conversation flow to resolve customer inquiries within the service window whenever possible.
+- **Monitor conversations.** WhatsApp conversations appear in your team's Inbox, where you can review agent responses and intervene when needed.
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| No profiles appear in the dropdown | Verify that your WhatsApp Business account is connected in Settings. You may need to re-authenticate through Meta Business Suite. |
+| Agent does not respond to incoming messages | Check that the agent has been published and that the correct WhatsApp profile is assigned. |
+| Outbound messages fail to send | Verify that you are using approved message templates for messages sent outside the 24-hour service window. Check your Meta Business Suite for template approval status. |
+
+---
+
+## Next Steps
+
+- [Set up Zalo channel](./zalo-channel-setup)
+- [Set up SMS channel](./sms-channel-setup)

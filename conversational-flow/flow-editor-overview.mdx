@@ -1,0 +1,79 @@
+---
+
+title: "Flow Editor Overview"
+description: "An introduction to the visual Conversational Flow editor and how to access it."
+---
+
+The Conversational Flow editor is a visual, drag-and-drop tool that lets you design multi-step conversation paths for your Chat Agent. Instead of writing a single prompt, you map out distinct stages of a conversation as **nodes** (boxes) connected by **transitions** (arrows), giving you precise control over how your AI agent guides each interaction.
+
+![The Conversational Flow editor showing nodes connected by transition arrows](/screenshots/flow-editor-overview.png)
+
+## When to Use the Conversational Flow
+
+The Conversational Flow engine is ideal when your Chat Agent needs to:
+
+- Follow a structured conversation path (for example, greet, qualify, collect contact info, schedule a meeting).
+- Behave differently depending on the visitor's responses (new prospect vs. existing customer).
+- Collect specific information at defined stages before moving on.
+- Hand off to a human agent or book a meeting at the right moment.
+
+If your agent only needs a single set of instructions for every conversation, the **Single Prompt** engine type may be simpler. You choose the engine type when you first create a Chat Agent.
+
+## How to Access the Flow Editor
+
+1. Navigate to **Agents > Chat Agents** in the left sidebar.
+2. Click on the Chat Agent that uses the **Conversational Flow** engine type. You can identify it by the label "Conversational Flow" shown beneath the agent name in the list.
+3. Select the **Flow** tab in the top navigation bar of the agent detail page.
+
+The Flow tab is only available for agents created with the Conversational Flow engine type. Single Prompt agents will not display this tab.
+
+## Anatomy of the Flow Editor
+
+The editor canvas is built around two core concepts:
+
+| Element | Description |
+|---------|-------------|
+| **Node** | A box on the canvas that represents one stage of the conversation. Each node has a name, AI instructions, and optional features (contact collection, meeting scheduling, etc.). |
+| **Transition** | An arrow connecting two nodes. Each transition has a condition that tells the AI when to move the conversation from one node to the next. |
+
+### Canvas Controls
+
+At the bottom-left corner of the canvas you will find zoom and navigation controls:
+
+| Control | What It Does |
+|---------|--------------|
+| **Zoom In / Zoom Out** | Adjusts the magnification level of the canvas. |
+| **Fit View** | Automatically zooms and pans so that all nodes are visible on screen. |
+| **Toggle Interactivity** | Locks or unlocks the ability to drag nodes and pan the canvas. Useful for reviewing without accidental changes. |
+
+### Toolbar (Editing Mode)
+
+When you click **Start Editing** to acquire the edit lock, a toolbar appears above the canvas:
+
+| Button | What It Does |
+|--------|--------------|
+| **Save Flow** | Persists all changes you have made to the flow. The button is highlighted when there are unsaved changes. |
+| **Import Flow** | Uploads a previously exported flow from a JSON file, replacing the current flow. |
+| **Export Flow** | Downloads the current flow as a JSON file for backup or transfer to another agent. |
+| **Add Node** | Opens a dialog to create a new node and place it on the canvas. |
+
+### Version Control and Editing Lock
+
+The flow editor uses a collaborative editing model:
+
+- **Versions** -- Each published state of your flow is saved as a version (for example, "v2 (current)"). You can view older versions in read-only mode from the Versions tab.
+- **Edit Lock** -- Only one team member can edit a flow at a time. Click **Start Editing** to acquire the lock. When you are finished, click **Stop Editing** to release it so others can make changes.
+- **Publish** -- After saving your flow, click **Publish** to make the new version live.
+
+## Tips
+
+- Use **Fit View** frequently to get a bird's-eye view of your entire flow, especially after adding new nodes.
+- Always **Save Flow** before leaving the page. The editor will warn you if you try to navigate away with unsaved changes.
+- **Export your flow** before making major changes so you can restore it if needed.
+- Release the edit lock when you are done so other team members are not blocked.
+
+## Next Steps
+
+- [Creating and Connecting Nodes](./creating-and-connecting-nodes) -- Learn how to add nodes and define transitions.
+- [Global Nodes and Prompts](./global-nodes-and-prompts) -- Understand nodes that can be reached from anywhere in the flow.
+- [Flow Node Features](./flow-node-features) -- Explore per-node settings like contact collection, meeting scheduling, and more.

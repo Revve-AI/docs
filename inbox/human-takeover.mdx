@@ -1,0 +1,81 @@
+---
+
+title: "Human Takeover"
+description: "How to take over a conversation from the AI, hand it back, and track who is responding."
+---
+
+Human takeover is the process of transferring a conversation from an AI Chat Agent to a human team member. This happens when a visitor needs personal attention, the conversation requires judgment the AI cannot provide, or the AI agent is configured to hand off at certain points in the flow.
+
+## How Takeover Works
+
+When a human takeover is triggered, the following happens:
+
+1. The conversation is flagged with **human_handoff = true**.
+2. The conversation appears in the **Unassigned** tab if no specific team member has been designated.
+3. The AI agent stops responding automatically -- the conversation waits for a human.
+4. Any team member can claim the conversation by clicking **Assign to me**.
+
+## Taking Over a Conversation
+
+There are two ways to take over a conversation:
+
+### From the Unassigned Tab
+
+1. Navigate to the **Inbox** and click the **Unassigned** tab.
+2. Select a conversation from the list.
+3. You will see a prompt: "Do you want to be assigned to this conversation?"
+4. Click **Assign to me** to take ownership.
+5. Once assigned, the message input becomes active and you can begin replying.
+
+### Using the Assignment Dropdown
+
+1. Open any conversation.
+2. Click the **assignee dropdown** in the top-right corner of the chat thread.
+3. Under **Human Agents**, select yourself (or another team member).
+
+## Handing Back to the AI
+
+When you are done handling a conversation and want the AI to resume:
+
+1. Open the conversation.
+2. Click the **assignee dropdown** in the top-right corner.
+3. Under the **AI Agents** list, select the Chat Agent that should take over.
+4. The conversation is reassigned to the AI, and it will resume responding to new messages from the visitor.
+
+## What Happens During Handover
+
+| Aspect | Behavior |
+|--------|----------|
+| **AI responses** | The AI stops sending automatic replies once a human is assigned. |
+| **Visitor experience** | The visitor continues the conversation seamlessly. They may or may not notice the handoff, depending on how the AI agent is configured. |
+| **Message history** | The full conversation history is preserved. The human agent can see everything the AI discussed with the visitor. |
+| **Timeline logging** | Every assignment change is logged in the conversation timeline, creating a clear audit trail. |
+| **Conversation status** | The status remains Active unless you change it manually. |
+
+## Responder Tracking
+
+The Inbox tracks who last responded to each conversation:
+
+- **In the conversation list:** The assignee dropdown shows the current responder (AI agent or human team member) with their name and avatar.
+- **In filters:** Use the "Responded By" filter in the Chat History page or the "Agent Type" filter in the Inbox to find conversations handled by specific agents or team members.
+- **In the Unassigned tab:** Conversations show here when they have been flagged for human takeover but no team member has been assigned (the "last responded by" field is empty).
+
+## When to Take Over
+
+Common scenarios where human takeover is appropriate:
+
+- **Complex questions** -- the visitor asks something beyond the AI's knowledge base
+- **Sensitive situations** -- complaints, billing disputes, or account issues that need a personal touch
+- **Sales opportunities** -- high-value leads that benefit from a human conversation
+- **Escalation requests** -- the visitor explicitly asks to speak with a person
+- **AI confusion** -- the AI is providing incorrect or irrelevant responses
+
+## Best Practices
+
+- **Respond promptly** after taking over. Visitors who triggered a human takeover are expecting faster, more personalized service.
+- **Review the conversation history** before replying. The center panel shows the full thread, so you understand what the AI already discussed.
+- **Check the Analysis panel** on the right side for an AI-generated summary of the conversation so far.
+- **Hand back to the AI** when the issue is resolved and future messages can be handled automatically.
+- **Close the conversation** if the issue is fully resolved and no further follow-up is needed.
+- **Use labels** to tag conversations that required human intervention, so your team can analyze patterns and improve your AI agents.
+- **Leave a comment** before handing back to AI, summarizing what you did and any follow-up needed -- this helps other team members if the conversation comes back.
