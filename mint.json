@@ -3,7 +3,8 @@
   "name": "Revve AI",
   "logo": {
     "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "light": "/logo/light.svg",
+    "href": "https://www.revve.ai"
   },
   "favicon": "/logo/light.svg",
   "colors": {
@@ -15,12 +16,7 @@
       "to": "#C44D14"
     }
   },
-  "topbarLinks": [
-    {
-      "name": "Website",
-      "url": "https://www.revve.ai"
-    }
-  ],
+  "topbarLinks": [],
   "topbarCtaButton": {
     "name": "Book a Demo",
     "url": "https://www.revve.ai/request-demo",
