@@ -94,6 +94,30 @@
         "conversational-flow/global-nodes-and-prompts",
         "conversational-flow/flow-node-features"
       ]
+    },
+    {
+      "group": "Voice Agents",
+      "pages": [
+        "voice-agents/what-is-a-voice-agent",
+        "voice-agents/creating-your-first-voice-agent",
+        "voice-agents/general-settings",
+        "voice-agents/model-settings",
+        "voice-agents/knowledge-base",
+        "voice-agents/advanced-settings",
+        "voice-agents/conversational-flow",
+        "voice-agents/preview-and-testing",
+        "voice-agents/publishing-and-versions",
+        "voice-agents/call-history-and-analytics",
+        "voice-agents/agent-dashboard"
+      ]
+    },
+    {
+      "group": "VIB Voice Agent",
+      "pages": [
+        "vib-voicebot/overview",
+        "vib-voicebot/config",
+        "vib-voicebot/test-scripts"
+      ]
     }
   ],
   "footerSocials": {
