@@ -1,0 +1,188 @@
+---
+title: "VIB Voice Agent — Configuration Guide"
+sectionId: "vib-voicebot"
+subtitle: "Production settings for the VIB credit-card profile-completion voice agent — models, call behavior, tools, and the full Vietnamese prompt."
+---
+
+# VIB Voice Agent — Configuration Guide
+
+This page documents the exact production configuration of the VIB Voice Agent. Use it as the source of truth when reviewing changes, onboarding new operators, or replicating the agent in another workspace.
+
+## Core settings
+
+| Setting | Value |
+|---------|-------|
+| **Name** | `VIB Voice agent POC (new prompt)` |
+| **Engine** | `Simple Prompt` |
+| **Region** | 🇻🇳 Việt Nam |
+| **Primary language** | Vietnamese |
+| **Direction** | Outbound (primary) + Inbound (return calls) |
+
+## Model settings
+
+### Speech Recognition (STT)
+
+| Field | Value |
+|-------|-------|
+| Provider | `Revve` |
+| Model | `Revve STT 1` |
+| Language | `Vietnamese` |
+| Key Terms | VIB-specific product / branch / street names (see Runbook) |
+
+### AI Model (LLM)
+
+| Field | Value |
+|-------|-------|
+| Provider | `OpenAI` |
+| Model | `GPT-4o` |
+| Max Tokens | `4096` |
+| Service Tier | `Standard` |
+| Temperature | Default (low — the flow is strictly scripted) |
+
+### Voice Synthesis (TTS)
+
+| Field | Value |
+|-------|-------|
+| Provider | `Revve` |
+| Model | `TTS` |
+| Language | `Vietnamese` |
+| Voice | `Nữ miền Nam` (Southern female) |
+| Speed | Default |
+
+## Call behavior
+
+| Field | Value |
+|-------|-------|
+| Max Duration | `5` minutes |
+| Begin Delay | `1000` ms |
+| End After Silence | `10` s |
+| AI Speaks First | `on` |
+| Silence Timeout (conversation) | `15` s |
+| Max Follow-ups | `2` |
+
+The agent always opens the call — there is no IVR step in front of it.
+
+## Tools
+
+Four production tools are enabled:
+
+| Tool | Purpose |
+|------|---------|
+| `extract_and_validate_phone` | Pull a phone number out of the transcript, normalize to 10 digits, validate format. Called every time the customer speaks digits. |
+| `verify_phone` | Check the collected phone number against the VIB CRM. On failure the agent re-confirms once, then ends the call. |
+| `norm_address` | Normalize a free-form address into structured street / ward / district / city. Called after every address answer; agent reads back the normalized form for confirmation. |
+| `end_call` | End the call gracefully. Guarded by a two-condition rule (see prompt, section 5 / "QUY TẮC GỌI end_call"). |
+
+## Analysis & Summary
+
+### Summary prompt
+
+```
+Tóm tắt cuộc hội thoại theo 2 ý chính:
+
+Tóm tắt nội dung
+
+Yêu cầu của khách hàng
+```
+
+### Structured extraction
+
+Field IDs match VIB's CRM schema so no mapping layer is needed. The prompt drives collection of these Bitrix-style fields:
+
+| Field ID | Meaning |
+|----------|---------|
+| `fullName` | Customer full name |
+| `phoneNumber` | Primary phone (validated via `verify_phone`) |
+| `UF_CRM_ADD_NUM3` | House number + street (home) |
+| `UF_CRM_WARD2` | Ward (home) |
+| `UF_CRM_1489666965` | Province / city (home) |
+| `UF_CRM_1527742348` | Occupation (`career_input`) |
+| `UF_CRM_1489670258` | Employment status |
+| `UF_CRM_1490963503` | Monthly income |
+| `UF_CRM_1489670292` | Company name |
+| `UF_CRM_ADD_NUM4` | House number + street (company) |
+| `UF_CRM_WARD3` | Ward (company) |
+| `UF_CRM_1489670503` | Province / city (company) |
+| `UF_CRM_1490615208` | Time at company |
+| `UF_CRM_1527740191` | School name (student path) |
+| `UF_CRM_1527739897` | School start year |
+| `UF_CRM_1489667501` / `UF_CRM_WARD4` / `UF_CRM_CITY4` | School address |
+| `UF_CRM_1489667655` | Education level |
+| `UF_CRM_1489669174` | Reference phone number (must differ from primary) |
+| `UF_CRM_1489726762` | Card delivery address (home OR work/school — only two options) |
+| `UF_CRM_1489720340` | Security question — first primary-school name |
+
+## Call variables
+
+Seeded by the outbound campaign or API trigger. The prompt branches on these:
+
+| Variable | Used for |
+|----------|----------|
+| `predicted_gender` | Picks `anh` / `chị` / `bạn` form of address |
+| `UF_CRM_1489666359` | CRM gender (30 = male, 31 = female) |
+| `inbound` | `true` when the customer is calling back (vs. outbound) |
+| `collecting_info` | `true` when the customer is continuing a previous partially-completed call |
+| `fullName`, `phoneNumber`, `UF_CRM_*` | Any field already on file — the prompt skips asking for fields that are already present |
+
+## Call flow (summary)
+
+```
+BƯỚC 1 – Greeting (with inbound / collecting_info branches)
+      │
+      ▼
+BƯỚC 2 – Callback reschedule  (if customer is busy)
+      │
+      ▼
+BƯỚC 3 – Introduce purpose + collect phone number
+      │
+      ▼
+extract_and_validate_phone → verify_phone
+      │
+      ├── success ─▶ Collect basic fields (name, home address)
+      │                  │
+      │                  ▼
+      │             Ask occupation
+      │              ├── student  ─▶ Student fields (school name, year, address)
+      │              └── employed ─▶ Job fields (status, income, company, address, tenure)
+      │                  │
+      │                  ▼
+      │             Common fields (education, reference phone, card delivery address, security Q)
+      │                  │
+      │                  ▼
+      │             End call
+      │
+      └── failure ─▶ Re-confirm once ─▶ end_call with "not a match" message
+```
+
+## Guardrails (non-negotiable)
+
+From the prompt, sections 1 & 2:
+
+- Vietnamese only.
+- Never sell, negotiate, or add content outside the script.
+- Never ask for information already captured — even after a silence retry.
+- Never ask "or" questions ("A hay B").
+- Never say the agent is a chatbot / AI unless the customer directly asks.
+- After a refusal, handle one objection, then end the call politely.
+- `end_call` only fires when (a) there is an explicit reason to end AND (b) the agent has already said goodbye AND the customer has responded.
+
+## Full Instructions prompt (Vietnamese)
+
+The complete production prompt is available alongside this document:
+
+- [`main-prompt.vi.md`](./main-prompt.vi.md) — verbatim dump of the Instructions field from Revve.
+
+It is numbered 1 → 6 with an appendix on address handling and on the `end_call` rule. Any change to this file on production must be published via the Versions tab and recorded in `test-scripts.mdx`.
+
+## Where to find it
+
+- Workspace: **VIB team**
+- Agent: **Voice Agents** → `VIB Voice agent POC (new prompt)`
+- Draft URL: `https://app.revve.ai/dashboard/<team-slug>/callbots/vib-voice-agent-realtime-luqmbw`
+
+## Related
+
+- [Overview](./overview)
+- [Test Scripts](./test-scripts)
+- [Voice Agents — General Settings](../voice-agents/general-settings)
+- [Voice Agents — Advanced Settings](../voice-agents/advanced-settings)

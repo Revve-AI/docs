@@ -1,0 +1,42 @@
+---
+title: "VIB Voice Agent — Overview"
+sectionId: "vib-voicebot"
+subtitle: "Production voice agent that calls VIB credit-card applicants to complete their application profile."
+---
+
+# VIB Voice Agent — Overview
+
+This document describes the production Voice Agent that VIB uses to call credit-card applicants whose application profiles are incomplete, collect the missing information by phone, and hand the completed record back to VIB's CRM for card issuance.
+
+The agent is implemented on top of Revve Voice with a **Simple Prompt** engine (GPT-4o) and a custom tool pack for phone verification, address normalization, and call termination.
+
+## Agent identity
+
+| Property | Value |
+|----------|-------|
+| **Name** | VIB Voice agent POC (new prompt) |
+| **Persona** | *Vi* — AI assistant of Ngân hàng Quốc tế VIB |
+| **Pronunciation** | `VIB` is pronounced `Vi Ai Bi` |
+| **Language** | Vietnamese only |
+| **Direction** | Outbound (primary) + Inbound (return calls) |
+| **Engine** | Simple Prompt |
+
+## Business goal
+
+Complete an applicant's credit-card application profile in a single phone call by:
+
+1. Verifying the caller is the real applicant (phone-number verification against VIB CRM).
+2. Collecting the subset of fields still missing on the application (driven by Handlebars conditionals in the prompt).
+3. Handing results back to VIB's CRM via webhook.
+4. Never selling, negotiating, or improvising beyond the script.
+
+## Related documents
+
+- [config.mdx](./config) — Full production configuration: models, call behavior, tools, and the complete Vietnamese instructions prompt.
+- [test-scripts.mdx](./test-scripts) — Test scripts (happy path, refusals, silence, carrier edge cases) to run before every publish.
+
+## Where to find it in Revve
+
+- Workspace: **VIB team**
+- Section: **Voice Agents** → `VIB Voice agent POC (new prompt)`
+- URL: `https://app.revve.ai/dashboard/<team-slug>/callbots/vib-voice-agent-realtime-luqmbw`

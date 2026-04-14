@@ -1,0 +1,80 @@
+---
+title: "General Settings"
+sectionId: "voice-agents"
+subtitle: "Configure the agent's identity, language region, description, and main behavior prompt."
+---
+
+# General Settings
+
+The **General** tab holds the core identity of your Voice Agent: its name, the region it serves, a description for teammates, and — for Simple Prompt agents — the main **Instructions** prompt that drives every call.
+
+![General settings tab](../screenshots/voice-general-settings.png)
+
+## Fields
+
+| Field | Purpose |
+|-------|---------|
+| **Name** | Internal name. Appears in Voice Agents list, Call History, Dashboard, and the publish sidebar. Does not affect what the agent says on a call. |
+| **Region** | Country the agent serves. Drives default timezone, default phone-number country code, and telephony routing. |
+| **Description** | Short summary visible to teammates when browsing the Voice Agents list. |
+| **Instructions** | (Simple Prompt only) The main behavior prompt. This is the most important field — it defines identity, tone, rules, and the full call script. |
+
+## Writing good Instructions (Simple Prompt)
+
+For Simple Prompt agents, Instructions become the system prompt for every turn of the call. A production-ready prompt typically has these sections:
+
+### 1. Role & Goal
+
+State who the agent is and what it must accomplish. Be explicit about what the agent is **not** (not a salesperson, not a free-form chatbot, not a human).
+
+### 2. Mandatory Rules
+
+Non-negotiable constraints — language, forms of address, what never to say, what never to ask. Put these at the top so the model weights them heavily.
+
+### 3. Call Flow
+
+Walk through the call step by step: greeting, intent detection, the main task, objection handling, wrap-up, goodbye. Number the steps so the model can anchor to them.
+
+### 4. Fields to Collect (for data-collection agents)
+
+List every field, the exact question to ask, and the validation rule. Use template variables like `{{fullName}}` or `{{#if !phoneNumber}}...{{/if}}` to ask only for missing data.
+
+### 5. Edge Cases
+
+What to do when the customer refuses, stays silent, speaks unclearly, or asks for a human. Keep the rules short and specific.
+
+### 6. End-of-Call Rules
+
+When to call the `end_call` tool, when to transfer, and what farewell to say.
+
+## Template variables
+
+Instructions support Handlebars-style variables and conditionals:
+
+```handlebars
+{{#if inbound}}
+  Chào bạn, cảm ơn bạn đã liên hệ VIB.
+{{/if}}
+{{#if !inbound}}
+  Chào bạn, mình là Vi gọi đến từ Ngân hàng VIB.
+{{/if}}
+
+{{#if !fullName}} Hỏi họ tên khách hàng {{/if}}
+{{#if !phoneNumber}} Hỏi số điện thoại {{/if}}
+```
+
+Variables are supplied by the call context — either from the contact record, the campaign payload, or values captured earlier in the same call.
+
+## Tips
+
+- **Write in the language your customers speak.** If the call is in Vietnamese, write the whole prompt in Vietnamese. Mixing languages hurts STT and TTS quality.
+- **Keep the greeting short.** Two sentences max. Long greetings get barged over.
+- **Don't read full account numbers** or other sensitive data aloud — only last 4 digits.
+- **Never say "I am a chatbot"** unless the customer explicitly asks. State your role as an "AI assistant for <Brand>" if asked.
+- **Use "em / anh / chị"** (or the equivalent) consistently once gender is known. Define the fallback when unknown.
+
+## Related
+
+- [Creating Your First Voice Agent](./creating-your-first-voice-agent)
+- [Model Settings](./model-settings)
+- [Conversational Flow](./conversational-flow) — for node-based agents without a single Instructions field.
