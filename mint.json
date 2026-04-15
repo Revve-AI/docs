@@ -110,14 +110,6 @@
         "voice-agents/call-history-and-analytics",
         "voice-agents/agent-dashboard"
       ]
-    },
-    {
-      "group": "VIB Voice Agent",
-      "pages": [
-        "vib-voicebot/overview",
-        "vib-voicebot/config",
-        "vib-voicebot/test-scripts"
-      ]
     }
   ],
   "footerSocials": {
