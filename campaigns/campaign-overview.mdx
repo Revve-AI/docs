@@ -1,0 +1,65 @@
+---
+title: "What Is a Campaign?"
+description: "Learn how AI-powered campaigns automate multi-channel outbound engagement — voice calls, SMS, WhatsApp, Email, and Zalo."
+---
+
+# What Is a Campaign?
+
+![Campaigns list showing active and inactive campaigns](/screenshots/campaign-list.png)
+
+A **Campaign** is an AI-orchestrated outbound engagement sequence that contacts leads across one or more channels — voice calls, SMS, WhatsApp, Email, or Zalo — and adapts its approach based on each lead's responses.
+
+Instead of manually calling or messaging each lead, you define the **goal**, assign **AI agents**, set **timing rules** and **exit conditions**, and let the platform handle execution. An AI decision engine evaluates every interaction and determines the optimal next action for each lead.
+
+## How it works
+
+```
+┌──────────┐     ┌──────────────┐     ┌──────────────────────┐
+│  LEADS   │────▶│  AI ENGINE   │────▶│  MULTI-CHANNEL       │
+│  ENROLL  │     │  DECIDES     │     │  ENGAGEMENT          │
+└──────────┘     └──────────────┘     └──────────────────────┘
+                        │                       │
+                        ▼                       ▼
+                 ┌──────────────┐     ┌──────────────────────┐
+                 │   LEARNS &   │◀────│  TRACKS RESPONSES    │
+                 │   ADAPTS     │     │  & ENGAGEMENT        │
+                 └──────────────┘     └──────────────────────┘
+```
+
+1. **Leads are enrolled** — via CSV upload, API integration, or manual selection.
+2. **The AI engine decides** what to do next for each lead — which channel, when, and what to say.
+3. **AI agents execute** — voice agents make calls, text agents send messages.
+4. **Results are tracked** — call outcomes, message responses, sentiment, and engagement.
+5. **The engine adapts** — based on what happened, it schedules the next action or exits the lead from the campaign.
+
+## Supported channels
+
+| Channel | Agent type | Capabilities |
+|---------|-----------|-------------|
+| **Voice Calls** | Voice Agent | AI-powered conversations, qualification, objection handling, call recording and transcription |
+| **SMS** | Chat Agent | Personalized text messages with response handling |
+| **WhatsApp** | Chat Agent | Template-based messaging with rich media |
+| **Email** | Chat Agent | Personalized email sequences |
+| **Zalo** | Chat Agent | Native support for Vietnam's messaging platform |
+
+You can run single-channel campaigns (e.g., voice-only) or enable **Multi Channels** to let the AI engine coordinate across channels.
+
+## Key concepts
+
+| Concept | What it means |
+|---------|---------------|
+| **Campaign Agent** | The AI agent assigned to execute the campaign. You can assign multiple agents across different channels. |
+| **Engagement Flow** | A sequence of states that each lead progresses through (e.g., `first_call` → `follow_up` → `completed`). |
+| **Instructions** | Natural-language rules that tell the AI engine how to behave — call windows, frequency limits, scheduling logic. |
+| **Exit Conditions** | Rules that determine when a lead leaves the campaign — success (goal achieved) or failure (max attempts reached). |
+| **Prehook** | An API call made before each action to verify the lead is still eligible (e.g., check CRM status). |
+| **Enrollment** | The act of adding a lead to a campaign. Each enrollment tracks the lead's journey through the engagement flow. |
+
+## What's in the following pages
+
+| Page | What you'll learn |
+|------|-------------------|
+| **Creating a Campaign** | Step-by-step guide to setting up a campaign with agents, instructions, and exit conditions |
+| **Enrolling Contacts** | How to add leads via CSV, API, or manual selection |
+| **Campaign Advanced Settings** | Prehook verification, structured exit conditions, and API-driven eligibility checks |
+| **Monitoring Campaigns** | Dashboard metrics, enrollment detail, and call/message history |

@@ -110,6 +110,23 @@
         "voice-agents/call-history-and-analytics",
         "voice-agents/agent-dashboard"
       ]
+    },
+    {
+      "group": "Campaigns",
+      "pages": [
+        "campaigns/campaign-overview",
+        "campaigns/creating-a-campaign",
+        "campaigns/enrolling-contacts",
+        "campaigns/campaign-advanced-settings",
+        "campaigns/monitoring-campaigns"
+      ]
+    },
+    {
+      "group": "Automations",
+      "pages": [
+        "automations/automation-rules-overview",
+        "automations/creating-automation-rules"
+      ]
     }
   ],
   "footerSocials": {

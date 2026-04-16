@@ -1,0 +1,83 @@
+---
+title: "Campaign Advanced Settings"
+description: "Configure prehook verification, structured exit conditions, and API-driven eligibility checks for campaigns."
+---
+
+# Campaign Advanced Settings
+
+![Campaign Advanced tab showing prehook verification and exit conditions](/screenshots/campaign-advanced-full.png)
+
+The **Advanced** tab on a campaign configures two powerful features that run automatically during campaign execution:
+
+1. **Prehook Verification** — an API call before each action to check whether the contact is still eligible.
+2. **Structured Exit Conditions** — rules that evaluate API response data to determine if an enrollment should be completed.
+
+## Prehook Verification
+
+A prehook is an HTTP request made **before every action** (call, message) in the campaign. It calls your internal API to verify the contact's eligibility — for example, checking whether the lead's CRM status has changed since enrollment.
+
+### How to configure
+
+1. Open the campaign → **Advanced** tab → **Prehook** section.
+2. Toggle **Prehook Verification** on.
+3. Configure the API call:
+
+| Setting | Description |
+|---------|-------------|
+| **Method** | HTTP method: `GET`, `POST`, `PUT`, `PATCH`, or `DELETE`. |
+| **Endpoint** | The URL of your internal API. You can use `{{field}}` placeholders to insert contact data dynamically. |
+| **Headers** | Request headers (e.g., `Content-Type`, `Authorization`, cookies). Use `{{secrets.keyName}}` for sensitive values. |
+
+4. Click **Test API Call** to verify the endpoint returns the expected response.
+5. Click **Save**.
+
+### How it works at runtime
+
+- **Before** each action, the platform calls your API with the contact's data.
+- The **Payload Preview** on the right side shows exactly what data is sent: enrollment ID, status, engagement state, enrollment data, and all contact fields.
+- If the API call **succeeds** and the exit conditions (below) are not met → the action proceeds.
+- If the API call **fails** → the enrollment is **paused** until the issue is resolved.
+
+### Dynamic placeholders
+
+Use `{{contact.email}}`, `{{status}}`, or any contact field in your endpoint URL, headers, or body to insert values dynamically.
+
+## Structured Exit Conditions
+
+Exit conditions on the Advanced tab let you define rules based on the **prehook API response data**. They determine whether an enrollment should be automatically completed before the next action runs.
+
+### How to configure
+
+1. On the **Advanced** tab, scroll to **Exit Conditions**.
+2. Click **+ Add Group** to create a condition group.
+3. Within each group, click **+ Add Condition** to add a rule.
+4. Each condition has three parts:
+
+| Part | Description |
+|------|-------------|
+| **Field path** | A dot-notation path into the API response (e.g., `data.status`, `data.uiapi.query.Lead.status`). |
+| **Operator** | `Equals`, `Not Equals`, `Contains`, `Is Empty`, etc. |
+| **Value** | The value to compare against. |
+
+### Logic
+
+- **Within a group**: all conditions must match (**AND**).
+- **Between groups**: if **any** group matches, the enrollment is completed (**OR**).
+
+This lets you express complex rules like: "Exit if the lead status is no longer New AND no longer Following" (one group, two AND conditions).
+
+### Example
+
+| Group | Condition | Operator | Value |
+|-------|-----------|----------|-------|
+| Group 1 | `data.uiapi.query.Lead.status` | Not Equals | `New` |
+| Group 1 | `data.uiapi.query.Lead.status` | Not Equals | `Following` |
+
+This means: if the lead status in the CRM is anything other than "New" or "Following," exit the campaign — the lead has already been handled through another channel.
+
+## Tips
+
+- **Always test the prehook** before activating the campaign — use the **Test API Call** button.
+- **Use secrets for credentials** — store API keys and tokens in `{{secrets.keyName}}` rather than hardcoding them in headers.
+- **Keep exit conditions simple** — start with one group and add complexity only when needed.
+- **Monitor paused enrollments** — if your API goes down, enrollments will pause. Check the campaign dashboard regularly.

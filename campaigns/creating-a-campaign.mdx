@@ -1,0 +1,77 @@
+---
+title: "Creating a Campaign"
+description: "Step-by-step guide to creating and configuring an outbound campaign with AI agents, engagement flow, instructions, and exit conditions."
+---
+
+# Creating a Campaign
+
+This guide walks you through creating a new campaign from scratch — from naming it to defining exit conditions.
+
+## Step 1 — Open the Campaigns section
+
+In the left sidebar, click **Campaigns**. You will see a list of all existing campaigns with their status.
+
+## Step 2 — Create a new campaign
+
+Click **+ New Campaign** in the top-right corner. You are taken to the campaign's **Setup** page.
+
+![Campaign setup page with settings and instructions](/screenshots/campaign-setup.png)
+
+## Step 3 — Configure campaign settings (left column)
+
+| Field | What to do |
+|-------|------------|
+| **Campaign Name** | Give the campaign a descriptive name (e.g., "Card Dropoff Rescue - April"). Max 50 characters. |
+| **Description** | A short summary of the campaign's purpose. |
+| **Enable Multi Channels** | Turn on if you want the AI to coordinate across multiple channels (e.g., call first, then SMS follow-up). Leave off for single-channel campaigns. |
+| **Provider / Model** | The LLM that powers the AI decision engine. This engine decides what action to take next for each lead. Default: `OpenAI` / `o4-mini`. |
+| **Campaign Agents** | Click **+ Add Agent** to assign one or more AI agents. Pick the channel (Phone Call, SMS, WhatsApp, etc.) and the specific agent. You can optionally assign a **role** to each agent describing its function. |
+| **Engagement Flow** | Click **+ Add State** to define the stages each lead moves through. Give each state a name and description. Example: `not_responded_yet` → `contacted` → `completed`. |
+
+## Step 4 — Write the Instructions (right column)
+
+The **Instructions** field tells the AI decision engine how to run the campaign. Write it in natural language. A good instruction set covers:
+
+- **Campaign purpose** — what the campaign is trying to achieve.
+- **Call/message frequency** — how many attempts per day, maximum total attempts.
+- **Timing rules** — call window hours, timezone handling, scheduling logic.
+- **Immediate vs scheduled** — whether to act now or schedule for later based on current time.
+
+**Example structure:**
+
+```
+CAMPAIGN PURPOSE
+- Initiate outbound calls to assigned contacts
+- Allow the voice agent to interact naturally
+- Complete the call once the objective is reached
+
+CALL FREQUENCY & LIMITS
+- Call Window: 8:00 - 16:00 (customer's local time zone)
+- Daily Limit: Maximum 2 calls per day
+- Reschedule calls do NOT count toward the limit
+
+SCHEDULING
+- If current time is within window: call immediately
+- If current time is outside window: schedule for next day
+```
+
+## Step 5 — Define Exit Conditions
+
+The **Exit Conditions** field defines when a lead should leave the campaign. Write clear rules for both success and failure:
+
+- **Successful exit** — the goal was achieved (e.g., information collected, meeting booked, customer connected to agent).
+- **Unsuccessful exit** — max attempts reached, customer explicitly declined, or a time-based cutoff was hit.
+
+## Step 6 — (Optional) Chain to another campaign
+
+Use **Next Campaign** to automatically move leads into a follow-up campaign when they exit this one. Useful for multi-stage journeys (e.g., qualification → nurture → close).
+
+## Step 7 — Save
+
+Click **Save** at the top of the page. The campaign is saved but will not start until leads are enrolled.
+
+## What's next
+
+- **Enrolling Contacts** — add leads to the campaign.
+- **Campaign Advanced Settings** — configure prehook verification and structured exit conditions.
+- **Monitoring Campaigns** — track progress after launch.

@@ -1,0 +1,62 @@
+---
+title: "Monitoring Campaigns"
+description: "Track campaign performance with the dashboard, enrollment detail views, and call/message history."
+---
+
+# Monitoring Campaigns
+
+![Campaign dashboard showing enrollment metrics, status breakdown, and exit outcomes](/screenshots/campaign-dashboard.png)
+
+Once a campaign is running, you need to track its progress, catch issues early, and understand how leads are moving through the engagement flow.
+
+## Campaign Dashboard
+
+Open any campaign from the **Campaigns** list to see its dashboard. The dashboard shows:
+
+| Metric | What it tells you |
+|--------|-------------------|
+| **Total Enrollments** | How many leads have been added to this campaign. |
+| **Status Breakdown** | How many are active, paused, completed (success), or completed (failure). |
+| **Call / Message Volume** | Total outbound actions taken by the campaign's agents. |
+
+Use the date range filter in the top-right to scope metrics to a specific period.
+
+## Enrollment Detail
+
+Click any enrollment row to see the full journey of a single lead:
+
+- **Engagement Timeline** — a chronological log of every action taken: calls made, messages sent, AI decisions, state transitions, and exit.
+- **AI Decision Log** — the reasoning behind each action the AI engine took. Useful for debugging unexpected behavior.
+- **Contact Information** — the lead's profile and any fields collected during interactions.
+- **Sessions** — detailed records of each call or conversation, including transcripts, duration, sentiment, and outcome.
+
+## Call History
+
+For a broader view across all campaigns, use **History → Call History** in the sidebar. You can filter by:
+
+- Campaign name
+- Date range
+- Call status (processed, failed, in progress)
+- Direction (inbound, outbound)
+- Disconnection reason
+- Sentiment
+
+Click any row to open the full call detail with audio recording, transcript, tool calls, and analysis.
+
+## What to watch after launching a campaign
+
+| When | What to check | Why |
+|------|---------------|-----|
+| **First 15 minutes** | Dashboard — are enrollments progressing from Active? | Confirms the AI engine is scheduling actions. |
+| **First 30 minutes** | Call History — are calls connecting? | Catches telephony or number issues early. |
+| **First hour** | Enrollment detail — sample 3–5 completed enrollments | Confirms the full flow works: call → collect data → exit. |
+| **First day** | Dashboard — status breakdown | Check the success/failure ratio. High failure rate may indicate bad exit conditions or prehook misconfiguration. |
+| **Ongoing** | Paused enrollments | If many enrollments are paused, the prehook API may be failing. |
+
+## Exporting data
+
+Click **Export** on the campaign dashboard or on the Call History page to download data as CSV. Use this for:
+
+- Offline QA review
+- BI and reporting tools
+- Sharing results with stakeholders

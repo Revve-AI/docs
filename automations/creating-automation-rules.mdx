@@ -1,0 +1,122 @@
+---
+title: "Creating Automation Rules"
+description: "Step-by-step guide to building automation rules with event triggers, conditions, and actions."
+---
+
+# Creating Automation Rules
+
+This guide walks you through creating a new automation rule from scratch.
+
+## Step 1 — Open Automation Rules
+
+In the left sidebar, expand **Automations** and click **Automation Rules**. Click **+ Create Rule** in the top-right corner.
+
+## Step 2 — Name your rule
+
+Give the rule a clear, descriptive name that explains what it does. Good names describe both the trigger and the outcome:
+
+- "After Successful Card Call — Update CRM Status"
+- "On Negative Sentiment — Create Escalation Ticket"
+- "When Enrollment Completes — Notify Sales Team"
+
+![Rule builder showing trigger event, conditions, and actions sections](/screenshots/automation-rule-detail.png)
+
+## Step 3 — Select the event type
+
+Choose the event that should trigger this rule. See the full list in the **Automation Rules Overview**.
+
+The most common triggers:
+
+| Use case | Event type |
+|----------|------------|
+| Process call results and update CRM | `Call Analyzed` |
+| React to chat conversation outcomes | `Chat Analyzed` |
+| Track flow progression | `Node Moved` |
+| Post-campaign processing | `Enrollment Completed` |
+
+## Step 4 — Add conditions
+
+Conditions filter which events should activate this rule. Without conditions, the rule fires on **every** event of the selected type.
+
+Click **+ Add Condition** and fill in:
+
+1. **Field path** — a dot-notation path into the event payload (e.g., `payload.call.agent_name`, `payload.contact.email`, `payload.enrollment.campaign_id`).
+2. **Operator** — how to compare (e.g., `equals`, `contains`, `not_equals`).
+3. **Value** — the expected value.
+
+All conditions must match (AND logic). If you need OR logic, create separate rules.
+
+**Example:** Fire only when the call agent is "Card Dropoff Agent" and sentiment is "negative":
+
+| Condition | Operator | Value |
+|-----------|----------|-------|
+| `payload.call.agent_name` | equals | `Card Dropoff Agent` |
+| `payload.call.sentiment` | equals | `negative` |
+
+## Step 5 — Add actions
+
+Click **+ Add Action** and select the action type:
+
+### API Call (Webhook)
+
+Send data to an external system when the rule fires.
+
+| Field | Description |
+|-------|-------------|
+| **URL** | The endpoint to call. Use `{{payload.field}}` for dynamic values. |
+| **Method** | GET, POST, PUT, PATCH, or DELETE. |
+| **Headers** | Key-value pairs (e.g., `Authorization: Bearer {{secrets.token}}`). |
+| **Body** | JSON body for POST/PUT/PATCH requests. Use `{{payload.field}}` placeholders. |
+| **Timeout** | How long to wait for a response (optional). |
+
+### Update Contact Field
+
+Modify the contact record associated with the event.
+
+| Field | Description |
+|-------|-------------|
+| **Field name** | The contact field to update (e.g., `status`, `last_call_date`, custom fields). |
+| **Value** | The new value. Can use `{{payload.field}}` for dynamic values. |
+
+You can update multiple fields in a single action.
+
+### Send Email
+
+| Field | Description |
+|-------|-------------|
+| **To / CC / BCC** | Recipient addresses. Use `{{payload.contact.email}}` for the contact's email. |
+| **Subject** | Email subject line. Supports `{{payload.field}}` placeholders. |
+| **Body** | HTML email body. |
+
+### Create Ticket
+
+| Field | Description |
+|-------|-------------|
+| **Type** | Ticket type (support, escalation, etc.). |
+| **Title** | Ticket title. Supports placeholders. |
+| **Description** | Detailed description. |
+| **Custom fields** | Additional field values as needed. |
+
+## Step 6 — Activate and save
+
+Set the rule status to **Active** and click **Save**. The rule takes effect immediately for all new events of the selected type.
+
+## Testing your rule
+
+1. Create the rule in your UAT environment first.
+2. Trigger the event manually (e.g., make a test call, enroll a test contact).
+3. Check **Automations → Executions** to verify the rule fired and the actions completed successfully.
+4. Once validated, create the same rule in Production.
+
+## Managing rules
+
+- **Deactivate** a rule by setting its status to **Inactive** — it stays in the list but stops firing.
+- **Edit** a rule by clicking it in the list and modifying conditions or actions.
+- **Delete** a rule by clicking the delete action in the rule list.
+
+## Tips
+
+- **Start simple** — one condition, one action. Add complexity after verifying the basics work.
+- **Use execution history** — if a rule isn't firing, check Executions to see if it matched any events. If it's not there, your conditions may be too restrictive.
+- **Name rules clearly** — you may end up with dozens of rules. Good names save time when debugging.
+- **Use `{{secrets.key}}` for credentials** — never hardcode API keys or tokens in webhook URLs or headers.
