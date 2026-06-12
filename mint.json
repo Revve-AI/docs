@@ -29,10 +29,17 @@
       "group": "Getting Started",
       "pages": [
         "introduction",
+        "getting-started/quickstart",
         "getting-started/what-is-a-chat-agent",
         "getting-started/creating-your-first-chat-agent",
         "getting-started/understanding-engine-types",
         "getting-started/publishing-and-versioning"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/lead-qualification-agent"
       ]
     },
     {
@@ -100,32 +107,14 @@
       "pages": [
         "voice-agents/what-is-a-voice-agent",
         "voice-agents/creating-your-first-voice-agent",
-        "voice-agents/general-settings",
-        "voice-agents/model-settings",
-        "voice-agents/knowledge-base",
-        "voice-agents/advanced-settings",
-        "voice-agents/conversational-flow",
-        "voice-agents/preview-and-testing",
-        "voice-agents/publishing-and-versions",
-        "voice-agents/call-history-and-analytics",
-        "voice-agents/agent-dashboard"
+        "voice-agents/voice-agent-settings"
       ]
     },
     {
       "group": "Campaigns",
       "pages": [
         "campaigns/campaign-overview",
-        "campaigns/creating-a-campaign",
-        "campaigns/enrolling-contacts",
-        "campaigns/campaign-advanced-settings",
-        "campaigns/monitoring-campaigns"
-      ]
-    },
-    {
-      "group": "Automations",
-      "pages": [
-        "automations/automation-rules-overview",
-        "automations/creating-automation-rules"
+        "campaigns/creating-a-campaign"
       ]
     }
   ],

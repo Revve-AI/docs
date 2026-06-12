@@ -1,6 +1,69 @@
 ---
+
 title: "What Is a Voice Agent?"
-sectionId: "voice-agents"
-subtitle: "Learn what Voice Agents are, what channels they support, and how they handle real phone calls for your business."
+description: "Learn what Voice Agents are, how they handle real phone calls, and when to use one instead of (or alongside) a Chat Agent."
 ---
 
+A **Voice Agent** is an AI agent that talks to your customers on real phone calls — answering inbound calls on your phone number, or making outbound calls for follow-ups, qualification, reminders, and campaigns. It speaks and listens in natural conversation: callers can interrupt it, pause to think, and ask anything, just like talking to a person.
+
+![Voice Agents page showing all your voice agents](/screenshots/voice-agents-list.png)
+
+## How a call works
+
+On every conversational turn, the Voice Agent runs a three-stage pipeline in real time:
+
+1. **Speech Recognition (STT)** transcribes what the caller says as they speak.
+2. **The AI model (LLM)** decides what to say next, following your instructions, your knowledge base, and the conversation so far. It can also act — transfer the call, look up information, or trigger a tool.
+3. **Voice Synthesis (TTS)** speaks the response in the voice you selected.
+
+You choose the provider, model, and language for each stage in [Model Settings](/voice-agents/voice-agent-settings), and you tune the conversational rhythm — when the agent considers the caller "done talking", how it handles interruptions, what it does during silence — in Advanced Settings. The defaults work well out of the box; tuning matters most for noisy environments and specific languages.
+
+## What Voice Agents can do
+
+| Capability | What it means in practice |
+|------------|---------------------------|
+| **Inbound calls** | Assign a phone number to the agent and it answers every call — a receptionist that never misses one. |
+| **Outbound calls** | Trigger calls from [Campaigns](/campaigns/campaign-overview), the API, or manually — follow-ups, reminders, qualification calls. |
+| **Call transfer** | Hand the call to a human in one of two modes: bridge transfer (the AI stays on the line and keeps logging) or cold transfer (full handoff). |
+| **Voicemail handling** | Detect answering machines and either hang up or leave a templated message. |
+| **Knowledge base answers** | Attach the same knowledge bases your Chat Agents use, so the agent answers from your content. |
+| **Dynamic variables** | Personalize calls with contact fields like `{{fullName}}` or `{{companyName}}` injected at call time. |
+| **Recording, transcripts & analysis** | Every call is recorded and transcribed; an AI summary, sentiment, and extracted data fields appear in Call History. |
+| **Tools & webhooks** | Call external APIs mid-conversation, send SMS, and notify your systems when calls end. |
+
+## Two engine types
+
+Like Chat Agents, every Voice Agent uses one of two engines, chosen at creation:
+
+- **Single Prompt** — one system prompt drives the whole call. Fastest to set up, most natural-feeling; right for receptionists, support lines, and open-ended conversations.
+- **Conversational Flow** — a visual graph of nodes with explicit transitions. Right when the call must follow a strict sequence: verify identity → present offer → capture decision → wrap up.
+
+If you're unsure, start with Single Prompt. The decision logic is the same as for chat — see [Understanding Engine Types](/getting-started/understanding-engine-types).
+
+## Where everything lives
+
+Once inside a Voice Agent, you'll work across these tabs:
+
+| Tab | Purpose |
+|-----|---------|
+| **Dashboard** | Call volume, outcomes, and performance for this agent. |
+| **General** | Name, description, region, and the system prompt. |
+| **Model Settings** | Speech Recognition, AI Model, and Voice Synthesis configuration. |
+| **Knowledge Base** | Attach content sources the agent answers from. |
+| **Advanced Settings** | Call behavior, conversation rhythm, voicemail, phone number, call transfer, tools, webhooks, and analysis. |
+| **Preview** | Talk to the agent from your browser, or generate a test phone call link. |
+| **Versions** | Draft, publish, and roll back — changes never go live until you publish. |
+
+## Voice Agent or Chat Agent?
+
+They're complementary, and most teams run both:
+
+- **Chat Agent** — visitors come to you (website, WhatsApp, email). Best for support volume and capturing intent at the moment of interest.
+- **Voice Agent** — you reach out, or callers dial in. Best for leads that need a conversation, time-sensitive follow-up (speed-to-lead), and audiences that simply prefer phone.
+
+A common pattern: a Chat Agent qualifies a website visitor and captures their number, then a [Campaign](/campaigns/campaign-overview) has a Voice Agent call them within minutes.
+
+## What's Next
+
+- [Creating Your First Voice Agent](/voice-agents/creating-your-first-voice-agent) — from template to a live test call in a few minutes.
+- [Voice Agent Settings](/voice-agents/voice-agent-settings) — every setting, its default, and when to change it.

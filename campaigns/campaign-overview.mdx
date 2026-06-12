@@ -1,5 +1,66 @@
 ---
+
 title: "What Is a Campaign?"
-description: "Learn how AI-powered campaigns automate multi-channel outbound engagement — voice calls, SMS, WhatsApp, Email, and Zalo."
+description: "Campaigns put an AI in charge of outbound engagement — it decides what to send each contact, when, and on which channel, until they reach your goal."
 ---
 
+A **Campaign** automates outbound engagement with a list of contacts. Unlike a traditional drip sequence — where every contact gets email #1 on day 1 and email #2 on day 3 — a Revve campaign is driven by an AI that looks at each contact individually and decides the next best action: call them, text them, wait until tomorrow, or stop because the goal is reached.
+
+You define the campaign in plain language: what the goal is, what the rules are, and when a contact should exit. The AI handles the rest, acting through the agents you attach.
+
+![Campaign dashboard showing enrollment metrics and breakdowns](/screenshots/campaign-dashboard.png)
+
+## How it works
+
+A campaign has five building blocks, all configured on one Setup page:
+
+1. **Campaign Agents** — the [Voice Agents](/voice-agents/what-is-a-voice-agent) and Chat Agents that do the talking. A voice agent gives the campaign phone calls; chat agents give it their channels (SMS, WhatsApp, website, and more). Each agent gets a **role** describing its job within the campaign.
+2. **Instructions** — plain-language rules for the AI making decisions: *"Call inbound leads up to 5 times. If the lead does not pick up, try again tomorrow. Calls must only be scheduled between 8:00 and 20:00 in the customer's timezone."*
+3. **Engagement Flow** — the states a contact moves through (e.g. `not_responded_yet` → `qualified` → `booked_meeting`). The AI tracks each contact's state and tailors actions to it.
+4. **Exit Conditions** — when a contact is done, also in plain language: *"A lead exits the campaign when we qualified them and booked an appointment with the sales team. They also exit after we fail to reach them after 5 attempts."*
+5. **Next Campaign** — optionally, where contacts go after exiting (e.g. a nurture campaign for unreached leads).
+
+Then you **enroll contacts** — via CSV upload, one at a time, or the API — and the campaign starts working through them.
+
+## What happens to an enrolled contact
+
+Each enrolled contact is tracked with two dimensions you'll see throughout the dashboard:
+
+**Status** — where the enrollment is in its lifecycle:
+
+| Status | Meaning |
+|--------|---------|
+| **Active** | The AI is working this contact — calls scheduled, messages queued. |
+| **Paused** | Needs human review or action before continuing. |
+| **Completed** | Reached an exit condition. The **exit outcome** records whether it was a success (e.g. meeting booked) or not (e.g. max attempts reached). |
+| **Terminated** | Stopped by you or the system before completion. |
+
+**Engagement State** — where the contact is in *your* flow (`not_responded_yet`, `qualified`, …), as defined in the Engagement Flow.
+
+Click any enrollment to open its **engagement timeline**: every call made, message sent, response received, and decision the AI took, in order. When a contact replies, the attached agent handles the response with full context — and the conversation appears in your [Inbox](/inbox/inbox-overview) like any other.
+
+## Versioning: edit safely while the campaign runs
+
+Campaigns use the same draft/publish model as agents, which matters because campaigns run for days or weeks:
+
+- Edits go into a **working draft** — the live campaign keeps running on the published version while you edit.
+- Publishing creates an immutable **version**. Contacts already in flight stay on the version they enrolled with unless you explicitly choose **upgrade in-flight enrollments** at publish time.
+- Team members without publish permission **submit drafts for review**; a reviewer approves or declines.
+
+See the publish workflow in detail in [Creating a Campaign](/campaigns/creating-a-campaign).
+
+## When to use a campaign
+
+| Use case | Setup sketch |
+|----------|--------------|
+| **Speed-to-lead follow-up** | Enroll new inbound leads via API; voice agent calls within minutes; exit when qualified or after 5 attempts. |
+| **Appointment reminders** | Enroll booked contacts from CSV; SMS + voice reminder before the appointment; exit when confirmed. |
+| **Reactivation** | Enroll dormant customers; multi-channel outreach with a win-back offer; exit on response or after 3 touches. |
+| **Collections outreach** | Voice agent with a compliant script; strict calling-hours instructions; exit on payment arrangement. |
+
+The common thread: a defined list, a measurable goal per contact, and outreach that benefits from judgment (when to retry, which channel, when to give up) rather than a fixed schedule.
+
+## What's Next
+
+- [Creating a Campaign](/campaigns/creating-a-campaign) — the full walkthrough: setup, publishing, enrolling, and monitoring.
+- [Creating Your First Voice Agent](/voice-agents/creating-your-first-voice-agent) — build the agent your campaign will call with.
