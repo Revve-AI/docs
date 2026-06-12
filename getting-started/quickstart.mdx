@@ -1,0 +1,107 @@
+---
+
+title: "Quickstart: Live Agent in 10 Minutes"
+description: "Go from zero to a working AI agent answering real visitors on your website — create, test, publish, and install in about 10 minutes."
+---
+
+By the end of this guide you will have an AI Chat Agent **live on your website**, trained on your own content, answering a real visitor question that you can watch arrive in your Inbox.
+
+You don't need to write any code beyond pasting one snippet, and you don't need to prepare any content — Revve builds the first version of the agent from your website automatically.
+
+<Info>
+**What you need:** a Revve account and the URL of your website. That's it.
+</Info>
+
+## Step 1: Create an agent from your website
+
+From the left sidebar, go to **Agents > Chat Agents** and click **+ New Chat Agent** in the top-right corner. Choose **Auto-Create from Website**, enter your website URL, and click **Create Chatbot**.
+
+![Auto-Create from Website dialog — enter your URL and Revve generates an agent automatically](/screenshots/new-agent-dialog.png)
+
+Revve now does the heavy lifting for you:
+
+1. Crawls your website and extracts its content.
+2. Writes the agent's instructions based on what your business does.
+3. Builds a knowledge base from your web pages, so answers come from *your* content.
+4. Generates conversation starters relevant to your visitors.
+
+This takes a minute or two. When it finishes, you land on your new agent's page.
+
+## Step 2: Talk to your agent
+
+Open the **Preview** tab. You get a live, fully working copy of your chat widget — same knowledge, same behavior as the real thing.
+
+![Preview tab showing the live chat widget with generated conversation starters](/screenshots/chatbot-preview-website.png)
+
+Ask it the questions your customers actually ask:
+
+- A question your website answers — it should respond from your content.
+- A question your website *doesn't* answer — it should decline gracefully rather than invent something.
+- Click one of the generated conversation starters and see where it leads.
+
+<Tip>
+If the Preview panel shows feature cards like **Schedule Meeting** or **Contact Collection** marked "Required", those features were enabled but still need a connected app (for example, a calendar). You can ignore them for now or click **Configure** — the agent works without them.
+</Tip>
+
+## Step 3: Adjust the basics (optional)
+
+If an answer felt off, click **Start Editing**, open the **Basic** tab, and tune two fields:
+
+- **Role** — who the agent is ("You're the assistant for Acme, a B2B invoicing platform…").
+- **Objectives** — what it should do and what it must never do ("Answer product questions. Never quote custom pricing — offer a demo instead.").
+
+Re-test in **Preview** after each change. Small, specific instructions beat long generic ones.
+
+## Step 4: Publish
+
+Changes live in a draft until you publish. Click **Publish** in the top bar (or open the **Versions** tab), add an optional note, and confirm.
+
+Your agent is now live on Revve's side — the last step is putting it on your site.
+
+## Step 5: Install the widget on your website
+
+Open the **Installation** tab and copy the embed snippet (the Preview tab's **Install to my website** button takes you there too). Paste it into your site's HTML just before the closing `</body>` tag, then publish your site:
+
+```html
+<script>
+(function() {
+    window.RevveConfig = {
+      chatbotId: "your-chatbot-id-here" // pre-filled with your agent's ID
+    };
+
+    var embedScript = document.createElement('script');
+    embedScript.src = "https://d26hsuee5yd7xd.cloudfront.net/assets/embed.min.js";
+    embedScript.setAttribute('data-no-defer', '');
+    document.head.appendChild(embedScript);
+})();
+</script>
+```
+
+Using WordPress? There's a dedicated plugin — see [Website Installation](/channel-setup/website-installation) for that path and for advanced options like hiding the launcher.
+
+## Step 6: Watch the first conversation arrive
+
+Visit your website, open the chat bubble, and send a message as a visitor would. Then go to **Inbox** in the Revve sidebar:
+
+![Inbox showing live conversations with the AI agent](/screenshots/inbox-overview.png)
+
+Your conversation is there in real time — every visitor chat will appear here from now on. If the AI ever needs help, you (or your team) can [take over the conversation](/inbox/human-takeover) directly from the Inbox.
+
+**That's it — you're live.** 🎉
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Add more knowledge" icon="book" href="/knowledge-base/knowledge-base-overview">
+    Upload documents, crawl more pages, and add FAQs to improve answer quality.
+  </Card>
+  <Card title="Style the widget" icon="palette" href="/channel-setup/website-appearance-and-styling">
+    Match the widget's colors, position, and avatar to your brand.
+  </Card>
+  <Card title="Build a lead qualification agent" icon="user-check" href="/guides/lead-qualification-agent">
+    A step-by-step recipe: qualify visitors, capture contact details, and book meetings automatically.
+  </Card>
+  <Card title="Create a voice agent" icon="phone" href="/voice-agents/creating-your-first-voice-agent">
+    Put an AI agent on a real phone number for inbound and outbound calls.
+  </Card>
+</CardGroup>
