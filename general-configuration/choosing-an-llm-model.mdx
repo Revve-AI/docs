@@ -1,53 +1,54 @@
 ---
 
 title: "Choosing an LLM Model"
-description: "Select the AI provider and model that powers your Chat Agent's responses."
+description: "Select the model that powers your Chat Agent's responses — and find the other places in Revve where a model choice matters."
 ---
 
-Your Chat Agent's intelligence comes from a large language model (LLM). On the **Basic** tab, you can select which AI provider and model your agent uses. The model you choose affects response quality, speed, and capabilities.
+Your Chat Agent's intelligence comes from a large language model (LLM). On the **Basic** tab, you choose which model your agent uses; the choice affects response quality, speed, and how faithfully the agent follows your instructions.
 
 ![AI Provider and Model dropdowns on the Basic settings tab](/screenshots/chatbot-basic-settings.png)
 
-## Provider and Model Fields
+## Provider and Model fields
 
 | Field | Description |
 |-------|-------------|
-| **AI Provider** | The company providing the language model. Currently set to **OpenAI** for all agents. |
-| **Model** | The specific model version used to generate responses. Different models offer different tradeoffs in quality, speed, and cost. |
+| **AI Provider** | Fixed to **OpenAI** for the chat conversational model — the dropdown is shown but not changeable. (Other model pickers in Revve are multi-provider; see [below](#model-choice-elsewhere-in-revve).) |
+| **Model** | The specific model that generates responses. Different models trade off quality, speed, and cost. |
 
-## Available Models
+The model list currently offers **GPT-4o**, **GPT-4.1**, and **GPT-5**; new agents start on GPT-4.1.
 
-| Model | Description |
-|-------|-------------|
-| **GPT-4o** | A multimodal model optimized for speed and efficiency. Good balance of quality and response time. |
-| **GPT-4.1** | An improved version of GPT-4 with better instruction following, longer context handling, and more accurate responses. Recommended for most use cases. |
-| **GPT-5** | The latest and most capable model. Best for complex conversations that require advanced reasoning. |
-
-## How to Select a Model
+## How to select a model
 
 1. Navigate to **Agents > Chat Agents** in the sidebar and select your agent.
 2. Click the **Basic** tab.
 3. Click **Start Editing** if not already in edit mode.
-4. Locate the **AI Provider** and **Model** dropdowns in the left column.
-5. Click the **Model** dropdown and select your preferred model.
-6. Click **Save Changes**.
+4. Click the **Model** dropdown and select your preferred model.
+5. Click **Save Changes**.
 
-## How the Model Affects Your Agent
+## How to choose
 
-The model determines how well your agent:
+- **Start with GPT-4.1** for most agents. It's the default for a reason: the best balance of quality, speed, and cost for typical customer-facing conversations.
+- **Move up (GPT-5) when the agent mishandles complexity** — technical support, multi-step policies, conversations that need real reasoning. Expect slightly slower responses.
+- **Move down (GPT-4o) when speed is the problem** and the conversations are straightforward, FAQ-style exchanges.
+- **Test before publishing.** After changing the model, re-test your key scenarios in the **Preview** tab — different models interpret the same instructions slightly differently, so a model change is a behavior change.
 
-- **Follows instructions** -- More advanced models adhere more closely to the objectives and role you define.
-- **Handles complex questions** -- Newer models are better at multi-step reasoning, understanding nuance, and providing accurate answers.
-- **Responds quickly** -- Lighter models like GPT-4o tend to respond faster, while more powerful models may take slightly longer.
+## Model choice elsewhere in Revve
 
-## Tips
+The chat conversational model above is the one fixed-provider picker. The other model selectors draw from a central catalog of providers and models that Revve administrators maintain — the dropdowns list whatever is currently enabled, so exact options evolve over time. Today the catalog spans multiple providers, including OpenAI, Anthropic, and Google Gemini.
 
-- **Start with GPT-4.1** for most agents. It offers the best balance of quality, speed, and cost for typical customer-facing interactions.
-- **Use GPT-5 for complex use cases** such as technical support, multi-step workflows, or conversations that require deep reasoning.
-- **Use GPT-4o if speed is critical** and the conversations are relatively straightforward (e.g., FAQ-style responses).
-- **Test before publishing.** After changing the model, use the Preview tab to test how your agent responds. Different models may interpret the same instructions slightly differently.
+| Where | What it controls |
+|-------|------------------|
+| **Voice Agents → Model Settings → AI Model** | The model powering the voice conversation, with **Provider** and **Model** dropdowns plus **Temperature** (slider 0–2, default 0.7) and **Max Tokens** (default 4096). See [Voice Agent Settings](/voice-agents/voice-agent-settings). |
+| **Campaigns → Setup → Provider / Model** | The campaign's decision model — which action to take next for each enrolled contact. See [Creating a Campaign](/campaigns/creating-a-campaign). |
+| **Analysis Model** (chat and voice Advanced Settings) | The model that produces the post-conversation summary and extracts your configured analysis fields — separate from the conversational model, so you can analyze with a different model than you converse with. |
 
-## Related
+Where a selected model supports it, a **Reasoning Effort** selector appears next to the model dropdown with **Low / Medium / High** options (default **Medium**). Higher effort means more thinking before answering — better decisions on complex judgments, at the cost of latency. It's a good fit for campaign decision models, where decisions are infrequent but consequential.
 
-- [Configuring Agent Identity](/general-configuration/configuring-agent-identity) -- set the name, description, and role that guide the model.
-- [Language and Tone Settings](/general-configuration/language-and-tone-settings) -- configure language and communication style that work with the model.
+<Note>
+Teams with their own Azure OpenAI capacity can route OpenAI-model traffic to their own Azure deployments via custom endpoints and time-window routing rules, configured in team settings. This changes where requests run, not which models appear in the pickers — ask your Revve contact if you need this.
+</Note>
+
+## What's Next
+
+- [Voice Agent Settings](/voice-agents/voice-agent-settings) — the AI Model section covers the voice-side model, temperature, and max tokens with tuning guidance.
+- [Configuring Agent Identity](/general-configuration/configuring-agent-identity) — the name, description, and role that guide whichever model you pick.
