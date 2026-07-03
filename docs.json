@@ -98,14 +98,16 @@
           "voice-agents/voice-agent-evaluation",
           "voice-agents/voice-agent-tools",
           "voice-agents/call-transfer",
-          "voice-agents/do-not-call-list"
+          "voice-agents/do-not-call-list",
+          "voice-agents/voice-agent-versioning"
         ]
       },
       {
         "group": "Campaigns",
         "pages": [
           "campaigns/campaign-overview",
-          "campaigns/creating-a-campaign"
+          "campaigns/creating-a-campaign",
+          "campaigns/campaign-versioning"
         ]
       },
       {
