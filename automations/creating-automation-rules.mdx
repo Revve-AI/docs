@@ -15,7 +15,7 @@ Go to **Automations → Rules** in the sidebar and click **Create Rule** (top-ri
 
 ![Rule builder with the When section, Then section, and the Event Preview panel on the right](/screenshots/automation-rule-detail.png)
 
-Rename it right away: click the pencil next to the name in the top bar, type a name that says what the rule does (Enter saves, Esc cancels; 100 characters max).
+Rename it right away: click the pencil next to the name in the top bar, type a name that says what the rule does (Enter saves, Esc cancels).
 
 <Tip>
 Everything you do in the builder saves immediately — there is no separate save or publish step. That's safe because the rule stays **Inactive** (and fires on nothing) until you click **Activate** at the end.
@@ -45,7 +45,7 @@ All conditions must match for the rule to fire — they're combined with AND, an
 | **Greater Than** / **Greater Than or Equal** | is numerically greater than / at least the value |
 | **Less Than** / **Less Than or Equal** | is numerically less than / at most the value |
 | **Exists** / **Does Not Exist** | is present / absent in the payload (value input is disabled — "Not required") |
-| **In** / **Not In** | matches / doesn't match any item in a comma-separated list |
+| **In (comma-separated)** / **Not In (comma-separated)** | matches / doesn't match any item in a comma-separated list |
 
 Deleting a condition asks for confirmation ("This action cannot be undone.").
 
@@ -119,7 +119,7 @@ Templates let conditions stay simple while actions carry the event's data. Every
 - **Insert event data** — `{{payload.path.to.field}}`, dot notation all the way down.
 - **Fallbacks** — `{{payload.field || fallback}}` uses the fallback when the field is missing.
 - **Conditionals** — wrap content in `{{#if payload.field}}...{{/if}}`. Negate with `{{#if !payload.field}}`, compare with `{{#if payload.field = 'value'}}` or `!=`. Blocks nest.
-- **Team secrets** — `{{secrets.NAME}}` for API keys and tokens. Secrets autocomplete and are redacted from execution logs.
+- **Team secrets** — `{{secrets.NAME}}` for API keys and tokens, resolved in **API Call** actions only (URL, headers, query parameters, body). Secrets autocomplete in every dialog, but other action types don't substitute them — in an email body, `{{secrets.NAME}}` renders empty. Secret values are redacted from execution logs.
 
 ### Chaining actions
 

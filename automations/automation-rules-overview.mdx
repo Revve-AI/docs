@@ -56,7 +56,7 @@ You may also see **managed** actions on some rules — Salesforce/HubSpot sync a
 Because actions run sequentially and can reference earlier results, you can chain them — for example, an **API Call** that looks up an account in your backend, followed by an **Update Contact Field** that writes the response onto the contact. Configuration details for each action are in [Creating Automation Rules](/automations/creating-automation-rules).
 
 <Tip>
-Templates and secrets: action templates can use team secrets (for API keys and auth headers), and those values are redacted from execution logs.
+Templates and secrets: **API Call** actions can use team secrets (for API keys and auth headers), and those values are redacted from execution logs.
 </Tip>
 
 ## Monitoring executions
@@ -71,9 +71,9 @@ Each execution gets one of three statuses:
 |--------|---------|
 | **Success** | At least one action succeeded. |
 | **Failed** | The rule ran but no action succeeded, or the run errored. |
-| **Skipped** | The event arrived but no active rule matched. |
+| **Skipped** | The event arrived but no active rule was listening for that event type. |
 
-The table shows the rule, event type, status, an action success count (e.g. "2/3 success"), duration in milliseconds, and when it executed. Filter by event-data search, date range (defaults to the last month), event type, rule, or status.
+The table shows the rule, event type, status, an action success count (e.g. "2/3 success"), duration in milliseconds, and when it executed. Filter by event-data search, date range (defaults to the last month), event type (currently Call Analyzed and Call Evaluated), rule, or status. A rule whose conditions didn't match logs no row at all — only rules that actually ran appear here.
 
 Click a row to open the **Execution Detail** panel: per-action result cards with request/response details (secrets redacted), error messages, and a Retry Log for retried API calls — plus an **Event Data** tab with the raw payload, which doubles as a reference for the fields your conditions and templates can use.
 
@@ -86,7 +86,6 @@ There is no "retry execution" button. If a run failed and you want it to happen 
 - **AND-only conditions.** To express "A or B", create two rules on the same event — every matching active rule runs.
 - **One event, one run.** No automatic re-runs; the only retries are the opt-in HTTP retries on API Call actions.
 - **Rules deactivate, they don't delete.** There is no UI to delete a rule — toggle it inactive instead.
-- **Rule names max 100 characters.**
 - **API Call URLs must match your team's domain allowlist.**
 - **Access is admin-only by default** via the [Manage Automations permission](/governance-access/roles-and-permissions).
 
