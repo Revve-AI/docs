@@ -66,8 +66,9 @@ Revve('boot', {
 
 Behavior to know:
 
-- Calling `boot` again while already booted throws an error — unless you pass `forceNewThread: true`, which starts a fresh conversation thread (useful for a "new ticket" button).
-- If the new `userId` differs from the currently booted one, the SDK shuts down first automatically, so switching users in place is safe.
+- Calling `boot` again while already booted logs a console error and the call is ignored — unless you pass `forceNewThread: true`, which starts a fresh conversation thread (useful for a "new ticket" button). To switch users within the same page session, call `shutdown` first (or use `forceNewThread: true`).
+- If a persisted identity from a previous session differs from the new `userId`, the SDK shuts down first automatically before booting the new user.
+- `contact` requires `name` plus at least one of `email` or `phoneNumber`, and both are format-validated — an invalid `contact` aborts the entire boot with only a console error, so check the console if identification seems to have no effect.
 - `contact` is display-level data for the dashboard contact record — identification, not authentication.
 - `token` is a server-signed JWT and the recommended way to identify users securely. Verification happens server-side; when both contact info and a token are provided, the token takes precedence. See [Visitor identity](#visitor-identity) below.
 
@@ -90,7 +91,7 @@ Revve('update', {
 });
 ```
 
-Merges updated attributes into the current identity after boot. `update` is throttled to **20 calls per 30 minutes**; calls over the limit are silently dropped, so send meaningful changes, not every keystroke.
+Merges updated attributes into the current identity after boot. `update` is throttled to **20 calls per 30 minutes**; calls over the limit are dropped with a console warning, so send meaningful changes, not every keystroke.
 
 ### getAnonymousId / getVisitorId
 
@@ -128,7 +129,7 @@ Revve('showBubble', {
   hideAfter: 15000   // ms until auto-hide; omit to keep it until dismissed
 });
 
-Revve('hideBubble', { redisplayAfter: 60000 }); // hide now, re-show in 60s
+Revve('hideBubble', { redisplayAfter: 60000 }); // hide now, re-show after ~60s (while the window is closed)
 Revve('hideBubble');                            // hide until the next showBubble
 ```
 
