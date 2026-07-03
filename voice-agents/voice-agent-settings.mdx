@@ -69,13 +69,15 @@ This section controls the *feel* of the conversation — it's where voice agents
 | Setting | Default | Guidance |
 |---------|---------|----------|
 | **AI Speaks First** + **Initial Greeting** | Off | Turn on for outbound calls (the agent called, it should explain why). For inbound, answering with a greeting is also the norm — most agents want this on with a short, branded greeting. |
+| **Allow caller to interrupt the greeting** | Off | Sub-toggle under **AI Speaks First**. Off: the greeting always plays in full. On: callers can barge in and skip ahead. Turn on for repeat-contact outbound — callers who already know why you're calling shouldn't have to sit through the pitch. Keep off when the greeting carries required disclosures. |
 
 **Turn Handling** — how the agent decides the caller finished speaking, and how fast it replies:
 
 | Setting | Default | When to change |
 |---------|---------|----------------|
-| **Turn detection model** | Voice Activity Detection (VAD) | VAD detects silence — fast, but can cut in during natural pauses. Switch to a **transformer** model (English or multilingual) when callers are being interrupted mid-thought; it understands sentence completeness, not just silence. |
-| **Min silence duration** | 0.55 s | The classic trade-off knob. Callers getting cut off mid-pause → raise toward 0.8–1.0 s. Agent feels sluggish → lower toward 0.4 s. Move in 0.1 s steps and re-test. |
+| **Turn detection model** | Voice Activity Detection (VAD) | VAD detects silence — fast, but can cut in during natural pauses. Switch to a **Smart Turn Detection** model when callers are being interrupted mid-thought; it understands sentence completeness, not just silence. Three variants: **English**, **Multilingual**, and **Vietnamese** — the Vietnamese model is tuned for Vietnamese speech patterns and is the best pick for Vietnamese conversations. |
+| **Smart turn threshold** | 0.7 (0–1) | Shown when a Smart Turn model is selected; stored per speech language. How confident the model must be that the caller finished their turn before the agent replies. Agent still cutting in → raise it (waits for clearer end-of-turn cues, at the cost of slower responses). Agent feels slow to answer → lower it, accepting it may occasionally cut in. Move in 0.05 steps. |
+| **Min silence duration** | 0.3 s | The classic trade-off knob. Callers getting cut off mid-pause → raise toward 0.8–1.0 s. Agent feels sluggish → lower slightly. Move in 0.1 s steps and re-test. (Agents created earlier keep their previously saved value.) |
 | **Min speech duration** | 0.05 s | Leave it — filters out clicks and pops from counting as speech. |
 | **Activation threshold** | 0.5 (0–1) | Raise on noisy lines (background TV, street noise triggers the agent to stop talking); lower for quiet, soft-spoken callers it fails to hear. |
 | **Prefix padding** | 0.5 s | Leave it — audio buffered before detected speech so first syllables aren't clipped. |
@@ -87,6 +89,7 @@ This section controls the *feel* of the conversation — it's where voice agents
 |---------|---------|----------------|
 | **Interruption mode** | VAD | VAD treats *any* voice longer than the minimum duration as an interruption. Switch to **Adaptive** when backchannels — callers saying "uh-huh", "right" — keep stopping the agent mid-sentence. Adaptive ignores them. |
 | **Min duration** | — | Raise it if coughs and short noises interrupt the agent. |
+| **Backchannel words** | Empty | VAD mode only. Words the agent ignores as interruptions — filler acknowledgments like the Vietnamese "vâng", "dạ", "ạ". Type a word and press Enter to add it. Use this when specific short acknowledgments keep stopping the agent but you want to stay in VAD mode; switching to **Adaptive** is the broader alternative. Empty list = suppression disabled. |
 
 **Silence Handling**
 
@@ -102,29 +105,23 @@ This section controls the *feel* of the conversation — it's where voice agents
 | **Noise Cancellation** | Off | Turn on when callers are in noisy environments (drivers, retail floors) and transcription quality suffers. |
 | **Ambient Sound** | None | Adds background ambience (office, city) to the agent's side. A subtle office ambience can make an agent feel less sterile; skip it unless you've A/B-listened. |
 
-### Voicemail
+### Answer Machine Detection
 
-Off by default — when voicemail is detected the call simply hangs up. Enable **voicemail detection** to leave a message instead:
+Native detection that classifies who answered — a human, voicemail, or an IVR phone menu — before the agent starts speaking. Off by default; existing agents keep the legacy LLM-based voicemail detection until you switch. When enabled, the agent can leave a voicemail message instead of hanging up and can navigate IVR menus to reach a person. For outbound campaigns it's usually worth turning on — a personalized message measurably improves callback rates versus silent hangups.
 
-![Voicemail settings](/screenshots/voice-voicemail.png)
-
-- **Voicemail Message** supports `{{contact}}` placeholders — for example: "Hi `{{firstName}}`, this is Acme calling about your application…"
-- **Detection Timeout** (default 5000 ms): how long to listen before deciding it's a machine. Leave it unless detection misfires.
-
-For outbound campaigns, enabling voicemail is usually worth it — a personalized message measurably improves callback rates versus silent hangups.
+See [Answer Machine Detection](/voice-agents/answer-machine-detection) for setup, the voicemail message, and IVR navigation.
 
 ### Call Transfer
 
 Lets the AI hand the call to a human, with a spoken handover message:
 
-![Call transfer settings](/screenshots/voice-call-transfer.png)
-
 | Setting | Options | How to choose |
 |---------|---------|---------------|
-| **Transfer Type** | **Bridge Transfer** / **Cold Transfer** | Bridge: the human joins the call, the AI goes silent but keeps logging — choose this when you want the full conversation recorded and analyzed. Cold: the call is handed off entirely, no further logging — choose this for compliance contexts where the AI must fully exit. |
-| **Destination Phone Number** | E.164 format (`+84775352590`) | The human or queue that receives transfers. |
-| **Outbound Phone Number** | One of your team's numbers | Bridge transfers only — the number used to dial the human in. |
+| **Transfer To** | **Revve User (in-app agent)** / **SIP Address** / **Phone Number** | Revve User routes the call to an available human agent in the Revve app — no external number needed. SIP Address targets a SIP endpoint. Phone Number dials an external number in E.164 format (`+84775352590`). |
+| **Transfer Type** | **Bridge Transfer** (default) / **Cold Transfer** | Bridge: the human joins the call, the AI goes silent but keeps logging — choose this when you want the full conversation recorded and analyzed. Cold: the call is handed off entirely, no further logging — choose this for compliance contexts where the AI must fully exit. |
 | **Transfer Message** | Free text | What the AI says before transferring ("Let me connect you with a specialist — one moment."). Always set one; silent transfers feel like being hung up on. |
+
+See [Call Transfer](/voice-agents/call-transfer) for the full warm-transfer workflow, including how in-app agents receive and accept transfers.
 
 ### Everything else
 
@@ -147,9 +144,9 @@ The remaining sections are situational — enable them when their trigger appear
 1. Ship with defaults. Make 5–10 test calls in **Preview**, including a noisy-environment call from your phone.
 2. Read the transcripts. Transcription errors → fix **Language**/**Key Terms** first; everything downstream depends on hearing correctly.
 3. Fix the single most annoying rhythm problem (cutting off / sluggishness) with **one** turn-handling change, re-test, repeat.
-4. Only then polish: voicemail message, transfer message, pronunciation dictionary.
+4. Only then polish: answer-machine voicemail message, transfer message, pronunciation dictionary.
 
 ## What's Next
 
-- [Creating Your First Voice Agent](/voice-agents/creating-your-first-voice-agent) — if you haven't built one yet.
-- [Creating a Campaign](/campaigns/creating-a-campaign) — drive outbound calls with your tuned agent.
+- [Answer Machine Detection](/voice-agents/answer-machine-detection) — detect voicemail and IVR menus before the agent speaks.
+- [Call Transfer](/voice-agents/call-transfer) — the full warm-transfer workflow, including routing to in-app agents.
