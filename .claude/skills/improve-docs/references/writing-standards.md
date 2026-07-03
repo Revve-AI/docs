@@ -26,6 +26,7 @@ The old docs failed as "an outdated list of features & knobs — not actionable"
 ## Formatting conventions
 
 - Frontmatter: `title` + `description` only. Note the blank line after `---` used by existing pages.
+- The `description` should make the intended reader identifiable (owner, daily operator, agent builder, developer, …), not just restate the title — `introduction.mdx` routes readers to sections by persona, so a vague description gives that router nothing to work with.
 - Mintlify components in use: `<Tip>`, `<Note>`, `<Info>`, `<CardGroup cols={2}>`/`<Card>`. Tables over `<Steps>`.
 - Internal links: absolute paths (`/voice-agents/what-is-a-voice-agent`), never `.mdx` suffixes.
 - Screenshots: `![descriptive alt text explaining what the reader should see](/screenshots/kebab-name.png)`. Naming: feature-prefixed kebab-case (`voice-*`, `campaign-*`, `flow-node-*`). Standard capture: 1440×900.
