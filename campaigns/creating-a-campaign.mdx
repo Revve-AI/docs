@@ -125,6 +125,35 @@ curl -X POST https://app.revve.ai/api/campaigns/contact-enrollments \
 
 `phoneNumber` and `teamId` are required; `campaignId` is optional (omit it to just create/update the contact without enrolling). Returns `200` with a `contactId`.
 
+### Managing enrollments
+
+Once contacts are enrolled, the same **Enrollments** table (shown above) is where you manage them while they're in flight — per-row actions, filters, and CSV export.
+
+**Row actions.** Each row's **Action** column shows buttons only while the enrollment is **active** or **paused** — they disappear once it's **completed**:
+
+- **Engage** opens a **Create New Engagement** dialog. This doesn't trigger "the AI's next move" — it's a manual form for creating one specific outreach action on this one enrollment. Pick an agent, a channel (phone call, SMS, email, or WhatsApp), execution timing (immediate, or scheduled with a time and a response deadline), and channel-specific content (a template, or a subject and message). On submit, a **paused** enrollment reactivates to **active**; an immediate action runs right away, a scheduled one is queued for its time. Use it when a rep wants to personally nudge one lead outside the campaign's normal cadence.
+- **Exit** opens an **Exit Campaign** dialog and is styled as a destructive action. It requires an **Exit Status** (**Successfully exit** or **Non-Successfully exit**) and a **Reason** (free text, at least 10 characters). Clicking **Confirm Exit** *is* the confirmation — there's no further "are you sure" step. It takes effect immediately: the enrollment moves to **completed**, the exit type and reason are recorded, and any other pending actions for that enrollment are cancelled. Treat Exit as final, not a draft — there's no undo for it in the UI.
+
+Click anywhere else on a row to open the enrollment detail panel with its full engagement timeline. A column-visibility toggle above the table lets you show or hide columns, including custom contact fields.
+
+**Filters.** The toolbar above the table narrows what you see:
+
+| Filter | Behavior |
+|--------|----------|
+| **Search** | Matches by email, phone, or name. |
+| **State** | Populated from this campaign's own engagement flow states (set on the Setup tab); defaults to **All States**. |
+| **Status** | Fixed options: All Statuses, Active, Completed, Paused. |
+| **Date range** | Filters by **Enrolled At** (when the contact entered the campaign); defaults to the last month. It's skipped automatically while a search term is active, so a search can still surface older matches outside the visible date range. |
+
+Filters, sort, pagination, and column visibility are all reflected in the URL, so a filtered view is a link you can share with a teammate as-is.
+
+**CSV export.** The **Export CSV** button offers two options:
+
+- **Export Current Page** — just the rows currently displayed.
+- **Export All Data** — every row matching the active filters, not the whole table.
+
+Both export the same columns: Name, Email, Phone, Company, Engagement State, Status, Exit Status, Enrolled At, Last Engagement At, Contact ID, Enrollment ID. Custom contact fields you've toggled on for on-screen viewing aren't included in the export.
+
 ## Step 6: Monitor
 
 The **Dashboard** tab answers "is it working?" at a glance — total, active, and completed leads, average time in campaign, and breakdowns by status, engagement state, and exit outcome, plus per-channel performance:
@@ -133,7 +162,7 @@ The **Dashboard** tab answers "is it working?" at a glance — total, active, an
 
 For "what exactly happened with this contact?", click their row in **Enrollments** to see the full engagement timeline — every call, message, reply, and AI decision. Replies also land in your [Inbox](/inbox/inbox-overview) as normal conversations.
 
-To pause everything, click **Stop Campaign** in the top-right; the campaign goes inactive until you start it again.
+To pause everything, open the **⋯ (More actions)** menu in the top-right and choose **Stop Campaign**. Confirm in the dialog ("Stop this campaign? Ongoing and scheduled sends will be paused.") with **Yes, stop it**. There's no self-service way to reactivate a stopped campaign from the UI — contact your Revve team to bring it back.
 
 ## Pre-launch checklist
 
