@@ -1,0 +1,250 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Revve AI API",
+    "description": "Endpoints for integrating your own systems with Revve — enrolling contacts into campaigns from your CRM, core banking system, or any external source.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://app.revve.ai"
+    }
+  ],
+  "security": [
+    {
+      "bearerApiKey": []
+    }
+  ],
+  "paths": {
+    "/api/campaigns/enrollments": {
+      "post": {
+        "summary": "Enroll a contact in a campaign",
+        "description": "Enrolls an existing Revve contact into a campaign. Use this when the contact already exists in Revve and you just need to start (or advance) their campaign journey. To create the contact and enroll it in one call, use `POST /api/campaigns/contact-enrollments` instead.",
+        "operationId": "enrollContact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["contactId", "teamId", "campaignId"],
+                "properties": {
+                  "contactId": {
+                    "type": "string",
+                    "description": "The Revve contact ID to enroll."
+                  },
+                  "teamId": {
+                    "type": "string",
+                    "description": "Your Revve team ID. Must match the team the API key belongs to."
+                  },
+                  "campaignId": {
+                    "type": "string",
+                    "description": "The campaign to enroll the contact in. Must be an active campaign."
+                  },
+                  "source": {
+                    "type": "string",
+                    "description": "Optional free-text label recorded against the enrollment, for your own tracking of where it came from."
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "Which campaign version to enroll against: `current`, `draft`, or a specific campaign_versions.id. Defaults to `current` if omitted."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact enrolled successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Contact enrolled successfully"
+                    },
+                    "enrollmentId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required fields (`contactId`, `teamId`, or `campaignId`), or the campaign is not active / does not exist.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing `Authorization` header, or the API key is invalid for the given `teamId`.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "No contact found with the given `contactId`.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "The contact is already enrolled in this campaign.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Contact is already enrolled in this campaign"
+                    },
+                    "enrollmentId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "The existing enrollment's current status."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/campaigns/contact-enrollments": {
+      "post": {
+        "summary": "Create a contact and enroll it in a campaign",
+        "description": "Creates (or updates, if a matching contact already exists) a Revve contact from a phone number and enrolls it into a campaign in one call. Use this when the contact doesn't exist in Revve yet — for example, a lead arriving straight from your core system or CRM. If `campaignId` is omitted, this only creates/updates the contact without enrolling it in anything.",
+        "operationId": "createAndEnrollContact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["phoneNumber", "teamId"],
+                "properties": {
+                  "phoneNumber": {
+                    "type": "string",
+                    "description": "The contact's phone number."
+                  },
+                  "teamId": {
+                    "type": "string",
+                    "description": "Your Revve team ID. Must match the team the API key belongs to."
+                  },
+                  "campaignId": {
+                    "type": "string",
+                    "description": "Optional. The campaign to enroll the contact in. Omit to create/update the contact only, without enrolling."
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "companyName": {
+                    "type": "string"
+                  },
+                  "companyWebsite": {
+                    "type": "string"
+                  },
+                  "timezone": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": {
+                  "description": "Any other property is accepted and stored as a custom field on the contact."
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact created/updated (and enrolled, if `campaignId` was given).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "contactId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing `phoneNumber` or `teamId`.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing `Authorization` header, or the API key is invalid for the given `teamId`.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerApiKey": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Pass your team's API key as a Bearer token: `Authorization: Bearer YOUR_API_KEY`. Find your API key in the dashboard under Settings. The key must belong to the same team as the `teamId` in the request body."
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
