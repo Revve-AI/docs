@@ -16,31 +16,17 @@ Before starting, read `references/writing-standards.md` (page conventions, templ
 
 ## Phase 1 — Discover gaps
 
-**Docs document production.** Scan and ground every fact in the **`origin/prod`** branch of each product repo — never local `main`/`HEAD`, which carry unmerged dev work and even unpushed local commits (this bit us once: a feature was documented from a local commit that existed nowhere else). First:
+**Docs document production.** Every fact must come from the **`origin/prod`** branch of each product repo — never local `main`/`HEAD`, which carry unmerged dev work and even unpushed local commits (this bit us once: a feature was documented from a local commit that existed nowhere else). Don't type git refs by hand; start with:
 
 ```bash
-git -C ../revve-web fetch origin prod
-git -C ../voice-agent-worker fetch origin prod
+bash scripts/prod_scan.sh begin
 ```
 
-For code exploration beyond `git show origin/prod:<path>`, give agents a read-only prod worktree instead of the live checkout:
-
-```bash
-git -C ../revve-web worktree add <scratchpad>/revve-web-prod origin/prod --detach
-# … and remove it in cleanup: git -C ../revve-web worktree remove <scratchpad>/revve-web-prod
-```
-
-Read the state file `.improve-docs-state.json` at the docs repo root. It records the last-scanned `origin/prod` commit SHA per product repo:
-
-```json
-{ "revve-web": "<sha>", "voice-agent-worker": "<sha>" }
-```
-
-If it doesn't exist, this is the first run — scan the last 4 weeks of `origin/prod` commits instead.
+It fetches `origin/prod` in both repos, computes the unscanned commit range from `.improve-docs-state.json` (first run: last 4 weeks), creates detached **read-only prod worktrees** for code exploration, and prints JSON with the commit lists and worktree paths. Exit 3 means no new prod commits anywhere — Agent A/B have nothing to do; run only Agent C. All code reads happen in the worktrees, never the live checkouts.
 
 Spawn **three Explore subagents in parallel** (single message, three Agent calls):
 
-**Agent A — revve-web recent changes.** Give it: the SHA range (`git -C ../revve-web log <last-sha>..origin/prod --oneline` — run this yourself first and include the commit list in the prompt so the agent doesn't need to re-derive it) and the prod worktree path for file reads. Ask it to identify which commits are *customer-facing* (dashboard UI, widget, API routes, integrations, migrations that add user-visible features — not refactors, tests, or internal tooling) and, for each, report: what shipped, exact UI labels/fields/defaults from the code, and which docs page it affects or requires. Tell it the current docs nav (paste the `docs.json` page list).
+**Agent A — revve-web recent changes.** Give it the commit list and prod worktree path from `prod_scan.sh begin`, so it never derives git refs itself. Ask it to identify which commits are *customer-facing* (dashboard UI, widget, API routes, integrations, migrations that add user-visible features — not refactors, tests, or internal tooling) and, for each, report: what shipped, exact UI labels/fields/defaults from the code, and which docs page it affects or requires. Tell it the current docs nav (paste the `docs.json` page list).
 
 **Agent B — voice-agent-worker recent changes.** Same brief, for `../voice-agent-worker`. This repo powers the voice-call runtime, so changes here usually affect the Voice Agents docs (settings, behaviors, normalization, telephony).
 
@@ -71,7 +57,15 @@ Spawn **one writing subagent per page, in parallel**. Each prompt must include:
 - Scope: **write only the assigned page file — never edit `docs.json` or other pages, and never log into the app** (the main agent handles capture in Phase 4). Navigation belongs to the editor pass; parallel writers editing the same nav file will conflict.
 - Screenshots: reuse existing images from `/screenshots` where they show current UI; where an image is missing or outdated, write the image reference into the page anyway (`/screenshots/<feature>-<kebab-name>.png` with descriptive alt text) and return the list of needed captures — Phase 4 captures them.
 
-After the writers finish, do an editor pass yourself: consistent tone across new pages, no duplicated content with existing pages, cross-links in both directions, and add the new pages to the `docs.json` navigation (`navigation.groups`) in a sensible position.
+When the writers finish, run the scope guard before touching anything:
+
+```bash
+bash scripts/check_writer_scope.sh <assigned-page-1>.mdx <assigned-page-2>.mdx …
+```
+
+Any `UNEXPECTED:` path means a writer strayed — revert that file (`git checkout -- <path>`) unless the change was genuinely needed, in which case own it deliberately in the editor pass.
+
+Then do the editor pass yourself: consistent tone across new pages, no duplicated content with existing pages, cross-links in both directions, and add the new pages to the `docs.json` navigation (`navigation.groups`) in a sensible position.
 
 ## Phase 4 — Capture screenshots
 
@@ -83,19 +77,17 @@ If sign-in or a specific capture fails after a couple of attempts, don't block t
 
 ## Phase 5 — Verify
 
-All four checks must pass before the PR:
+Run the single gate — it must print `VERIFY PASSED`:
 
-1. `mint broken-links` — must report success.
-2. MDX double-brace check — raw `{{…}}` outside backticks silently blanks a page's body:
-   `grep -rn '{{' <new files>` and confirm every occurrence is inside backticks or a code fence.
-3. Nav ↔ file consistency — every page in `docs.json` `navigation.groups` has an `.mdx` file and no new orphans were created.
-4. Every image referenced by the changed pages exists in `/screenshots` (Phase 4 failures must have been cleaned out of the pages).
+```bash
+bash scripts/verify.sh
+```
 
-If `mint` is available, also render-check each new page (`mint dev`, request the page, confirm non-trivial body length). Skip gracefully if the port is busy or the CLI is missing.
+It runs `mint broken-links`, the structural linter (`scripts/check_docs.py`: nav↔file consistency, orphans, missing images, the `{{…}}` page-blanking gotcha, frontmatter, link conventions), and a rendered-body check of every changed page via `mint dev`. Fix errors and re-run until green; warnings don't block but read them — they're usually next-run backlog material (unused screenshots, dimension drift). If a new page intentionally stays out of nav, add it to `scripts/known-orphans.txt` rather than ignoring the error.
 
 ## Phase 6 — PR
 
-1. Update `.improve-docs-state.json` with the `origin/prod` SHAs you actually scanned in Phase 1 (scan-time, not PR-time — commits landing mid-run must be scanned next run). Include it in the commit — the state travels with the repo. Clean up any prod worktrees you created.
+1. Run `bash scripts/prod_scan.sh finish` — it writes the SHAs Phase 1 actually scanned into `.improve-docs-state.json` (scan-time, not PR-time) and removes the prod worktrees. Include the state file in the commit — it travels with the repo.
 2. Commit with a message summarizing the pages added/changed. End with:
    `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`
 3. Push the branch and open a PR against `main` on **`Revve-AI/docs`** (the repo was transferred from `trungduyvu/docs`; old remotes redirect). Try `gh pr create` first; if it fails auth, fall back to the GitHub MCP `create_pull_request` tool.

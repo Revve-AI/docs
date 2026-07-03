@@ -41,13 +41,10 @@ The old docs failed as "an outdated list of features & knobs — not actionable"
 ## Verification before committing (all required)
 
 ```bash
-mint broken-links                 # must print "success no broken links found"
-grep -rn '{{' <new files>         # every hit must be inside backticks/code fences
-# nav check: every page in docs.json navigation.groups has a file, no accidental orphans
-# image check: every /screenshots/*.png referenced by changed pages exists
+bash scripts/verify.sh    # must print VERIFY PASSED
 ```
 
-If feasible, render-check each new page with `mint dev` and confirm the body isn't empty (the double-brace failure mode).
+One gate runs everything: `mint broken-links`, the structural linter (`scripts/check_docs.py` — nav↔file, orphans, missing images, `{{}}` blanking, duplicate headings, frontmatter, link conventions, alt text), and a rendered-body check of changed pages via `mint dev`. To lint just the pages you wrote while iterating: `python3 scripts/check_docs.py --files <page>.mdx`.
 
 ## Voice and tone
 

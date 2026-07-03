@@ -57,12 +57,13 @@ In `docs.json`, add or extend the `openapi` navigation group pointing at `api-re
 
 ## Phase 5 — Verify
 
-All required before PR:
+Run the single gate — it must print `VERIFY PASSED`:
 
-1. `mint validate` (or whatever spec-lint command the installed `mint` CLI actually exposes — check, don't assume) on `api-reference/openapi.json`. Must pass.
-2. `mint broken-links` — must pass.
-3. **Allowlist conformance**: every path in the spec must be in `.api-reference-allowlist.json`'s `approved` list. If anything in the spec isn't there, stop and fix it — this is the mechanical backstop behind Phase 2's human gate.
-4. Render-check via `mint dev` if available (skip gracefully if the port is busy or the CLI is missing).
+```bash
+bash scripts/verify.sh
+```
+
+It runs `mint broken-links`, the structural docs linter (`scripts/check_docs.py`), a render check of changed pages, and — because `api-reference/openapi.json` exists — JSON/spec validation plus **allowlist conformance** (`scripts/check_allowlist.py`: every endpoint in the spec must be in `.api-reference-allowlist.json`'s `approved` list and none in `rejected`). That conformance check is the mechanical backstop behind Phase 2's human gate; if it fails, fix the spec or get approval — never weaken the check.
 
 ## Phase 6 — PR
 
