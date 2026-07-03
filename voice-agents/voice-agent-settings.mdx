@@ -105,11 +105,16 @@ This section controls the *feel* of the conversation — it's where voice agents
 | **Noise Cancellation** | Off | Turn on when callers are in noisy environments (drivers, retail floors) and transcription quality suffers. |
 | **Ambient Sound** | None | Adds background ambience (office, city) to the agent's side. A subtle office ambience can make an agent feel less sterile; skip it unless you've A/B-listened. |
 
-### Answer Machine Detection
+### Voicemail
 
-Native detection that classifies who answered — a human, voicemail, or an IVR phone menu — before the agent starts speaking. Off by default; existing agents keep the legacy LLM-based voicemail detection until you switch. When enabled, the agent can leave a voicemail message instead of hanging up and can navigate IVR menus to reach a person. For outbound campaigns it's usually worth turning on — a personalized message measurably improves callback rates versus silent hangups.
+Off by default — when voicemail is detected the call simply hangs up. Enable **voicemail detection** to leave a message instead:
 
-See [Answer Machine Detection](/voice-agents/answer-machine-detection) for setup, the voicemail message, and IVR navigation.
+![Voicemail settings](/screenshots/voice-voicemail.png)
+
+- **Voicemail Message** supports `{{contact}}` placeholders — for example: "Hi `{{firstName}}`, this is Acme calling about your application…"
+- **Detection Timeout** (default 5000 ms): how long to listen before deciding it's a machine. Leave it unless detection misfires.
+
+For outbound campaigns, enabling voicemail is usually worth it — a personalized message measurably improves callback rates versus silent hangups.
 
 ### Call Transfer
 
@@ -144,9 +149,9 @@ The remaining sections are situational — enable them when their trigger appear
 1. Ship with defaults. Make 5–10 test calls in **Preview**, including a noisy-environment call from your phone.
 2. Read the transcripts. Transcription errors → fix **Language**/**Key Terms** first; everything downstream depends on hearing correctly.
 3. Fix the single most annoying rhythm problem (cutting off / sluggishness) with **one** turn-handling change, re-test, repeat.
-4. Only then polish: answer-machine voicemail message, transfer message, pronunciation dictionary.
+4. Only then polish: voicemail message, transfer message, pronunciation dictionary.
 
 ## What's Next
 
-- [Answer Machine Detection](/voice-agents/answer-machine-detection) — detect voicemail and IVR menus before the agent speaks.
 - [Call Transfer](/voice-agents/call-transfer) — the full warm-transfer workflow, including routing to in-app agents.
+- [Creating a Campaign](/campaigns/creating-a-campaign) — drive outbound calls with your tuned agent.
