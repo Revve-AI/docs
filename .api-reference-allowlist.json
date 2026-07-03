@@ -1,0 +1,15 @@
+{
+  "approved": [
+    {
+      "endpoint": "POST /api/campaigns/enrollments",
+      "approvedAt": "2026-07-03",
+      "note": "Bearer API-key auth (team.api_key / team.public_api_key via validateTeamApiKey). Enrolls an existing contact into a campaign."
+    },
+    {
+      "endpoint": "POST /api/campaigns/contact-enrollments",
+      "approvedAt": "2026-07-03",
+      "note": "Bearer API-key auth (team.api_key / team.public_api_key via validateTeamApiKey). Creates-and-enrolls a contact in one call."
+    }
+  ],
+  "rejected": []
+}

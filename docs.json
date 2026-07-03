@@ -107,8 +107,20 @@
           "campaigns/campaign-overview",
           "campaigns/creating-a-campaign"
         ]
+      },
+      {
+        "group": "API Reference",
+        "openapi": "api-reference/openapi.json"
       }
     ]
+  },
+  "api": {
+    "playground": {
+      "display": "auth"
+    },
+    "examples": {
+      "languages": ["curl", "javascript", "python"]
+    }
   },
   "logo": {
     "light": "/logo/light.svg",
