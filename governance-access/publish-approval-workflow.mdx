@@ -9,7 +9,7 @@ Revve enforces **separation of duties** on the action that matters most operatio
 This exists independently as three parallel flows — one each for **campaigns**, **voice agents**, and **chat agents**. Each resource type keeps its own publish-request records and its own create/approve/decline/cancel actions; there's no shared, cross-resource approval queue or generic workflow engine underneath. The mechanics below are identical across all three, so this page describes them once.
 
 <Note>
-This page covers the request → review → approve/decline mechanic. The **Publish Agents** / **Publish Campaigns** permissions that gate who can approve are defined in [Roles & Permissions](/governance-access/roles-and-permissions). The underlying draft/publish/version-history model — what a "draft" and a "version" actually are — is covered generically in [Publishing & Versioning](/getting-started/publishing-and-versioning); that page mentions the **Submit for Review** path in brief and points here for the detail.
+This page covers the request → review → approve/decline mechanic. The **Publish Agents** / **Publish Campaigns** permissions that gate who can approve are defined in [Roles & Permissions](/governance-access/roles-and-permissions). The underlying draft/publish/version-history model — what a "draft" and a "version" actually are — is covered per resource type: [Publishing & Versioning](/getting-started/publishing-and-versioning) for chat agents, [Campaign Versioning](/campaigns/campaign-versioning) for campaigns, and [Voice Agent Versioning](/voice-agents/voice-agent-versioning) for voice agents. Each of those pages mentions the **Submit for Review** path in brief and points here for the detail.
 </Note>
 
 ## How it works
@@ -47,7 +47,7 @@ Every publish request has a `status` column restricted to four values by a datab
 | Status | Meaning |
 |--------|---------|
 | `pending` | Created, awaiting a reviewer's decision. This is the only state where approve/decline/cancel are possible. |
-| `approved` | A reviewer with the publish permission approved it. This action published the draft as a new immutable version — see [Publishing & Versioning](/getting-started/publishing-and-versioning). |
+| `approved` | A reviewer with the publish permission approved it. This action published the draft as a new immutable version — see [Publishing & Versioning](/getting-started/publishing-and-versioning) (chat agents), [Campaign Versioning](/campaigns/campaign-versioning), or [Voice Agent Versioning](/voice-agents/voice-agent-versioning). |
 | `declined` | A reviewer with the publish permission declined it. The draft is left as-is; nothing is published. |
 | `cancelled` | Either the requester withdrew their own pending request, or the system cancelled it automatically because the underlying draft was deleted before anyone acted on it (with the reviewer note `"Draft no longer exists"`). |
 
@@ -120,5 +120,5 @@ This is the same mechanic referenced in [Campaign Overview](/campaigns/campaign-
 ## What's Next
 
 - [Roles & Permissions](/governance-access/roles-and-permissions) — how **Publish Campaigns** and **Publish Agents** are granted, including how to build a narrow reviewer-only role.
-- [Publishing & Versioning](/getting-started/publishing-and-versioning) — the draft/version mechanics that a publish request ultimately triggers.
+- [Publishing & Versioning](/getting-started/publishing-and-versioning) — the draft/version mechanics a publish request ultimately triggers, for chat agents. See also [Campaign Versioning](/campaigns/campaign-versioning) and [Voice Agent Versioning](/voice-agents/voice-agent-versioning).
 - [Campaign Overview](/campaigns/campaign-overview) — where campaign versioning and the review step fit into the broader campaign lifecycle.
