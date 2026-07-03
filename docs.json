@@ -147,7 +147,10 @@
             "group": "Administration",
             "pages": [
               "governance-access/roles-and-permissions",
-              "governance-access/publish-approval-workflow"
+              "governance-access/publish-approval-workflow",
+              "administration/workspace-settings",
+              "administration/conversation-routing",
+              "administration/phone-numbers"
             ]
           }
         ]
