@@ -24,7 +24,8 @@
       {
         "group": "Guides",
         "pages": [
-          "guides/lead-qualification-agent"
+          "guides/lead-qualification-agent",
+          "guides/payment-reminder-campaign"
         ]
       },
       {

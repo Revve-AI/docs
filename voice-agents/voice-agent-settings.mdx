@@ -123,7 +123,7 @@ Lets the AI hand the call to a human, with a spoken handover message:
 | Setting | Options | How to choose |
 |---------|---------|---------------|
 | **Transfer To** | **Revve User (in-app agent)** / **SIP Address** / **Phone Number** | Revve User routes the call to an available human agent in the Revve app — no external number needed. SIP Address targets a SIP endpoint. Phone Number dials an external number in E.164 format (`+84775352590`). |
-| **Transfer Type** | **Bridge Transfer** (default) / **Cold Transfer** | Bridge: the human joins the call, the AI goes silent but keeps logging — choose this when you want the full conversation recorded and analyzed. Cold: the call is handed off entirely, no further logging — choose this for compliance contexts where the AI must fully exit. |
+| **Transfer Type** | **Bridge Transfer** (default) / **Cold Transfer** | Bridge: a warm consult transfer — the caller is held with music while the AI privately briefs the human with the call summary, then connects them and goes silent (but keeps logging). Cold: the call is handed off entirely, no further logging — choose this for compliance contexts where the AI must fully exit. |
 | **Transfer Message** | Free text | What the AI says before transferring ("Let me connect you with a specialist — one moment."). Always set one; silent transfers feel like being hung up on. |
 
 See [Call Transfer](/voice-agents/call-transfer) for the full warm-transfer workflow, including how in-app agents receive and accept transfers.
@@ -135,7 +135,7 @@ The remaining sections are situational — enable them when their trigger appear
 | Section | What it's for |
 |---------|---------------|
 | **Phone Number** | Assign a team phone number so this agent answers inbound calls on it. |
-| **Phone Verification** | Verify the caller's phone number during the call (e.g., via OTP) before discussing account details. |
+| **Phone Verification** | Confirm the caller's identity by having them state their phone number, checked against the number already on file for that contact. |
 | **Normalization** | Normalize spoken data like addresses into structured formats. |
 | **Retry & Callback** | Automatic retry rules for unanswered outbound calls. |
 | **Tools** | Attach custom tools (API calls, SMS sending) the agent can use mid-call. |
