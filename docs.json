@@ -109,6 +109,13 @@
         ]
       },
       {
+        "group": "Governance & Access",
+        "pages": [
+          "governance-access/roles-and-permissions",
+          "governance-access/publish-approval-workflow"
+        ]
+      },
+      {
         "group": "API Reference",
         "openapi": "api-reference/openapi.json"
       }

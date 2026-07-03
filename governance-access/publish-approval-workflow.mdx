@@ -1,0 +1,124 @@
+---
+
+title: "Publish Approval Workflow"
+description: "The maker-checker control behind publishing campaigns, voice agents, and chat agents — who can request a publish, who can approve or decline it, and how that's enforced."
+---
+
+Revve enforces **separation of duties** on the action that matters most operationally: taking a draft live. Anyone building a campaign or agent can edit freely, but making that edit live either requires holding the resource's publish permission directly, or — if you don't hold it — submitting the draft as a **publish request** for someone who does to approve or decline. This is a maker-checker (four-eyes) control: the person who made the change and the person who authorizes it are never required to be the same person.
+
+This exists independently as three parallel flows — one each for **campaigns**, **voice agents**, and **chat agents**. Each resource type keeps its own publish-request records and its own create/approve/decline/cancel actions; there's no shared, cross-resource approval queue or generic workflow engine underneath. The mechanics below are identical across all three, so this page describes them once.
+
+<Note>
+This page covers the request → review → approve/decline mechanic. The **Publish Agents** / **Publish Campaigns** permissions that gate who can approve are defined in [Roles & Permissions](/governance-access/roles-and-permissions). The underlying draft/publish/version-history model — what a "draft" and a "version" actually are — is covered generically in [Publishing & Versioning](/getting-started/publishing-and-versioning); that page mentions the **Submit for Review** path in brief and points here for the detail.
+</Note>
+
+## How it works
+
+1. A team member edits a campaign, voice agent, or chat agent, producing a draft.
+2. When they go to publish it, the dashboard shows one of two buttons depending on whether they hold the resource's publish permission: **Publish** (direct) or **Submit for Review** (creates a publish request).
+3. A publish request starts in `pending` status and names one or more reviewers, who are notified by email.
+4. Any one of those reviewers who holds the publish permission can **approve** (publishing the draft as a new version) or **decline** it. The original requester can also **cancel** their own pending request.
+5. Approving, declining, and direct-publishing are all enforced server-side against the current permission grant — not just hidden or shown in the UI.
+
+## Two paths to publish
+
+The dashboard decides which button a user sees based on whether their role currently grants **Publish Campaigns** (for campaigns) or **Publish Agents** (for voice and chat agents):
+
+- **Holds the permission** → sees a direct **Publish** button. Publishing happens immediately; there's no request, no reviewer, no waiting.
+- **Doesn't hold the permission** → sees **Submit for Review** instead. This creates a `pending` publish request rather than publishing anything.
+
+That split is where the separation of duties actually lives, but it's worth being precise about where it's enforced, because the two halves aren't symmetric:
+
+| Action | Who can do it | Where it's enforced |
+|--------|----------------|----------------------|
+| Create a publish request (**Submit for Review**) | Any team member, in practice | Not permission-gated at the API level — the dashboard only shows this path to someone who lacks the publish permission, but the create-request endpoint itself doesn't check for it. |
+| Publish directly | A holder of **Publish Campaigns** / **Publish Agents** | UI shows the **Publish** button only to permission holders. Someone without the permission has no direct-publish path in the dashboard at all. |
+| **Approve** or **decline** a request | A holder of **Publish Campaigns** / **Publish Agents** | Hard-gated server-side on every call, via a real-time permission check. Without it, the API returns HTTP 403 with `"You do not have permission to approve publish requests"` (or `"...decline..."`). No exceptions. |
+| **Cancel** a pending request | The original requester only | Ownership check, not a permission check — anyone else who tries gets a FORBIDDEN error. Reviewers don't "cancel" a request; they approve or decline it. |
+
+In other words: requesting is unlocked by default and the UI steers people toward it or away from it; approving and declining are the checkpoints that are actually locked, and locked the same way no matter who's asking or which client they're using.
+
+One more property worth calling out for a four-eyes review: approval is **first-come, not quorum**. If a request names three reviewers, any one of them acting first settles it — there's no requirement that all named reviewers sign off, and no tie-breaking logic. Approving immediately creates the new published version; there's no separate "commit" step afterward.
+
+## The request lifecycle
+
+Every publish request has a `status` column restricted to four values by a database constraint:
+
+| Status | Meaning |
+|--------|---------|
+| `pending` | Created, awaiting a reviewer's decision. This is the only state where approve/decline/cancel are possible. |
+| `approved` | A reviewer with the publish permission approved it. This action published the draft as a new immutable version — see [Publishing & Versioning](/getting-started/publishing-and-versioning). |
+| `declined` | A reviewer with the publish permission declined it. The draft is left as-is; nothing is published. |
+| `cancelled` | Either the requester withdrew their own pending request, or the system cancelled it automatically because the underlying draft was deleted before anyone acted on it (with the reviewer note `"Draft no longer exists"`). |
+
+Only one `pending` request can exist for a given campaign or agent at a time — a database uniqueness constraint blocks a second simultaneous request against the same draft, so requests can't stack.
+
+Each request also records who made it (`requested_by`), the list of chosen reviewers (`reviewer_ids`) versus who actually acted (`reviewer_id`), an optional `reviewer_note` left at decision time, `reviewed_at`, and — once approved — `published_version_id`, linking the request to the version it produced. That gives a complete, queryable trail from request to reviewer to the resulting published version.
+
+## Choosing reviewers
+
+When submitting for review, the requester must name reviewers up front — this isn't optional:
+
+- **Reviewers is a required field with a minimum of 1.** Submitting with zero reviewers is rejected server-side: `"Select at least one reviewer"`.
+- The requester is automatically excluded from their own reviewer list, even if selected — you can't route a request to yourself.
+- Every selected reviewer must belong to the team; membership is validated server-side.
+- The API doesn't itself require a listed reviewer to hold the publish permission — but the reviewer picker in the dashboard is pre-filtered to show only people who currently do. In normal use, then, the list a requester picks from is exactly "people who could actually approve this," even though that's a UI-level filter rather than a hard API constraint on the field.
+- Selected reviewers are notified by email when the request is created.
+
+## The publish dialog: three modes, one component
+
+Campaigns, voice agents, and chat agents all use the same dialog for this, rendered differently depending on the viewer and their permission:
+
+### Mode 1: Publish directly
+
+Shown to a user who holds the resource's publish permission.
+
+- Title: **Publish Changes**
+- Subtitle: `Review your changes before publishing to {agent/campaign name}`
+- **Version Notes** field (placeholder: "What changed in this version?")
+- Buttons: **Discard Draft** (destructive) / **Cancel** / **Publish v1** on a resource's first-ever publish, or **Publish** afterward — shows "Publishing..." while in flight.
+
+Nothing here touches the request flow; this publishes immediately.
+
+### Mode 2: Submit for Review
+
+Shown to a user who doesn't hold the publish permission.
+
+- Title: **Submit for Review**
+- Subtitle: `Review your changes and submit them for review for {name}. An admin will review and approve your changes.`
+- **Reviewers** — a multi-select combobox. Helper text: "Select at least one user to review your request. They will be notified by email." Placeholder "Select reviewers", search placeholder "Search reviewers...". If the team has nobody eligible, it shows "No eligible reviewers in this team. Contact an admin."
+- **Description** — a textarea, placeholder "Describe the changes in this request..." (or "Generating description…" while the AI assist is running — see below).
+- Buttons: **Discard Draft** / **Cancel** / **Submit for Review** — shows "Submitting..." while in flight.
+
+### Mode 3: Review a request
+
+Shown to a reviewer opening someone else's pending request.
+
+- Title: **Review Publish Request**
+- Subtitle: `Review the changes submitted for {name}.`
+- Shows who requested it and a relative timestamp, the requester's **Description**, and badges listing the selected **Reviewers**.
+- **Your note** — a textarea for the reviewer's own note (placeholder "Add a note about your decision...").
+- Buttons: **Cancel Request** (destructive, left-aligned, only visible/enabled for the original requester) / **Back** / **Decline** (destructive) / **Approve & Publish** (primary) — with "Cancelling...", "Declining...", "Approving..." shown in flight.
+
+## AI-drafted descriptions
+
+Writing a clear description of what changed is easy to skip under time pressure, so Revve pre-fills it. When the Submit for Review dialog opens and the draft has pending changes, an endpoint builds a diff of what changed — a list of `{ label, baseValue, draftValue }` entries, one per changed field — and sends it to a small LLM with a fixed system instruction: *"Write a single, concise publish-request description (1–2 short sentences, plain English, no markdown, no bullet points, no preamble) summarizing what changed. Focus on what changed and, when useful, why it might matter."*
+
+A few properties worth knowing:
+
+- It runs automatically as soon as the dialog opens — there's no button to trigger it — and shows "Generating description…" as placeholder text in the **Description** field while it works.
+- It never overwrites text the requester has already started typing.
+- It's grounded in the actual field-level diff between the published version and the draft, not a freeform prompt — so the summary reviewers see reflects what genuinely changed, not a paraphrase of arbitrary instructions.
+- The endpoint itself only requires a session and team membership — no special permission — since it's a drafting aid available to anyone submitting a request, not part of the approval gate.
+
+## Campaign-specific nuance: in-flight enrollments
+
+For campaigns only, one extra step is layered on top of the same approve/publish action: if contacts are currently enrolled and in-flight on the version being replaced, a separate confirmation dialog asks whether to move them onto the new version being published or approved. It's a campaign-specific detail on top of the flow above, not a different workflow — the request, approve, decline, and cancel mechanics are unchanged.
+
+This is the same mechanic referenced in [Campaign Overview](/campaigns/campaign-overview): "Team members without publish permission submit drafts for review; a reviewer approves or declines." This page is the detail behind that line, and it applies identically to voice and chat agents.
+
+## What's Next
+
+- [Roles & Permissions](/governance-access/roles-and-permissions) — how **Publish Campaigns** and **Publish Agents** are granted, including how to build a narrow reviewer-only role.
+- [Publishing & Versioning](/getting-started/publishing-and-versioning) — the draft/version mechanics that a publish request ultimately triggers.
+- [Campaign Overview](/campaigns/campaign-overview) — where campaign versioning and the review step fit into the broader campaign lifecycle.
