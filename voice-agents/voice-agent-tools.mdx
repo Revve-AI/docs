@@ -1,0 +1,80 @@
+---
+
+title: "Voice Agent Tools"
+description: "The preset Tools available in a Voice Agent's Advanced Settings — what each one does, and which ones silently don't work on a phone call."
+---
+
+The **Tools** section of a Voice Agent's **Advanced Settings** lets you attach actions the agent can trigger mid-call — checking a calendar, creating a ticket, validating a spoken value. Click **+ Add** and you'll see a dropdown with six presets plus a generic custom-tool option:
+
+![The Tools tab in a Voice Agent's Advanced Settings, in its empty state — a "Tools" header, a + Add button, and an empty-state panel with "No tools added yet" and a + Add First Tool button](/screenshots/voice-tools.png)
+
+This page covers four of those presets — **Create Ticket**, **Built-in Validate**, and the two that don't actually work on a phone call. Not every preset in that dropdown does something on a voice call, and the dashboard doesn't warn you about it.
+
+<Warning>
+**Button - Send OTP** and **Button - Fire Native Event** appear in the Tools dropdown for a Voice Agent, but neither one works on a phone call. See [The trap: two presets that don't work on a call](#the-trap-two-presets-that-dont-work-on-a-call) before you attach either one.
+</Warning>
+
+## Calendar presets: a one-line summary
+
+**Check Calendar Availability** and **Book on the Calendar** connect to a Calendly, Cal.com, or Chili Piper calendar so the agent can check open slots and book an appointment while the caller is still on the line. They're the two items in the dropdown built specifically for Voice Agents. For the full setup — connecting a calendar app, configuring both tools, and the prompt instructions that tie them together — see [Build a Voice Agent That Books Appointments Mid-Call](/guides/appointment-booking-voice-agent).
+
+## Create Ticket
+
+**Create Ticket** lets the agent create a ticket from what it hears on the call — the preset's own description is "Automatically create tickets from conversations." Configure it with a ticket type, and the agent can file a support or follow-up ticket without the caller having to call back or wait for a human to write one up after the fact.
+
+Like the calendar presets, this is a real API call the agent triggers mid-call, and it works the same way on voice calls as anywhere else — it isn't affected by the trap described below.
+
+## Built-in Validate
+
+**Built-in Validate** solves a specific, narrow problem: the language model driving your agent is bad at counting digits in a transcription. Read a 12-digit ID number out loud, and it's common for the model to drop a digit, duplicate one, or transpose two — not because the caller misspoke, but because the model is guessing at digit count from a block of transcribed text rather than actually counting. Built-in Validate replaces that guess with a deterministic check: no LLM involved, no network call, just a normalization step and a regex match run in code.
+
+### How it works
+
+1. **The agent passes the caller's raw spoken value to the tool** — filler words already stripped, and any spoken letter names already converted to letters (for example, the caller saying "bê" comes through as "B").
+2. **The tool normalizes spoken digit words into digits**, using a built-in lexicon for the language. Vietnamese and English ship by default — Vietnamese "không / hai / ba…" and English "zero / two / three…" — including compound forms like Vietnamese "mười tám" becoming `18` and English "double three" becoming `33`. More languages can be added, and the tool's config can pin a specific language to check against, or fall back to whatever language your agent's Speech Recognition is set to.
+3. **The normalized string is checked against a regex you configure** — a full match against the shape you expect, not a partial one.
+4. **The tool returns whether the value is valid, its normalized form, and its length.** The agent is instructed to trust this `valid` flag rather than re-counting digits itself — that's the entire point of the tool.
+
+### Configuration
+
+| Field | What it does |
+|-------|--------------|
+| **Regex** | The pattern the normalized value must fully match. |
+| **Success message** | What the agent says or does when validation passes. |
+| **Failure message** | What the agent says or does when validation fails — typically asking the caller to repeat the value. |
+| **Language** | Optional. Pin which language's digit lexicon to normalize against, instead of following the agent's Speech Recognition language. |
+
+Three example patterns illustrate the range this tool is meant to cover:
+
+| What you're validating | Regex |
+|---|---|
+| An ID number that's 12 or 9 digits, or 6 digits starting with `0` | `` \d{12}\|\d{9}\|0\d{5} `` |
+| A passport number: one letter followed by 7 digits | `` [A-Z]\d{7} `` |
+| A 9- or 12-digit account number | `` \d{9}\|\d{12} `` |
+
+### Example: validating a spoken account number
+
+Say a bank's Voice Agent asks a caller to state their account number before continuing. You could add Built-in Validate with a regex like `` \d{9}|\d{12} `` (matching a 9- or 12-digit account number), a success message telling the agent to proceed, and a failure message like "I didn't catch that number clearly — could you repeat it slowly, one digit at a time?" The agent then reads back only what the tool confirms as valid, instead of trusting its own read of the transcript.
+
+This is an illustrative example, not a banking-specific feature — the tool itself is general-purpose. Its own description covers ID numbers, account numbers, OTP codes, and passports as the kinds of spoken values it's meant to validate, which is why the regex field is free-form rather than tied to any one format.
+
+<Tip>
+If you also use [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation), a **Tool Called** metric checking for Built-in Validate is a way to confirm — after the fact, on every call — that the agent actually ran the validation step before moving on, instead of trusting the prompt alone.
+</Tip>
+
+## The trap: two presets that don't work on a call
+
+**Button - Send OTP** and **Button - Fire Native Event** both show up in the Tools dropdown when you're editing a Voice Agent, and nothing in the UI stops you from adding either one. Neither does anything on a phone call.
+
+<Warning>
+Both presets are "render a button" tools: their only job is to draw a clickable button in a chat thread — a code sent to a website widget visitor, or a custom event fired from a chat conversation. That button, and the code path that executes it, exists only for chat channels (website widget, SMS, Zalo). The phone-call runtime that actually handles live calls has no code path for a render-a-button tool of any kind — there's nothing for it to draw the button *in*.
+
+If you attach Send OTP or Fire Native Event to a Voice Agent, the call will run with a tool that can never fire. It won't send an OTP, it won't fire an event, and it won't error or warn you — it just silently does nothing, every time.
+</Warning>
+
+For identity or verification steps on a phone call, use **Built-in Validate** (above) or a custom API-call tool instead — both actually execute during a call. Reserve **Send OTP** and **Fire Native Event** for Chat Agents, where the button they render is something a caller — a chat user, in that context — can actually see and click.
+
+## What's Next
+
+- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — grade whether a tool like Built-in Validate actually ran, on every completed call.
+- [Build a Voice Agent That Books Appointments Mid-Call](/guides/appointment-booking-voice-agent) — the full recipe for the two calendar presets.
