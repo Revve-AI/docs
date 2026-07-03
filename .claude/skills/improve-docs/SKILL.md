@@ -16,17 +16,31 @@ Before starting, read `references/writing-standards.md` (page conventions, templ
 
 ## Phase 1 — Discover gaps
 
-Read the state file `.improve-docs-state.json` at the docs repo root. It records the last-scanned commit SHA per product repo:
+**Docs document production.** Scan and ground every fact in the **`origin/prod`** branch of each product repo — never local `main`/`HEAD`, which carry unmerged dev work and even unpushed local commits (this bit us once: a feature was documented from a local commit that existed nowhere else). First:
+
+```bash
+git -C ../revve-web fetch origin prod
+git -C ../voice-agent-worker fetch origin prod
+```
+
+For code exploration beyond `git show origin/prod:<path>`, give agents a read-only prod worktree instead of the live checkout:
+
+```bash
+git -C ../revve-web worktree add <scratchpad>/revve-web-prod origin/prod --detach
+# … and remove it in cleanup: git -C ../revve-web worktree remove <scratchpad>/revve-web-prod
+```
+
+Read the state file `.improve-docs-state.json` at the docs repo root. It records the last-scanned `origin/prod` commit SHA per product repo:
 
 ```json
 { "revve-web": "<sha>", "voice-agent-worker": "<sha>" }
 ```
 
-If it doesn't exist, this is the first run — scan the last 4 weeks of commits instead.
+If it doesn't exist, this is the first run — scan the last 4 weeks of `origin/prod` commits instead.
 
 Spawn **three Explore subagents in parallel** (single message, three Agent calls):
 
-**Agent A — revve-web recent changes.** Give it: the SHA range (`git -C ../revve-web log <last-sha>..HEAD --oneline` — run this yourself first and include the commit list in the prompt so the agent doesn't need to re-derive it). Ask it to identify which commits are *customer-facing* (dashboard UI, widget, API routes, integrations, migrations that add user-visible features — not refactors, tests, or internal tooling) and, for each, report: what shipped, exact UI labels/fields/defaults from the code, and which docs page it affects or requires. Tell it the current docs nav (paste the `docs.json` page list).
+**Agent A — revve-web recent changes.** Give it: the SHA range (`git -C ../revve-web log <last-sha>..origin/prod --oneline` — run this yourself first and include the commit list in the prompt so the agent doesn't need to re-derive it) and the prod worktree path for file reads. Ask it to identify which commits are *customer-facing* (dashboard UI, widget, API routes, integrations, migrations that add user-visible features — not refactors, tests, or internal tooling) and, for each, report: what shipped, exact UI labels/fields/defaults from the code, and which docs page it affects or requires. Tell it the current docs nav (paste the `docs.json` page list).
 
 **Agent B — voice-agent-worker recent changes.** Same brief, for `../voice-agent-worker`. This repo powers the voice-call runtime, so changes here usually affect the Voice Agents docs (settings, behaviors, normalization, telephony).
 
@@ -81,7 +95,7 @@ If `mint` is available, also render-check each new page (`mint dev`, request the
 
 ## Phase 6 — PR
 
-1. Update `.improve-docs-state.json` with the HEAD SHAs you actually scanned in Phase 1 (scan-time, not PR-time — commits landing mid-run must be scanned next run). Include it in the commit — the state travels with the repo.
+1. Update `.improve-docs-state.json` with the `origin/prod` SHAs you actually scanned in Phase 1 (scan-time, not PR-time — commits landing mid-run must be scanned next run). Include it in the commit — the state travels with the repo. Clean up any prod worktrees you created.
 2. Commit with a message summarizing the pages added/changed. End with:
    `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`
 3. Push the branch and open a PR against `main` on **`Revve-AI/docs`** (the repo was transferred from `trungduyvu/docs`; old remotes redirect). Try `gh pr create` first; if it fails auth, fall back to the GitHub MCP `create_pull_request` tool.
@@ -107,6 +121,6 @@ If `mint` is available, also render-check each new page (`mint dev`, request the
 
 - Never commit to `main` directly; never merge the PR yourself.
 - Production safety during screenshot capture (Phase 4 only — writers never log in): navigation and screenshots only. Never publish, save, delete, or send anything; release any edit lock you acquire ("Stop Editing") before leaving a screen; close dialogs with Escape rather than action buttons. Full rules in `references/screenshot-capture.md`.
-- Every UI label, default value, field name, and endpoint in a page must come from the product code, an existing screenshot, or an existing verified page — if you can't ground a claim, leave it out. An outdated claim damages trust more than a missing one.
+- Every UI label, default value, field name, and endpoint in a page must come from the product code **at `origin/prod`**, an existing screenshot, or an existing verified page — if you can't ground a claim, leave it out. An outdated claim damages trust more than a missing one, and documenting unshipped features is worst of all.
 - Don't delete or rewrite existing non-stub pages in a routine run; propose that in the backlog instead.
 - If Phase 1 finds nothing worth writing (all gaps low-score), say so and stop — an empty run is a valid outcome; don't pad a PR.

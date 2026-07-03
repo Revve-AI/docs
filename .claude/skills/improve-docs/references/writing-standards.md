@@ -7,6 +7,8 @@ These conventions come from the 2026-06/07 docs overhaul (competitor analysis of
 The old docs failed as "an outdated list of features & knobs — not actionable". Every page must answer **what should I do and why**, not "what does each field say". Concretely:
 
 - Start from a user goal, never from a UI screen inventory.
+- Document what runs in **production** (`origin/prod` of the product repos), not dev branches or local checkouts.
+- Voice agents: when the UI differs by provider, document the **Revve provider** path (`provider === 'revve'`: tabs Dashboard / General / Model Settings / Knowledge Base / Advanced Settings / Evaluation / Preview / Versions — see `CallBotNav.tsx`). Legacy Retell-provider agents show different tabs (Prompt / Speech Setting / Call Setting); don't document those.
 - Every setting gets an opinion: its **default**, **when to change it**, and the **trade-off**. Pattern to imitate (from `voice-agents/voice-agent-settings.mdx`): "Callers getting cut off → raise toward 0.8–1.0s. Agent feels sluggish → lower toward 0.4s."
 - Prefer "in full, or not at all": a half-written page erodes trust more than no page. Never commit a stub.
 - Outdated is worse than missing. Ground every UI label, default, and field name in the product code or a current screenshot. If unverifiable, omit it.
