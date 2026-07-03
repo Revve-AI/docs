@@ -1,0 +1,90 @@
+---
+
+title: "Evaluation Profiles"
+description: "Reference for agent builders configuring the simulated caller in voice evaluations — every field in the New Profile dialog, plus how to write caller personas worth testing against."
+---
+
+A **Profile** is a reusable simulated-caller definition for voice Evaluations: which LLM plays the caller and at what temperature, what the caller sounds like (TTS voice and language), how it listens (STT), and a free-text persona instruction describing who it is and how it behaves. When a voice Evaluator runs, the Profile is the "person" on the other end of the test call.
+
+Profiles apply to **voice evaluators only**. Text evaluators have no simulated voice to configure and skip Profiles entirely.
+
+You'll find them under **Evaluations > Profiles** in the left nav — like the rest of Evaluations, the page is visible to anyone holding the **Manage Agents** permission (see [Roles & Permissions](/governance-access/roles-and-permissions)). The list shows each profile's **Name**, **LLM Model**, **TTS Voice**, and **Updated** time, with per-row **Edit** and **Delete** actions. If your team has none yet, you'll see the empty state ("No profiles yet") — click **New profile** in the header to create the first one.
+
+## The New Profile dialog
+
+Clicking **New profile** (or **Edit** on an existing row) opens a dialog with five sections. Required fields are Name, Instruction, and Voice Name; everything else has sensible picks in the dropdowns. Finish with **Create** (or **Save Changes** when editing).
+
+<Note>
+The Provider and Model dropdowns across the LLM, Voice / TTS, and Speech-to-Text sections draw from the same admin-maintained catalog as the model pickers in agent settings — if a model you expect is missing here, it's missing from the catalog, not from Profiles.
+</Note>
+
+### Identity
+
+| Field | Required | What it does |
+|-------|----------|---------------|
+| **Name** | Yes | How the profile appears in the Profiles list and in an Evaluator's **Profile** picker. The placeholder suggests the right granularity: "e.g. Frustrated caller" — name the persona, not the test. |
+
+### Persona
+
+| Field | Required | What it does |
+|-------|----------|---------------|
+| **Instruction** | Yes | A free-text description of the caller — who they are, their emotional state, how they speak. The simulator's LLM uses this text verbatim as its persona. |
+
+This is the highest-leverage field in the dialog. A vague instruction ("a customer calling about their account") produces a bland, endlessly cooperative caller that tells you nothing about how your agent handles real people. Write it like a character brief — see [Building useful personas](#building-useful-personas) below.
+
+### LLM
+
+The model that improvises the caller's side of the conversation.
+
+| Field | Default | When to change |
+|-------|---------|-----------------|
+| **Provider** / **Model** | Pick from the catalog | A stronger model stays in character longer and improvises more believably; a cheaper one is fine for short, scripted-feeling scenarios. |
+| **Temperature** | Placeholder 0.8 (0–2, steps of 0.1) | Higher (0.8–1.0) makes the caller less predictable — good for stress-testing turn handling and interruptions. Lower (toward 0.3) makes runs reproducible — better for regression suites where you want the same failure to reproduce the same way. |
+
+### Voice / TTS
+
+What the simulated caller sounds like on the call. The selects cascade: **Model** depends on **Provider**, **Language** on **Model**, and **Voice Name** on **Language** — so pick them top to bottom.
+
+| Field | Required | When to change |
+|-------|----------|-----------------|
+| **Provider** / **Model** | No | Nothing is pre-selected — you must pick a provider and model to unlock the required **Voice Name** below. Change later if your catalog has a voice you want under another provider. |
+| **Language** | No | Match the language your real callers use — your agent's STT is part of what's under test, and testing it only in the "easy" language hides failures. |
+| **Voice Name** | Yes | The specific synthetic voice. This is the only required TTS field. Pick voices that resemble your actual caller base (age, accent, energy), not just the clearest studio voice. |
+
+### Speech-to-Text
+
+How the simulated caller transcribes what your agent says back to it.
+
+| Field | Required | When to change |
+|-------|----------|-----------------|
+| **Provider** / **Model** / **Language** | No | Rarely worth touching. Keep **Language** consistent with the TTS language so the simulated caller actually understands the agent it's talking to. |
+
+## Building useful personas
+
+One profile per team is a missed opportunity. Build a small library of contrasting personas and reuse them across every voice Evaluator — the same "frustrated caller" can drive your cancellation test, your billing-dispute test, and your escalation test. A useful starter set:
+
+- **Cooperative caller** — answers directly, follows instructions. Your baseline: if the agent fails here, nothing else matters.
+- **Frustrated caller** — impatient, interrupts, escalates when stalled. Tests de-escalation and whether the agent stays on task under pressure.
+- **Rambling caller** — buries the actual request in tangents. Tests whether the agent can extract intent and steer.
+- **Soft-spoken elderly caller** — quiet, slow, occasionally mishears. Tests patience, repetition handling, and the agent-side speech settings you tuned in [Voice Agent Settings](/voice-agents/voice-agent-settings).
+
+For each one, write the **Instruction** like a character brief, not a test plan:
+
+- **Who they are** — age, situation, relationship to your business.
+- **What they want** — their actual goal, and how willing they are to give up information.
+- **How they talk** — pacing, whether they interrupt, dialect or filler habits, how their mood shifts when things go well or badly.
+
+<Tip>
+Match **Temperature** to the persona's job. The frustrated and rambling callers earn a high temperature (0.8–1.0) — their value is unpredictability. The cooperative caller you run in every regression suite should sit low (around 0.3) so a failed run means the agent changed, not the simulator's mood.
+</Tip>
+
+## Editing and deleting
+
+**Edit** on a profile's row reopens the same dialog; **Save Changes** applies to every Evaluator using that profile from its next run onward — there's no per-evaluator copy, which is exactly what makes the shared library cheap to maintain.
+
+**Delete** asks for confirmation, and the warning is worth taking seriously: evaluators using the profile will no longer have a simulator persona, and the action cannot be undone. Reassign those evaluators to another profile in their Basics section (see [Creating an Evaluator](/evaluations/creating-an-evaluator)) before deleting, not after.
+
+## What's Next
+
+- [Creating an Evaluator](/evaluations/creating-an-evaluator) — attach a profile in Step 2 and run your first voice evaluation end to end.
+- [Voice Agent Settings](/voice-agents/voice-agent-settings) — the agent-side voice and turn-taking settings your profiles are stress-testing.

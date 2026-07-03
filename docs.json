@@ -106,8 +106,10 @@
             "group": "Evaluations",
             "pages": [
               "evaluations/evaluations-overview",
+              "evaluations/creating-an-evaluator",
+              "evaluations/evaluation-profiles",
               "evaluations/evaluation-metrics",
-              "evaluations/creating-an-evaluator"
+              "evaluations/scorecards"
             ]
           },
           {

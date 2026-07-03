@@ -32,9 +32,9 @@ Evaluators work across agent types — the Evaluators list has an Agent Type fil
 | Area | What it's for | Where to go deeper |
 |------|----------------|---------------------|
 | **Evaluators** | Define a test case: agent under test, scenario (generated persona or fixed script), metrics, and turn/duration limits. Run one or many at once with **Run Selected**. | [Creating an Evaluator](/evaluations/creating-an-evaluator) |
-| **Profiles** | Voice-only. Reusable simulated-caller configurations — LLM, TTS voice/language, STT, and a persona instruction — attached to voice Evaluators. | Configured inline when building a voice Evaluator; no dedicated page yet. |
+| **Profiles** | Voice-only. Reusable simulated-caller configurations — LLM, TTS voice/language, STT, and a persona instruction — attached to voice Evaluators. | [Evaluation Profiles](/evaluations/evaluation-profiles) |
 | **Metrics** | The shared scoring-criteria library (deterministic checks and LLM-judged criteria) used by Evaluators, the per-agent Evaluation tab, and Scorecards. | [Evaluation Metrics](/evaluations/evaluation-metrics) |
-| **Scorecards** | A separate system for grading batches of *uploaded call recordings* (from Call History) against the same shared Metrics library — not simulated pre-ship runs. | Configured on the Scorecards page; batches themselves are uploaded from Call History. |
+| **Scorecards** | A separate system for grading batches of *uploaded call recordings* (from Call History) against the same shared Metrics library — not simulated pre-ship runs. | [Scorecards](/evaluations/scorecards) |
 | **Runs** | Read-only history of queued/executed evaluation runs — pass/fail counts, success rate, transcripts. Launched from Evaluators, not from here. | [Creating an Evaluator](/evaluations/creating-an-evaluator) |
 
 <Note>
