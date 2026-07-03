@@ -1,0 +1,131 @@
+---
+
+title: "Voice Conversational Flow"
+description: "For voice agent builders: design multi-stage calls as a graph of nodes with explicit transitions instead of one system prompt."
+---
+
+The Conversational Flow engine lets you build a voice agent as a graph of **nodes** connected by **transitions**, instead of driving the whole call from one system prompt. At any moment the call is "in" exactly one node, and that node's instructions and tools are what the AI works with — so you control what the agent can say and do at each stage of the call.
+
+Choose it over the Single Prompt engine when your calls have distinct stages that must happen in order — for example, verify the caller's identity first, then negotiate a payment plan, then confirm next steps. A single prompt can describe that sequence, but a flow *enforces* it: the agent can't skip to negotiation until a transition condition says identity is confirmed.
+
+![Voice agent conversational flow editor showing connected nodes on the canvas](/screenshots/voice-conversational-flow.png)
+
+<Note>
+If you build chat agents, you already know most of this editor — the canvas is the same. Voice flows differ in node types, transition mechanics, and where the global prompt lives. See [Differences from the chat flow editor](#differences-from-the-chat-flow-editor) below.
+</Note>
+
+## Getting the engine
+
+The engine is chosen at agent creation and can't be changed later — to switch engines, create a new agent.
+
+1. Click **+ New Voice Agent** and choose the **Blank** template. Role templates always create single-prompt agents; only Blank offers the choice.
+2. An **Engine** picker appears with two cards: **Single prompt** ("One system prompt drives the whole conversation") and **Conversational flow** ("Build a graph of nodes with explicit transitions"). Pick **Conversational flow**.
+
+Agents created this way get a **Conversational Flow** tab between Model Settings and Knowledge Base. The first time you open it you'll see the empty state — "No Conversation Flow" — with a **Create Conversation Flow** button (visible only if you hold the draft edit lock). Creating the flow seeds one "Initial Greeting" conversation node.
+
+The first node you create is automatically the start node, marked with a 🚀 icon. There is no "set as start node" control — build your flow outward from it.
+
+## The editor
+
+The flow opens on the same visual canvas as the chat flow editor: drag between nodes to create transitions, and use the toolbar for **Import Flow**, **Export Flow** (JSON), **Auto arrange**, **Add Node**, and search. Clicking a node opens its panel on the right.
+
+### Adding a node
+
+**Add Node** opens the **Create New Node** dialog with three fields: **Node Name**, **Node Type**, and **Instructions**. For voice agents the type list has exactly two options:
+
+| Node type | What it does |
+|-----------|--------------|
+| **Normal Conversation** | A stage of the call. The agent follows this node's Instructions while the call is in it. |
+| **Transfer Call** | Hands the call to a human or another number. The agent can speak a transfer message, then transfers. |
+
+There are no Schedule Meeting, Contact Collection, End, or Function node types for voice — scheduling and data collection are handled through [tools](/voice-agents/voice-agent-tools), and ending the call is a built-in ability on every node (see [Ending the call](#ending-the-call)).
+
+### The node panel
+
+Selecting a node opens a panel with:
+
+- **Name and color** — editable name plus a color picker for organizing large flows visually.
+- **Global Node** toggle with a **Condition** field — makes the node reachable from anywhere (see [Global nodes](#global-nodes)).
+- **Instruction** — a rich editor for the node's per-stage instructions. Hidden on Transfer Call nodes.
+- **Transitions** — one condition + destination pair per outgoing edge (see [How the agent moves between nodes](#how-the-agent-moves-between-nodes)).
+- **Tool Selection** — which of the agent's custom tools are callable in this node. Hidden on Transfer Call nodes.
+- **Duplicate Node** / **Delete Node** in the footer.
+
+### Transfer Call configuration
+
+Transfer Call nodes replace the Instruction editor with transfer settings:
+
+| Setting | Options / behavior |
+|---------|--------------------|
+| **Transfer To** | **Revve User** (in-app agent), **SIP Address**, or **Phone Number**. |
+| **Transfer Type** | **Bridge Transfer** — "SIP INVITE — transferee joins the call. AI agent stays silent but continues logging." **Cold Transfer** — "SIP REFER — call is transferred entirely. No further logging of customer-agent conversation." |
+| Destination | Depends on the mode: an E.164 phone number, a SIP address, or a fallback number for Revve User. |
+| **Outbound Phone Number** | Which number to dial out from. Shown only for bridge transfers to a phone number. |
+| **Summary Prompt** | Optional — shapes the call summary handed to the transferee. |
+| **Transfer Message** | Optional — a line the agent speaks before transferring (for example, "Let me connect you with a specialist"). If unset, the agent says a default transfer line. |
+
+For how bridge and cold transfers behave on the phone network, see [Call Transfer](/voice-agents/call-transfer).
+
+## How the agent moves between nodes
+
+Each transition has a condition. At runtime the flow behaves as a state machine, and conditions are checked in a fixed order on each turn:
+
+1. **Deterministic conditions** are evaluated first. A condition written as a comparison — for example `` `{{retry_count}} >= 3` `` using flow variables — is evaluated mechanically, with no AI judgment, and wins immediately when true. Use these for hard rules that must never depend on the model's interpretation, like retry limits.
+2. **AI-judged conditions** come second. A plain-language condition like "the caller confirmed their identity" is handed to the AI as a transition rule; the model decides when the rule is met and moves the call.
+
+Either way, the runtime only permits moves to nodes actually connected from the current node (plus global nodes). The AI can't jump to an arbitrary node just because it seems relevant — if you didn't draw the edge, the move can't happen.
+
+What the caller hears depends on the destination:
+
+- Moving to a **Normal Conversation** node is silent — nothing announces the transition; the destination node simply speaks next.
+- Moving to a **Transfer Call** node speaks the **Transfer Message** first (or a default transfer line if you left it empty), then transfers.
+
+<Tip>
+Prefer plain-language conditions for anything conversational ("caller agreed to the payment plan") and reserve comparisons for counters and thresholds. A deterministic rule fires the instant it's true, even mid-persuasion — which is exactly what you want for a hard cap, and exactly what you don't want for a judgment call.
+</Tip>
+
+## Per-node tools
+
+Custom tools attached to the agent are only callable on nodes where you selected them in **Tool Selection**. A node with nothing selected exposes none of the custom tools — useful for keeping a verification node from booking meetings, or a closing node from re-running lookups.
+
+Built-in abilities are always available regardless of tool selection: transitioning between nodes, ending the call, knowledge-base search (the flow uses the agent's attached knowledge bases for retrieval), voicemail detection, and phone verification/normalization when configured.
+
+## Global nodes
+
+Toggling **Global Node** on and setting its **Condition** makes the node reachable from *any* other node when the condition is met — as the tooltip puts it, "acting as a universal fallback or interrupt point."
+
+Use global nodes for interrupts that can happen at any stage of the call:
+
+- "Caller asks to speak to a human" → a global Transfer Call node.
+- "Caller asks to be removed from the list" → a global node that handles the opt-out.
+
+To send the caller back to the main flow after handling the interrupt, draw transitions out of the global node — there is no automatic return to where the conversation left off.
+
+## Ending the call
+
+There is no End node type — every node has a built-in end-call ability, so the agent can wrap up from anywhere in the flow once the conversation has run its course.
+
+The hangup is cancellable: if the caller speaks during the goodbye, the agent stays on the line instead of hanging up mid-sentence.
+
+## Where the global prompt lives
+
+The flow has no global prompt field of its own. The **Instructions** field on the agent's **General** tab *is* the flow's global prompt: rules that apply across all nodes — persona, tone, compliance language — go there, while per-stage behavior goes in each node's Instruction.
+
+Who speaks first is also outside the flow: it's governed by the agent's **AI Speaks First** setting under Advanced Settings, same as single-prompt agents. See [Voice Agent Settings](/voice-agents/voice-agent-settings).
+
+## Differences from the chat flow editor
+
+| | Chat flow | Voice flow |
+|---|-----------|------------|
+| Node types | Normal Conversation, Contact Collection, Schedule Meeting, and Transfer Call, plus rich per-node features (Contact Collection, Schedule Meeting, Render Testimonial, Human Escalation, per-node Automation) | **Normal Conversation** and **Transfer Call** only |
+| Passthrough | Node Passthrough lets one message traverse multiple nodes | Not available — one node at a time |
+| Transition conditions | AI-judged conditions | Deterministic comparisons (e.g. `` `{{retry_count}} >= 3` ``) evaluated first, then AI-judged conditions |
+| Global prompt | Edited in the flow editor | The **Instructions** field on the General tab |
+| Ending | — | Built-in end-call ability on every node; no End node type |
+
+For the chat counterpart, see [Flow Editor Overview](/conversational-flow/flow-editor-overview).
+
+## What's Next
+
+- [Creating Your First Voice Agent](/voice-agents/creating-your-first-voice-agent) — the creation flow where you pick the engine.
+- [Call Transfer](/voice-agents/call-transfer) — bridge vs. cold transfer mechanics behind the Transfer Call node.
