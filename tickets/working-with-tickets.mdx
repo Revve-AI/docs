@@ -23,7 +23,7 @@ To find a ticket, use the search box ("Search by ticket ID or title or contact..
 
 The table shows **ID**, **Contact** (name plus phone or email), **Title**, **Status**, **Assignee**, and **Created**. You don't need to open a ticket for routine triage: **Status** and **Assignee** are editable inline, straight from the table. Click any row to open the ticket's detail sidebar.
 
-To pull tickets into a spreadsheet, use the **Export CSV** dropdown — **Export Current Page** or **Export All Data**. Exports are queued and delivered by email ("Export queued! You will receive an email when ready."), so large exports don't block your browser.
+To pull tickets into a spreadsheet, use the **Export CSV** dropdown — **Export Current Page** or **Export All Data**. Exports are queued and delivered by email ("Export queued successfully. You will receive an email when ready."), so large exports don't block your browser.
 
 ## Ticket statuses
 
@@ -92,7 +92,7 @@ Automation rules can include a **Create Ticket** action, so tickets get filed wh
 
 ### 4. Auto-assignment
 
-Strictly speaking this is how tickets get *assigned*, not created — but it's why AI- and automation-created tickets often arrive in someone's queue already owned. When a ticket is created by an AI agent or an automation rule with no assignee, the routing engine picks an available human agent, balancing workload so the least-loaded agent gets it first. It honors your routing configuration in **Settings → Routing**; the preset rules include a **Ticket Distribution** cap ("Maximum per agent: N tickets") — once an agent hits the cap, they stop receiving new tickets until their load drops.
+Strictly speaking this is how tickets get *assigned*, not created — but it's why AI- and automation-created tickets often arrive in someone's queue already owned. When a ticket is created by an AI agent or an automation rule with no assignee, the routing engine picks an available human agent — preferring whoever handled the same contact in the last 24 hours, then applying your routing rules, and falling back to the least-loaded agent. It honors your routing configuration in **Settings → Routing**; the preset rules include a **Ticket Distribution** cap ("Maximum per agent: N tickets") — once an agent hits the cap, they stop receiving new tickets until their load drops.
 
 ## Configuring ticket types
 
