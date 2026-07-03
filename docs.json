@@ -25,7 +25,8 @@
         "group": "Guides",
         "pages": [
           "guides/lead-qualification-agent",
-          "guides/payment-reminder-campaign"
+          "guides/payment-reminder-campaign",
+          "guides/appointment-booking-voice-agent"
         ]
       },
       {
@@ -94,7 +95,8 @@
           "voice-agents/what-is-a-voice-agent",
           "voice-agents/creating-your-first-voice-agent",
           "voice-agents/voice-agent-settings",
-          "voice-agents/call-transfer"
+          "voice-agents/call-transfer",
+          "voice-agents/do-not-call-list"
         ]
       },
       {
