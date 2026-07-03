@@ -52,6 +52,7 @@
               "general-configuration/choosing-an-llm-model",
               "general-configuration/welcome-messages-and-conversation-starters",
               "general-configuration/language-and-tone-settings",
+              "general-configuration/chat-agent-advanced-settings",
               {
                 "group": "Conversation Flow",
                 "pages": [
