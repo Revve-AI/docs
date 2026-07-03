@@ -58,6 +58,8 @@ Say a bank's Voice Agent asks a caller to state their account number before cont
 
 This is an illustrative example, not a banking-specific feature — the tool itself is general-purpose. Its own description covers ID numbers, account numbers, OTP codes, and passports as the kinds of spoken values it's meant to validate, which is why the regex field is free-form rather than tied to any one format.
 
+![The "Create Built-in Validate Tool" dialog, configured with Tool Name "ValidateAccountNumber", a description, Regex Pattern `\d{9}|\d{12}`, a Failure Message, and a Success Message](/screenshots/voice-tool-built-in-validate-configured.png)
+
 <Tip>
 If you also use [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation), a **Tool Called** metric checking for Built-in Validate is a way to confirm — after the fact, on every call — that the agent actually ran the validation step before moving on, instead of trusting the prompt alone.
 </Tip>
