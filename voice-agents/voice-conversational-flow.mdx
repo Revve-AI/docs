@@ -58,11 +58,11 @@ Transfer Call nodes replace the Instruction editor with transfer settings:
 | Setting | Options / behavior |
 |---------|--------------------|
 | **Transfer To** | **Revve User** (in-app agent), **SIP Address**, or **Phone Number**. |
-| **Transfer Type** | **Bridge Transfer** — "SIP INVITE — transferee joins the call. AI agent stays silent but continues logging." **Cold Transfer** — "SIP REFER — call is transferred entirely." |
+| **Transfer Type** | **Bridge Transfer** — "SIP INVITE — transferee joins the call. AI agent stays silent but continues logging." **Cold Transfer** — "SIP REFER — call is transferred entirely. No further logging of customer-agent conversation." |
 | Destination | Depends on the mode: an E.164 phone number, a SIP address, or a fallback number for Revve User. |
 | **Outbound Phone Number** | Which number to dial out from. Shown only for bridge transfers to a phone number. |
 | **Summary Prompt** | Optional — shapes the call summary handed to the transferee. |
-| **Transfer Message** | Optional — a line the agent speaks before transferring (for example, "Let me connect you with a specialist"). |
+| **Transfer Message** | Optional — a line the agent speaks before transferring (for example, "Let me connect you with a specialist"). If unset, the agent says a default transfer line. |
 
 For how bridge and cold transfers behave on the phone network, see [Call Transfer](/voice-agents/call-transfer).
 
@@ -78,7 +78,7 @@ Either way, the runtime only permits moves to nodes actually connected from the 
 What the caller hears depends on the destination:
 
 - Moving to a **Normal Conversation** node is silent — nothing announces the transition; the destination node simply speaks next.
-- Moving to a **Transfer Call** node speaks the **Transfer Message** first (if set), then transfers.
+- Moving to a **Transfer Call** node speaks the **Transfer Message** first (or a default transfer line if you left it empty), then transfers.
 
 <Tip>
 Prefer plain-language conditions for anything conversational ("caller agreed to the payment plan") and reserve comparisons for counters and thresholds. A deterministic rule fires the instant it's true, even mid-persuasion — which is exactly what you want for a hard cap, and exactly what you don't want for a judgment call.
@@ -99,7 +99,7 @@ Use global nodes for interrupts that can happen at any stage of the call:
 - "Caller asks to speak to a human" → a global Transfer Call node.
 - "Caller asks to be removed from the list" → a global node that handles the opt-out.
 
-The runtime remembers where the conversation was, so a global node can act as an interrupt point rather than derailing the flow.
+To send the caller back to the main flow after handling the interrupt, draw transitions out of the global node — there is no automatic return to where the conversation left off.
 
 ## Ending the call
 
@@ -117,7 +117,7 @@ Who speaks first is also outside the flow: it's governed by the agent's **AI Spe
 
 | | Chat flow | Voice flow |
 |---|-----------|------------|
-| Node types | Three types plus rich per-node features (Contact Collection, Schedule Meeting, Render Testimonial, Human Escalation, per-node Automation) | **Normal Conversation** and **Transfer Call** only |
+| Node types | Normal Conversation, Contact Collection, Schedule Meeting, and Transfer Call, plus rich per-node features (Contact Collection, Schedule Meeting, Render Testimonial, Human Escalation, per-node Automation) | **Normal Conversation** and **Transfer Call** only |
 | Passthrough | Node Passthrough lets one message traverse multiple nodes | Not available — one node at a time |
 | Transition conditions | AI-judged conditions | Deterministic comparisons (e.g. `` `{{retry_count}} >= 3` ``) evaluated first, then AI-judged conditions |
 | Global prompt | Edited in the flow editor | The **Instructions** field on the General tab |
