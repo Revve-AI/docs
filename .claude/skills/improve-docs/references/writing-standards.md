@@ -41,7 +41,8 @@ The old docs failed as "an outdated list of features & knobs — not actionable"
 ```bash
 mint broken-links                 # must print "success no broken links found"
 grep -rn '{{' <new files>         # every hit must be inside backticks/code fences
-# nav check: every mint.json page has a file, no accidental orphans
+# nav check: every page in docs.json navigation.groups has a file, no accidental orphans
+# image check: every /screenshots/*.png referenced by changed pages exists
 ```
 
 If feasible, render-check each new page with `mint dev` and confirm the body isn't empty (the double-brace failure mode).

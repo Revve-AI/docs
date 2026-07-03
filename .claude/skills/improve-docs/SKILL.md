@@ -26,7 +26,7 @@ If it doesn't exist, this is the first run — scan the last 4 weeks of commits 
 
 Spawn **three Explore subagents in parallel** (single message, three Agent calls):
 
-**Agent A — revve-web recent changes.** Give it: the SHA range (`git -C ../revve-web log <last-sha>..HEAD --oneline` — run this yourself first and include the commit list in the prompt so the agent doesn't need to re-derive it). Ask it to identify which commits are *customer-facing* (dashboard UI, widget, API routes, integrations, migrations that add user-visible features — not refactors, tests, or internal tooling) and, for each, report: what shipped, exact UI labels/fields/defaults from the code, and which docs page it affects or requires. Tell it the current docs nav (paste the `mint.json` page list).
+**Agent A — revve-web recent changes.** Give it: the SHA range (`git -C ../revve-web log <last-sha>..HEAD --oneline` — run this yourself first and include the commit list in the prompt so the agent doesn't need to re-derive it). Ask it to identify which commits are *customer-facing* (dashboard UI, widget, API routes, integrations, migrations that add user-visible features — not refactors, tests, or internal tooling) and, for each, report: what shipped, exact UI labels/fields/defaults from the code, and which docs page it affects or requires. Tell it the current docs nav (paste the `docs.json` page list).
 
 **Agent B — voice-agent-worker recent changes.** Same brief, for `../voice-agent-worker`. This repo powers the voice-call runtime, so changes here usually affect the Voice Agents docs (settings, behaviors, normalization, telephony).
 
@@ -48,36 +48,45 @@ Select the top items that fit in **2–3 pages total**. Prefer one coherent them
 
 ## Phase 3 — Write
 
-Create a branch first: `improve-docs/<yyyy-mm-dd>-<short-topic>` off up-to-date `main`.
+Create a branch first: `improve-docs/<yyyy-mm-dd>-<short-topic>` off **`origin/main`** (`git fetch origin` first) — not local `main`, which may carry unpushed commits that would pollute the PR. If local `main` is ahead of origin, mention that in your final report but don't push it yourself.
 
 Spawn **one writing subagent per page, in parallel**. Each prompt must include:
 - The relevant facts from Phase 1 (paste them — the writer should not re-explore the product repos except to verify specifics).
 - The full text of `references/writing-standards.md`, or instruct the agent to read it first.
 - The target file path, the page's job in one sentence, and which existing pages it links to/from.
-- The screenshot policy: **reuse existing images from `/screenshots` only; never log into the app.** If a needed screenshot is missing or shows outdated UI, write the page without it and return the list of missing shots.
+- Scope: **write only the assigned page file — never edit `docs.json` or other pages, and never log into the app** (the main agent handles capture in Phase 4). Navigation belongs to the editor pass; parallel writers editing the same nav file will conflict.
+- Screenshots: reuse existing images from `/screenshots` where they show current UI; where an image is missing or outdated, write the image reference into the page anyway (`/screenshots/<feature>-<kebab-name>.png` with descriptive alt text) and return the list of needed captures — Phase 4 captures them.
 
-Writers return their missing-screenshot lists; collect them for the PR body.
+After the writers finish, do an editor pass yourself: consistent tone across new pages, no duplicated content with existing pages, cross-links in both directions, and add the new pages to the `docs.json` navigation (`navigation.groups`) in a sensible position.
 
-After the writers finish, do an editor pass yourself: consistent tone across new pages, no duplicated content with existing pages, cross-links in both directions, and add the new pages to `mint.json` navigation in a sensible position.
+## Phase 4 — Capture screenshots
 
-## Phase 4 — Verify
+Collect the writers' needed-capture lists and capture them from the live app. Read `references/screenshot-capture.md` for the full authenticated workflow (magic-link sign-in via Gmail, agent-browser mechanics, naming, and the production-safety rules — they are strict: read-only navigation, release any edit locks, never publish).
 
-All three checks must pass before the PR:
+For each needed shot: navigate to the screen, put it in the state the page describes, capture at 1440×900 into `/screenshots/`, then **view the image** to confirm it shows what the alt text claims before moving on.
+
+If sign-in or a specific capture fails after a couple of attempts, don't block the run: remove the broken image reference from the page (or keep the old screenshot if it's merely dated, noting it), and list the shot under "Missing screenshots" in the PR body. A shipped PR with two good screenshots beats a stalled run chasing a third.
+
+## Phase 5 — Verify
+
+All four checks must pass before the PR:
 
 1. `mint broken-links` — must report success.
 2. MDX double-brace check — raw `{{…}}` outside backticks silently blanks a page's body:
    `grep -rn '{{' <new files>` and confirm every occurrence is inside backticks or a code fence.
-3. Nav ↔ file consistency — every `mint.json` page has an `.mdx` file and no new orphans were created.
+3. Nav ↔ file consistency — every page in `docs.json` `navigation.groups` has an `.mdx` file and no new orphans were created.
+4. Every image referenced by the changed pages exists in `/screenshots` (Phase 4 failures must have been cleaned out of the pages).
 
 If `mint` is available, also render-check each new page (`mint dev`, request the page, confirm non-trivial body length). Skip gracefully if the port is busy or the CLI is missing.
 
-## Phase 5 — PR
+## Phase 6 — PR
 
-1. Update `.improve-docs-state.json` with the current HEAD SHA of both product repos (include it in the commit — the state travels with the repo).
+1. Update `.improve-docs-state.json` with the HEAD SHAs you actually scanned in Phase 1 (scan-time, not PR-time — commits landing mid-run must be scanned next run). Include it in the commit — the state travels with the repo.
 2. Commit with a message summarizing the pages added/changed. End with:
    `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`
-3. Push the branch and open a PR against `main` on `trungduyvu/docs`. Try `gh pr create` first; if the gh token is stale, fall back to the GitHub MCP `create_pull_request` tool.
-4. PR body template:
+3. Push the branch and open a PR against `main` on **`Revve-AI/docs`** (the repo was transferred from `trungduyvu/docs`; old remotes redirect). Try `gh pr create` first; if it fails auth, fall back to the GitHub MCP `create_pull_request` tool.
+4. Finish on a clean tree: `git checkout main` after the PR is open. Never merge the PR yourself.
+5. PR body template:
 
 ```markdown
 ## What
@@ -92,12 +101,12 @@ If `mint` is available, also render-check each new page (`mint dev`, request the
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
 
-5. Report the PR URL, what was written, and the top of the remaining backlog.
+6. Report the PR URL, what was written, and the top of the remaining backlog.
 
 ## Rails
 
 - Never commit to `main` directly; never merge the PR yourself.
-- Never log into app.revve.ai or read email during a routine run.
+- Production safety during screenshot capture (Phase 4 only — writers never log in): navigation and screenshots only. Never publish, save, delete, or send anything; release any edit lock you acquire ("Stop Editing") before leaving a screen; close dialogs with Escape rather than action buttons. Full rules in `references/screenshot-capture.md`.
 - Every UI label, default value, field name, and endpoint in a page must come from the product code, an existing screenshot, or an existing verified page — if you can't ground a claim, leave it out. An outdated claim damages trust more than a missing one.
 - Don't delete or rewrite existing non-stub pages in a routine run; propose that in the backlog instead.
 - If Phase 1 finds nothing worth writing (all gaps low-score), say so and stop — an empty run is a valid outcome; don't pad a PR.
