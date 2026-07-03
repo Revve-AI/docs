@@ -129,6 +129,14 @@
             ]
           },
           {
+            "group": "Integrations",
+            "pages": [
+              "integrations/integrations-overview",
+              "integrations/connecting-calendly",
+              "integrations/scheduling-and-booking"
+            ]
+          },
+          {
             "group": "Administration",
             "pages": [
               "governance-access/roles-and-permissions",

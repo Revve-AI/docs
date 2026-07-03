@@ -1,0 +1,133 @@
+---
+
+title: "Scheduling & Booking with Agents"
+description: "For the builder wiring calendars into agents — which scheduling apps Revve supports, where the Calendar App selector appears in chat and voice agents, and how to set up Cal.com and ChiliPiper."
+---
+
+Connect a scheduling app once, and every agent on your team can book against it. A chat agent can offer meeting slots mid-conversation; a Voice Agent can check availability and confirm an appointment while the caller is still on the line. This page covers the four supported providers, the shared **Calendar App** selector, where booking plugs into chat and voice agents, what happens after a booking lands, and the setup walkthroughs for Cal.com and ChiliPiper.
+
+## Supported scheduling providers
+
+Revve supports exactly four scheduling providers. Any installed app with the **Book Meeting** capability appears in the calendar selectors described below.
+
+| Provider | How it connects | Setup |
+|---|---|---|
+| **Calendly** | Dedicated app | [Connecting Calendly](/integrations/connecting-calendly) |
+| **Cal.com** | Dedicated app, API-key based | [Connect Cal.com](#connect-calcom) below |
+| **ChiliPiper** | Dedicated app, configuration form | [Connect ChiliPiper](#connect-chilipiper) below |
+| **HubSpot** | Meetings booking via the HubSpot CRM app | Install the HubSpot CRM app; its broader CRM setup is out of scope for this page |
+
+<Note>
+There is no Google Calendar integration. If your team's availability lives in Google Calendar, connect it through one of the four providers above — Calendly and Cal.com both sync from Google Calendar on their side.
+</Note>
+
+All apps install from **Settings → Apps** — see the [Apps & Integrations Overview](/integrations/integrations-overview) for who can install and how the Apps page works.
+
+## The Calendar App selector
+
+Every place an agent can book uses the same **Calendar App** selector:
+
+- Placeholder: **Select a calendar app**.
+- Each option shows the app's icon and the profile alias (or the app name if there's no alias) — so a Cal.com app with a "Sales Team Calendar" profile appears under that alias, not just "Cal.com".
+- With nothing installed, it shows **No calendar apps available**.
+- The list always ends with an **Install new app** shortcut that opens the Apps page — you can go install a calendar without abandoning the agent you're configuring.
+
+The selector picks a specific calendar profile, not just a provider. That matters once you have multiple profiles (say, a sales calendar and a support calendar on Cal.com): different agents — or different branches of the same flow — can book onto different calendars.
+
+## Booking from a chat agent
+
+Chat agents book in two places, and they behave differently.
+
+### Advanced Settings → Schedule Meeting
+
+The **Schedule Meeting** card in a chat agent's **Advanced Settings** ("Allow customers to schedule meetings directly through your chat agent") is the agent-wide switch: enable it, pick a **Calendar App**, and the agent can offer booking anywhere in the conversation.
+
+Enabling the switch without selecting a calendar app blocks saving — pick the app first, or use the **Install new app** shortcut if the list is empty.
+
+### The Schedule Meeting flow node
+
+For agents built on a conversational flow, the **Schedule Meeting** node type puts booking at a specific point in the conversation instead of agent-wide. Each node has its own **Calendar App** selector, so different flow branches can book on different calendars — route enterprise leads to the account executive's calendar and everyone else to the round-robin one. See [Flow Node Features](/conversational-flow/flow-node-features) for the node's other settings.
+
+If the selected app is ChiliPiper, an extra **Chili Piper Booking Method** dropdown appears on the node: **Router** or **Direct Link**. See [Connect ChiliPiper](#connect-chilipiper) for what each mode does.
+
+## Booking from a Voice Agent
+
+Voice Agents book through two tool presets, added from the **Tools** section of **Advanced Settings** (see [Voice Agent Tools](/voice-agents/voice-agent-tools) for the full Tools catalog):
+
+| Preset | What it does |
+|---|---|
+| **Check Availability** ("Check Calendar Availability") | Looks up open slots so the agent can offer them out loud |
+| **Book Appointment** ("Book on the Calendar") | Creates the booking while the caller is still on the line |
+
+Attach both — an agent that can check availability but not book leaves the caller with a slot and no appointment. Each tool's dialog has:
+
+| Setting | What it controls |
+|---|---|
+| **Calendar** | Which connected calendar profile the tool uses |
+| **Chili Piper Booking Method** | **Router** or **Direct Link** — only shown when the selected app is ChiliPiper |
+| **Global Tool** | "Attach this tool to every node in the conversational flow" — turn it on so booking works wherever the conversation happens to be, not just on one node |
+
+Both presets work with all four providers. Booking behavior on a call:
+
+- If the requested time isn't available, the availability check returns near-slot suggestions the agent can offer instead ("2 PM is taken — I have 2:30 or 3:15").
+- A booking requires the caller's name, email, booking time, and timezone — the agent collects whatever is missing before it books.
+- Past times are rejected.
+- Calendar profiles can be configured to reject personal email addresses (useful when the meeting must go to a work inbox).
+
+There is also a separate Calendly-only tool that texts (SMS) the caller a booking link instead of booking directly — useful when you'd rather let the caller pick a slot on their own screen than dictate one over the phone.
+
+For a complete recipe — both tools configured, plus the prompt instructions that tie them together — see [Build a Voice Agent That Books Appointments Mid-Call](/guides/appointment-booking-voice-agent).
+
+## What happens after a booking
+
+A successful booking does three things:
+
+1. **The meeting is created in the external provider.** Invitations, confirmation emails, and meeting links (Zoom, Google Meet, and so on) come from the provider's own event-type settings — configure those in Calendly, Cal.com, HubSpot, or ChiliPiper, not in Revve.
+2. **Revve records the appointment against the contact** — platform, time, timezone, name, and email — so the booking shows up on the contact's record, not just in the external calendar.
+3. **Optional follow-up campaign.** Teams can configure a default "after appointment booked" campaign; the booked contact is auto-enrolled into it — a reminder campaign is the typical use, so no-shows drop without anyone sending manual reminders. See [What Is a Campaign?](/campaigns/campaign-overview).
+
+## Connect Cal.com
+
+Cal.com connects with an API key, not OAuth. In **Settings → Apps**, find **Cal.com** and click **Install** — it opens the profile manager directly. Each profile is one bookable calendar; create one per event type you want agents to book:
+
+| Field | Required | What to enter |
+|---|---|---|
+| **Alias** | Yes | A name your builders will recognize in the Calendar App selector, e.g. "Sales Team Calendar" |
+| **API Key** | Yes | Your Cal.com API key. Click **Validate** — the profile can't be saved until the key validates. After saving, the key is masked; click the pencil icon to change it |
+| **Event Length (minutes)** | Yes | 1–1440 |
+| **Event Type ID** | Yes | The numeric ID from your Cal.com event type |
+
+Multiple profiles are supported — each shows up as its own option in the Calendar App selector, under its alias. Delete a profile via the trash icon (with confirmation).
+
+<Tip>
+Name the alias for the audience, not the tool: "Sales Team Calendar" tells a builder exactly which one to pick; "Cal.com key 2" doesn't.
+</Tip>
+
+## Connect ChiliPiper
+
+In **Settings → Apps**, install **ChiliPiper** to open the **ChiliPiper Integration Setup** page: "Enter your ChiliPiper configuration details. You can find these in your ChiliPiper admin settings."
+
+Two fields apply to both modes:
+
+| Field | What to enter |
+|---|---|
+| **Tenant ID** | Required — typically your domain |
+| **Subdomain** | The part before `.chilipiper.com` in your ChiliPiper URL |
+
+Then pick a mode — the form shows the two as tabs:
+
+- **Router** — books through a ChiliPiper Concierge router, which applies your routing rules (round-robin, territory, ownership) to pick the meeting owner. Fields: **Router Slug** (the Concierge router's slug), **API Key** (a Bearer token for the ChiliPiper API, with a show/hide toggle), and **Router Form Mapping**, which maps Revve contact fields to the ChiliPiper form fields — the defaults map email, first name, and last name.
+- **Direct Link** — books onto a specific person's calendar using a per-lead booking link. Fields: **Owner Booking Link Field** (the contact field that holds each lead's personal ChiliPiper link) plus its own form mapping. Use this when lead ownership already lives on the contact record and you want the meeting to land on the owner's calendar, no routing involved.
+
+Saving shows **ChiliPiper connected successfully**. One ChiliPiper configuration per team — but the Router-vs-Direct-Link choice reappears per agent tool and per flow node as the **Chili Piper Booking Method**, so you can configure both modes once and choose per booking surface which one applies.
+
+## What's Next
+
+<CardGroup cols={2}>
+  <Card title="Connecting Calendly" href="/integrations/connecting-calendly">
+    The Calendly-specific setup — profiles, event types, and the SMS booking-link tool.
+  </Card>
+  <Card title="Build a Voice Agent That Books Appointments Mid-Call" href="/guides/appointment-booking-voice-agent">
+    The complete recipe: both calendar tools configured, plus the prompts that make them work together.
+  </Card>
+</CardGroup>
