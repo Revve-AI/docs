@@ -42,7 +42,6 @@ Chat agents book in two places, and they behave differently.
 
 The **Schedule Meeting** card in a chat agent's **Advanced Settings** ("Allow customers to schedule meetings directly through your chat agent") is the agent-wide switch: enable it, pick a **Calendar App**, and the agent can offer booking anywhere in the conversation.
 
-
 Enabling the switch without selecting a calendar app blocks saving — pick the app first, or use the **Install new app** shortcut if the list is empty.
 
 ### The Schedule Meeting flow node
@@ -73,7 +72,7 @@ Both presets work with all four providers. Booking behavior on a call:
 - If the requested time isn't available, the availability check returns near-slot suggestions the agent can offer instead ("2 PM is taken — I have 2:30 or 3:15").
 - A booking requires the caller's name, email, booking time, and timezone — the agent collects whatever is missing before it books.
 - Past times are rejected.
-- Agents can be configured to reject personal email addresses (useful when the meeting must go to a work inbox).
+- Calendar profiles can be configured to reject personal email addresses (useful when the meeting must go to a work inbox).
 
 There is also a separate Calendly-only tool that texts (SMS) the caller a booking link instead of booking directly — useful when you'd rather let the caller pick a slot on their own screen than dictate one over the phone.
 

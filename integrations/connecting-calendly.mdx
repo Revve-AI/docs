@@ -10,16 +10,13 @@ You need the **Manage Settings** permission to install apps. For how the Apps pa
 
 ## Step 1: Install the Calendly app
 
-Go to **Settings → Apps**, find the **Calendly** card, and click **Install**. You land on the **Calendly Integration Setup** page ("Connect Revve AI with your Calendly account to enable appointment scheduling"), which previews what the connection unlocks:
-
-
-Under **What you'll get:**
+Go to **Settings → Apps**, find the **Calendly** card, and click **Install**. You land on the **Calendly Integration Setup** page ("Connect Revve AI with your Calendly account to enable appointment scheduling"), which previews what the connection unlocks under **What you'll get:**
 
 - **Check Availability** — AI agents can check your Calendly availability in real-time.
 - **Book Appointments** — automatically book meetings on your Calendly calendar.
 - **Near-Slot Suggestions** — when a time is unavailable, suggest alternative slots.
 
-Click **Connect Calendly**. You're redirected to Calendly to log in, review the requested permissions, and approve them. Calendly then returns you to Revve automatically, landing on the Calendly management page. Your event types are synced immediately on connect.
+Click **Connect Calendly**. You're redirected to Calendly to log in, review the requested permissions, and approve them. Calendly then returns you to Revve automatically, landing on the Calendly management page.
 
 <Note>
 The connection uses OAuth 2.0 — your Calendly credentials are never stored in Revve. The access token can be revoked anytime from your Calendly settings, which disconnects the integration.
@@ -29,14 +26,13 @@ The connection belongs to your team, and a team can connect multiple Calendly ac
 
 ## Step 2: Create a scheduling profile
 
-A profile is what agents actually point at: one connected account plus one booking configuration (event type, length, tracking). Open **Settings → Apps → Calendly → Details** to reach **Calendly Profiles** ("Manage your Calendly scheduling profiles"). Profiles are listed on the left with an **Add Profile** button; the form for the selected profile is on the right:
-
+A profile is what agents actually point at: one connected account plus one booking configuration (event type, length, tracking). Open **Settings → Apps → Calendly → Details** to reach **Calendly Profiles** ("Manage your Calendly scheduling profiles"). Profiles are listed on the left with a **New Profile** button; the form for the selected profile is on the right:
 
 | Field | Default | What to set |
 |-------|---------|-------------|
 | **Alias** (required) | — | A name you'll recognize in agent settings, e.g. "Sales Team Calendar". |
 | **Connected Account** | Your Calendly scheduling URL | Read-only — confirms which account this profile books on. |
-| **Event Type** (required) | — | Dropdown of your synced event types, shown as "name (duration min)". If the list fails to load, a manual UUID input appears as a fallback. |
+| **Event Type** (required) | — | Dropdown of your Calendly event types, loaded live from Calendly and shown as "name (duration min)". If the list fails to load, a manual UUID input appears as a fallback. |
 | **Event Length (minutes)** (required) | — | 1–1440. Match your event type's duration — this is what the agent offers callers. |
 | **Find Slot After (hours)** | 1 | 0–72. Hours from now to start searching for available slots. Raise it (e.g. 24) if your team needs prep time before a meeting; keep it low for same-day booking. |
 
@@ -56,8 +52,8 @@ The trade-off: the override only works for contacts whose field is populated. Ke
 
 Two collapsible sections handle attribution and forms:
 
-- **Tracking Parameters** — UTM Campaign / Source / Medium / Content / Term and Salesforce UUID, stamped onto every booking. Values support templating, so `utm_campaign` can be `{{campaignName}}` and each booking carries its originating campaign into your Calendly reporting.
-- **Pre-fill Questions** — answers for the event type's custom questions, filled automatically at booking time (e.g. pre-fill "Phone number" with `{{phone}}`). Question text must match the event type configuration in Calendly exactly — a typo means the answer is silently skipped.
+- **Tracking Parameters** — UTM Campaign / Source / Medium / Content / Term and Salesforce UUID, stamped onto every booking. Values can be static tags (e.g. `outbound_q1`) or contact variables like `{{companyName}}` for your Calendly reporting.
+- **Pre-fill Questions** — answers for the event type's custom questions, filled automatically at booking time (e.g. pre-fill "Phone number" with `{{phoneNumber}}`). If you use the scheduling-link override's manual question editor, the question text must match the event type configuration in Calendly exactly — a typo means the answer is silently skipped.
 
 ## Step 3: Point your agents at the profile
 
@@ -70,7 +66,7 @@ The agent-side wiring lives on [Scheduling and booking](/integrations/scheduling
 When an agent books a meeting, it's created in Calendly (your event type's own settings control invites and meeting links), recorded on the Revve contact, and can optionally auto-enroll the contact into a follow-up campaign.
 
 <Note>
-Event types re-sync from Calendly automatically once a day (02:00 UTC). If you just created or renamed an event type and don't see it in the **Event Type** dropdown, reconnecting or re-saving the integration refreshes the list immediately.
+The **Event Type** dropdown loads live from Calendly — if you just created or renamed an event type, reload the profiles page to see it. Separately, a daily sync (02:00 UTC, plus once on connect) keeps the scheduling-link lookup cache current — that's what resolves each contact's personal link when you use the **Contact Scheduling Link Override**.
 </Note>
 
 ## What's Next
