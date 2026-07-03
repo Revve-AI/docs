@@ -4,7 +4,7 @@ title: "Voice Agent Advanced Capabilities"
 description: "The remaining Advanced Settings tabs — outbound caller ID, Vietnamese phone verification and normalization, retries, webhooks, call analysis, security, and notifications — for the agent builder taking a working agent to production."
 ---
 
-[Voice Agent Settings](/voice-agents/voice-agent-settings) covers the conversation-shaping tabs of Advanced Settings — Call Behavior, Conversation, Voicemail, and Call Transfer. This page covers the rest: the capabilities you enable once the agent talks well and you need it to *operate* well — verify identities, retry failed dials, feed your systems, and alert your team.
+[Voice Agent Settings](/voice-agents/voice-agent-settings) covers the conversation-shaping tabs of Advanced Settings — Call Behavior, Conversation, Voicemail, and Call Transfer. This page covers the remaining operational tabs: the capabilities you enable once the agent talks well and you need it to *operate* well — verify identities, retry failed dials, feed your systems, and alert your team.
 
 Everything here follows the same editing model as the rest of Advanced Settings: changes **auto-save to the draft** (there's no Save button), and the tabs are read-only when you're viewing a published version or don't hold the edit lock. Two of these tabs — **Phone Verification** and **Normalization** — are Vietnamese-oriented capabilities, built for Vietnamese spoken digits, addresses, and license plates.
 
@@ -31,13 +31,13 @@ Confirms the caller's identity by having them speak their phone number and check
 
 | Setting | Default | When to change |
 |---------|---------|----------------|
-| **Validation Field Name** | `phoneNumber` | The contact field containing the number to verify against. Required when verification is on — leaving it blank blocks saving. Change it only if your phone number lives in a different field. |
+| **Validation Field Name** | Empty (placeholder `phoneNumber`) | The contact field containing the number to verify against. Required when verification is on — leaving it blank blocks saving. Change it only if your phone number lives in a different field. |
 | **Success Message** / **Fail Message** | Empty | What the agent says when the number matches or doesn't. Write both — the fail message especially, so a mismatch leads somewhere useful ("let me update your number") instead of a dead end. |
 | **Tool Call Messages** | Empty | One static sentence per tool, spoken while the tool executes so the caller doesn't sit through dead air. The placeholders show the register to aim for: `Dạ vâng ạ, em cảm ơn.` for extraction, `Để em kiểm tra giúp anh/chị nhé.` for verification. Always fill these in — a few seconds of silence mid-verification feels like a dropped call. |
 
 ## Normalization
 
-Two independent toggles, both **Vietnamese-specific**, that turn messy spoken input into structured data. Each adds one tool to the agent; at runtime both normalize the spoken input and have the agent read the result back digit by digit for confirmation ("có đúng không ạ?"), so transcription mistakes get caught on the call rather than in your database.
+Two independent toggles, both **Vietnamese-specific**, that turn messy spoken input into structured data. Each adds one tool to the agent. License-plate normalization has the agent read the normalized plate back digit by digit for confirmation ("có đúng không ạ?"), so transcription mistakes get caught on the call; address normalization returns the cleaned, structured address for the agent to use in the conversation.
 
 | Setting | Default | When to change |
 |---------|---------|----------------|
