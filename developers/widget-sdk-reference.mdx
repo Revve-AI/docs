@@ -1,0 +1,254 @@
+---
+
+title: "Widget SDK Reference"
+description: "JavaScript API reference for developers integrating the Revve chat widget: boot configuration, commands, events, visitor identity, and metadata."
+---
+
+This page documents the `window.Revve` JavaScript SDK (v2) that ships with the chat widget. It assumes the widget is already installed on your site — the embed snippet and `RevveConfig` setup live on [Website Installation](/channel-setup/website-installation). Everything here is what you do *after* that: identifying visitors, controlling the UI programmatically, listening for events, and attaching metadata.
+
+<Note>
+Widget look and feel — position, size, colors, launcher styling, teaser bubble copy, and visibility rules — is configured in the Website channel settings in the dashboard, not through the SDK. See [Appearance & Styling](/channel-setup/website-appearance-and-styling) and [Bubble Messages](/channel-setup/website-bubble-messages). The SDK controls runtime behavior: who the visitor is, when UI shows, and what data attaches to conversations.
+</Note>
+
+## Boot contract
+
+The embed script reads `window.RevveConfig` once at load:
+
+| Field | Type | Default | Purpose |
+|-------|------|---------|---------|
+| `chatbotId` | string | — (required) | Your Chat Agent identifier. |
+| `apiHost` | string | `https://app.revve.ai` | Override for self-hosted or development environments. |
+| `debug` | boolean | `false` | Verbose logging in the browser console. |
+| `hideLauncher` | boolean | `false` | Load without the launcher button; show it later with `Revve('showLauncher')`. |
+| `hideBubbleMessage` | boolean | `false` | Suppress teaser bubbles until you call `Revve('showBubble', ...)` yourself. |
+
+After the bundle loads it exposes a single callable global:
+
+```js
+Revve('methodName', ...args);
+Revve._v; // "2.0.0"
+```
+
+The SDK loads asynchronously, so `window.Revve` may not exist yet when your own code runs. If you call the API immediately at page load, add this queue stub right after setting `RevveConfig` — calls made before init are queued and flushed once the widget is ready:
+
+```js
+window.Revve = window.Revve || function () {
+  (window.Revve.q = window.Revve.q || []).push(arguments);
+};
+```
+
+The basic install snippet does not include the stub; you only need it if you call SDK methods before the bundle has loaded.
+
+## Identity and lifecycle
+
+### boot
+
+Identifies the visitor and starts (or restarts) the widget for that user.
+
+```js
+Revve('boot', {
+  chatbotId: 'your-chatbot-id',      // required
+  userId: 'user_42',                  // your stable user ID
+  email: 'ada@example.com',
+  name: 'Ada Lovelace',
+  customAttributes: { plan: 'pro' },  // attached to the user
+  contact: {                          // populates the dashboard contact record
+    name: 'Ada Lovelace',
+    email: 'ada@example.com',
+    phoneNumber: '+14155550100',
+    companyName: 'Analytical Engines',
+    metadata: { region: 'EMEA' }
+  },
+  token: '<server-signed JWT>',       // recommended: secure identification
+  forceNewThread: false               // true = start a fresh conversation
+});
+```
+
+Behavior to know:
+
+- Calling `boot` again while already booted throws an error — unless you pass `forceNewThread: true`, which starts a fresh conversation thread (useful for a "new ticket" button).
+- If the new `userId` differs from the currently booted one, the SDK shuts down first automatically, so switching users in place is safe.
+- `contact` is display-level data for the dashboard contact record — identification, not authentication.
+- `token` is a server-signed JWT and the recommended way to identify users securely. Verification happens server-side; when both contact info and a token are provided, the token takes precedence. See [Visitor identity](#visitor-identity) below.
+
+### shutdown
+
+```js
+Revve('shutdown');
+```
+
+Clears identity and thread state, generates a **new** anonymous ID, hides all widget UI, and reloads fresh. Call this on logout — otherwise the next user on a shared device can read the previous user's conversation.
+
+### update
+
+```js
+Revve('update', {
+  userId: 'user_42',
+  email: 'ada@example.com',
+  name: 'Ada Lovelace',
+  customAttributes: { plan: 'enterprise' }
+});
+```
+
+Merges updated attributes into the current identity after boot. `update` is throttled to **20 calls per 30 minutes**; calls over the limit are silently dropped, so send meaningful changes, not every keystroke.
+
+### getAnonymousId / getVisitorId
+
+```js
+const anonId = Revve('getAnonymousId'); // anonymous UUID, available before boot
+const visitorId = Revve('getVisitorId'); // userId if identified, else the anonymous ID
+```
+
+## Window control
+
+```js
+Revve('show');                          // open the chat window
+Revve('hide');                          // close it (the launcher re-appears)
+Revve('showMessages');                  // open directly to the messages view
+Revve('showNewMessage', 'Hi, I need help with billing'); // open composer, optionally pre-filled
+```
+
+`showNewMessage` accepts an optional string to pre-fill the composer; call it with no argument to open an empty composer.
+
+## Launcher control
+
+```js
+Revve('hideLauncher'); // remove the launcher button
+Revve('showLauncher'); // bring it back
+```
+
+These control the launcher *button*, not the chat window — distinct from `show`/`hide` above. Combine with the `hideLauncher: true` config flag to keep the widget invisible until your own UI triggers it.
+
+## Proactive bubbles
+
+```js
+Revve('showBubble', {
+  message: 'Questions about pricing? Ask me anything.',
+  delay: 30000,      // ms before the bubble appears
+  hideAfter: 15000   // ms until auto-hide; omit to keep it until dismissed
+});
+
+Revve('hideBubble', { redisplayAfter: 60000 }); // hide now, re-show in 60s
+Revve('hideBubble');                            // hide until the next showBubble
+```
+
+Only one bubble shows at a time. `hideAfter` auto-hides only when provided; without it the bubble stays until hidden. Set `hideBubbleMessage: true` in `RevveConfig` if you want full programmatic control and no dashboard-configured teasers firing on their own.
+
+## Notification sound
+
+```js
+Revve('setNotificationSound', 'https://cdn.example.com/ping.mp3');
+```
+
+Replaces the default new-message sound with your own audio URL.
+
+## Metadata
+
+Two scopes, two purposes — both persisted, both merged on repeat calls:
+
+```js
+// Attached to ALL conversation threads (attribution, analytics)
+Revve('setGlobalMetadata', {
+  utm_source: 'newsletter',
+  ab_variant: 'checkout-b'
+});
+
+// Attached to the CURRENT thread only
+Revve('setThreadMetadata', {
+  order_id: 'ord_9182',
+  page: '/checkout'
+});
+```
+
+Use `customAttributes` on `boot`/`update` for facts about the *user* (plan, role); use metadata for facts about the *conversation* or session context. Metadata surfaces alongside threads in the [Inbox](/inbox/inbox-overview).
+
+## Events
+
+Register callbacks through the same command interface:
+
+```js
+Revve('onShow', () => console.log('chat window opened'));
+Revve('onHide', () => console.log('chat window closed'));           // fires after the 300 ms close animation
+Revve('onUnreadCountChange', (count) => updateBadge(count));        // 0 when cleared
+Revve('onNewMessage', ({ count, total }) => {
+  // count = new messages in this batch, total = total unread
+});
+```
+
+<Note>
+Event registration is append-only: there is no way to unregister a callback, and registering the same handler twice stacks it — it will fire twice. Register each handler exactly once, outside any code path that re-runs (SPA route changes, React effects without guards).
+</Note>
+
+## Visitor identity
+
+The widget has three identity tiers:
+
+1. **Anonymous** (default). Every visitor gets a UUID stored in `localStorage['revve_anonymous_id']`. Conversations work fully; `getVisitorId()` returns this UUID.
+2. **Identified** — `boot` with `userId`/`email`/`contact`. Convenience-level identification: the dashboard shows a real name and contact record, and `getVisitorId()` returns your `userId`. Nothing stops a visitor from claiming someone else's ID from the browser console, so don't gate sensitive data on it.
+3. **Verified (JWT)** — `boot` with a `token`: a JWT your server signs with **RS256** (upload the public key in the dashboard). The widget sends it for server-side verification, and it takes precedence over any plain contact info in the same `boot` call. This is the recommended path whenever the conversation can expose account-specific information. The same key setup backs the Bridge JWT configuration described in [Chat Agent Advanced Settings](/general-configuration/chat-agent-advanced-settings).
+
+Transitions: `boot` moves a visitor from anonymous to identified (their anonymous history is associated with the identity); `shutdown` drops back to a *fresh* anonymous ID.
+
+## Legacy API (`window.revve`)
+
+The lowercase `window.revve` v1 API is deprecated and planned for removal in v3. Each call logs a deprecation warning. Migrate existing integrations and don't build new ones on it:
+
+| Legacy (`window.revve`) | Replacement (`window.Revve`) |
+|-------------------------|------------------------------|
+| `toggleChatWindow()` | `Revve('show')` / `Revve('hide')` |
+| `controlWidget('show' \| 'hide', ...)` | `Revve('showLauncher')` / `Revve('hideLauncher')` |
+| `promptMessage('show' \| 'hide')` | `Revve('showBubble', {...})` / `Revve('hideBubble')` |
+| `setNotificationSound(url)` | `Revve('setNotificationSound', url)` |
+| `window.revve.anonymousId` | `Revve('getAnonymousId')` |
+
+## Common patterns
+
+### Identify on login, shut down on logout
+
+```js
+// After your auth flow succeeds — mint the JWT server-side
+async function onLogin(user) {
+  const token = await fetch('/api/revve-token').then((r) => r.text());
+  Revve('boot', {
+    chatbotId: 'your-chatbot-id',
+    userId: user.id,
+    token,
+    contact: { name: user.name, email: user.email }
+  });
+}
+
+function onLogout() {
+  Revve('shutdown'); // clears the thread; next visitor starts anonymous
+}
+```
+
+### Hide the launcher on checkout pages
+
+```js
+if (location.pathname.startsWith('/checkout')) {
+  Revve('hideLauncher');
+} else {
+  Revve('showLauncher');
+}
+```
+
+In a single-page app, run this on every route change — the widget doesn't watch the URL for you.
+
+### Proactive bubble after 30 seconds on the pricing page
+
+```js
+if (location.pathname === '/pricing') {
+  Revve('showBubble', {
+    message: 'Comparing plans? I can help you pick.',
+    delay: 30000,
+    hideAfter: 20000
+  });
+}
+```
+
+Pair with `hideBubbleMessage: true` in `RevveConfig` so dashboard-configured teasers don't compete with your targeted one.
+
+## What's Next
+
+- [Website Installation](/channel-setup/website-installation) — the embed snippet and `RevveConfig` placement this page builds on.
+- [Chat Agent Advanced Settings](/general-configuration/chat-agent-advanced-settings) — uploading the JWT public key and Bridge configuration.

@@ -156,6 +156,12 @@
         "tab": "Developers",
         "groups": [
           {
+            "group": "Developer Guides",
+            "pages": [
+              "developers/widget-sdk-reference"
+            ]
+          },
+          {
             "group": "API Reference",
             "openapi": "api-reference/openapi.json"
           }
