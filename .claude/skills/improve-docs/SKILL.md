@@ -12,7 +12,7 @@ One run = one reviewable PR: scan → rank → write the top 2–3 pages → ver
 - `dry-run` — stop after Phase 2 and present the ranked backlog. No files written, no PR.
 - A focus area (`voice`, `campaigns`, `widget`, …) — constrain scanning and ranking to that area. Combines with `dry-run`.
 
-Before starting, read `references/writing-standards.md` (page conventions, templates, MDX gotchas) and `references/ranking-rubric.md` (scoring). Create a task list from the phases below.
+Before starting, read `references/writing-standards.md` (page conventions, templates, MDX gotchas), `references/ranking-rubric.md` (scoring), and `references/navigation-map.md` (target nav structure and placement rules). Create a task list from the phases below.
 
 ## Phase 1 — Discover gaps
 
@@ -30,13 +30,15 @@ Spawn **three Explore subagents in parallel** (single message, three Agent calls
 
 **Agent B — voice-agent-worker recent changes.** Same brief, for `../voice-agent-worker`. This repo powers the voice-call runtime, so changes here usually affect the Voice Agents docs (settings, behaviors, normalization, telephony).
 
-**Agent C — standing gaps.** Not tied to commits. Give it the docs nav and ask it to audit: pages that are stubs or thin; claims that may have drifted (model lists, UI labels — spot-check 3–4 against the code); sections the docs lack entirely relative to the product surface (check `../revve-web/app/dashboard` for products with zero docs coverage); and dead-end pages ("contact your Revve team"). Seed it with the known backlog in `references/ranking-rubric.md` § Standing backlog so it verifies rather than rediscovers.
+**Agent C — standing gaps.** Not tied to commits. Give it the docs nav and `references/navigation-map.md` and ask it to audit: pages that are stubs or thin; claims that may have drifted (model lists, UI labels — spot-check 3–4 against the code); sections the docs lack entirely relative to the product surface (check `../revve-web/app/dashboard` for products with zero docs coverage) *and* relative to the target structure in the navigation map (a future group with real shipped product but still no folder is a gap); and dead-end pages ("contact your Revve team"). Seed it with the known backlog in `references/ranking-rubric.md` § Standing backlog so it verifies rather than rediscovers.
 
 ## Phase 2 — Stack-rank
 
 Merge the three reports into one gap list. Score each gap with the rubric in `references/ranking-rubric.md` and produce a table sorted by score:
 
 | Rank | Gap | Type (new-feature / outdated / stub / missing-section) | Reach | Severity | Trust | Effort | Score | Proposed page(s) |
+
+The "Proposed page(s)" column should cite the destination group/folder from `references/navigation-map.md` (e.g. "`evaluations/` group, after Campaigns"), not an ad hoc guess.
 
 Sanity-check the top items yourself before committing to them: open the relevant code or docs page and confirm the gap is real. A wrong "gap" wastes the whole run.
 
@@ -65,7 +67,7 @@ bash scripts/check_writer_scope.sh <assigned-page-1>.mdx <assigned-page-2>.mdx �
 
 Any `UNEXPECTED:` path means a writer strayed — revert that file (`git checkout -- <path>`) unless the change was genuinely needed, in which case own it deliberately in the editor pass.
 
-Then do the editor pass yourself: consistent tone across new pages, no duplicated content with existing pages, cross-links in both directions, and add the new pages to the `docs.json` navigation (`navigation.groups`) in a sensible position.
+Then do the editor pass yourself: consistent tone across new pages, no duplicated content with existing pages, cross-links in both directions, and add the new pages to the `docs.json` navigation (nav now lives under `navigation.tabs`, with groups per tab and nested groups-within-groups for subsections) at the position `references/navigation-map.md` specifies. If a page needs a group that isn't in the map yet, add it to the map first, in its own deliberate edit — don't invent nav structure inline.
 
 ## Phase 4 — Capture screenshots
 
