@@ -6,6 +6,8 @@ description: "Every Voice Agent setting explained — what it does, its default,
 
 This page covers the settings in the **General**, **Model Settings**, and **Advanced Settings** tabs. The guiding principle: **the defaults are tuned for natural conversation — change a setting only when you observe the specific problem it solves.** Each section below tells you what that problem looks like.
 
+The **Evaluation** tab is a separate, policy-driven grading system for completed calls — it's covered on its own page: [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation).
+
 ## General
 
 | Setting | What it does | Guidance |
@@ -138,7 +140,7 @@ The remaining sections are situational — enable them when their trigger appear
 | **Phone Verification** | Confirm the caller's identity by having them state their phone number, checked against the number already on file for that contact. |
 | **Normalization** | Normalize spoken data like addresses into structured formats. |
 | **Retry & Callback** | Automatic retry rules for unanswered outbound calls. |
-| **Tools** | Attach custom tools (API calls, SMS sending) the agent can use mid-call, plus two calendar presets — **Check Calendar Availability** and **Book on the Calendar** — that connect to a Calendly, Cal.com, or Chili Piper calendar so the agent can book an appointment before the call ends. See [Build a Voice Agent That Books Appointments Mid-Call](/guides/appointment-booking-voice-agent) for the full setup. |
+| **Tools** | Attach custom tools (API calls, SMS sending) the agent can use mid-call, plus presets: two calendar tools, a ticket-creation tool, and a deterministic value-validation tool. Not every preset in the dropdown works on a phone call — see [Voice Agent Tools](/voice-agents/voice-agent-tools) before you attach one. |
 | **Webhook** | Notify your systems about call events. |
 | **Analysis & Summary** | Configure the post-call summary and the data fields extracted from each call (these appear in Call History). |
 | **Security** | Sensitive-data handling for this agent's calls. |
@@ -153,6 +155,8 @@ The remaining sections are situational — enable them when their trigger appear
 
 ## What's Next
 
+- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — automatically grade completed calls against a weighted set of metrics.
+- [Voice Agent Tools](/voice-agents/voice-agent-tools) — every Tools-tab preset, and which ones don't work on a phone call.
 - [Call Transfer](/voice-agents/call-transfer) — the full warm-transfer workflow, including routing to in-app agents.
 - [Do Not Call List](/voice-agents/do-not-call-list) — the team-wide list every outbound call is checked against before it's placed.
 - [Creating a Campaign](/campaigns/creating-a-campaign) — drive outbound calls with your tuned agent.
