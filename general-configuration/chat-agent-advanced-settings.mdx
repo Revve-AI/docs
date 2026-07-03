@@ -1,0 +1,209 @@
+---
+
+title: "Chat Agent Advanced Settings"
+description: "Every panel on a chat agent's Advanced Settings tab — defaults, trade-offs, and when to change each one — for the builder tuning agent behavior beyond the prompt."
+---
+
+Open your chat agent and select the **Advanced Settings** tab. Panels are listed in a left sidebar; the page opens on **Inactivity Follow-up**, and the active panel syncs to the URL so you can share a link straight to it.
+
+Two things about how editing works here:
+
+- **Changes auto-save into your draft.** Almost every panel saves as you type — there's no panel-level Save button (dialogs like Add Testimonial or Add Field have their own Save; the **Customize** modal in the Feedback panel is the one that saves manually). Note that testimonial content lives in a team-level library and saves immediately — only the agent's selection of testimonials is draft-gated. You need the draft edit lock (**Start Editing**) to change anything; viewing a historical version is read-only. Auto-saved changes still only affect the live agent once you publish — see [Publishing and Versioning](/getting-started/publishing-and-versioning).
+- **Some panels only appear for some agents.** Visibility depends on the agent's channel and engine:
+
+| Panel | Appears when |
+|-------|--------------|
+| **Feedback**, **Daily Report** (in Others), Domain Allowed List (in Security) | Website channel only |
+| **Social Feedback** | Messenger, Zalo OA, TikTok, or LinkedIn channel |
+| **Schedule Meeting**, **Contact Collection**, **Message Approval** | Single Prompt engine only — Conversational Flow agents configure these per node instead ([Flow Node Features](/conversational-flow/flow-node-features)) |
+
+The guiding principle, as with [voice agents](/voice-agents/voice-agent-settings): defaults are sensible — change a setting when you observe the specific problem it solves. Each section below tells you what that problem looks like.
+
+## Inactivity Follow-up
+
+When a customer goes quiet, the agent generates a follow-up message after a timeout instead of letting the thread die. Off by default; turn it on for sales and lead-capture agents where a stalled conversation is a lost lead.
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **Inactivity Timeout (seconds)** | 300 (minimum 30) | Five minutes suits support chats where people step away. Shorten toward 120–180 for high-intent sales chats where momentum matters. Don't go below 60 — you'll nag people who are still typing or reading your last answer. |
+| **Instructions** | "Generate a follow-up message when the customer is inactive. The message should be friendly and offer assistance. Consider the conversation context when generating the follow-up." | Required when enabled. This is an LLM instruction, not fixed text — the agent writes a context-aware message from it. Make it specific to your funnel: "If they were mid-checkout, offer to answer questions about pricing; otherwise ask if they'd like a summary emailed." |
+
+## Human Escalation
+
+Two cards: when to hand off, and what the bot says while the human is on the way. This is the configuration side of escalation — for how your team actually receives and works escalated threads, see [Human Takeover](/inbox/human-takeover).
+
+**Human Agent Escalation** — a master switch plus one textarea:
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **Escalation Criteria** | A three-bullet starter: "Escalate to human when customers: ask to speak with a human; express frustration or anger; have complex issues requiring human help" | Always rewrite this. The default catches the universal cases, but the escalations that hurt are product-specific: name *your* failure modes — "asks about a refund over $200", "reports the widget not loading", "mentions a competitor's quote". Vague criteria produce both missed escalations and a bot that gives up too easily. |
+
+<Tip>
+The escalation criteria don't have to cover everything — when you need to escalate in other cases, your prompt or tools can call the `escalate_to_human` tool directly.
+</Tip>
+
+**Auto-Reply Messages** — what customers see between escalation and a human's first reply:
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **Waiting in Queue Message** | Empty — no auto-reply is sent until you set one | Sent when the customer messages after escalation, while the thread waits for agent assignment. Set it — silence after "let me connect you to a human" reads as being abandoned. The placeholder is a good starting point: "Please wait, our agent will be with you as soon as possible." Set expectations honestly — if your team replies within business hours only, say so here. |
+| **Agent Joined Message** | Empty — no auto-reply is sent until you set one | Sent after an agent is assigned but before their first reply. The placeholder text works for most teams: "Please wait a moment, our agent has joined and will respond shortly." |
+
+## Testimonials
+
+A team-level library of customer testimonials the agent can surface in the chat widget. Click **Add** to open the **Add New Testimonial** dialog: **Client Name** and **Avatar Image** are required; **Client Title**, **Testimonial** text, **Business Description**, **Post URL**, and **Company Logo** are optional. Curate a handful of strong, relevant ones rather than dumping every review — the agent references the testimonials you select here.
+
+## Tools
+
+The agent's tool registry: custom API-call tools you define plus preset tools. This is where you give the agent abilities beyond text — checking order status, creating tickets, hitting your backend.
+
+## Message Bundles
+
+Manage reusable bundles of messages for this agent. Worth a look once your agent sends the same multi-message sequences repeatedly.
+
+## Webhook
+
+One field: a **URL** that receives real-time notifications about chat interactions. Must be `http`/`https`; leave it empty if you don't need it. Set it when your own systems need to react to conversations as they happen rather than polling.
+
+## Analysis & Summary
+
+Three cards controlling what happens *after* a conversation: the model that analyzes it, the summary it writes, and the structured fields it extracts. The output of all three lands in the [conversation analysis panel](/inbox/conversation-analysis-panel).
+
+**Analysis Model** — the model that runs post-conversation analysis. This is separate from the conversational model that talks to customers (see [Choosing an LLM Model](/general-configuration/choosing-an-llm-model)).
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **Provider** | openai | Rarely. |
+| **Model** | o4-mini | The default is a good cost/quality balance for analysis. Consider a stronger model only if extracted fields keep coming back wrong on genuinely complex conversations. |
+| **Reasoning effort** | medium | Shown for reasoning models. Raise for nuanced classification; lower to cut analysis cost on simple, high-volume chats. |
+
+**Summary Generation Prompt** — customizes how conversation summaries are written. It ships with a long templated default (including a `{language}` placeholder) and a **Reset to Default** button, disabled while you're already on the default. Edit it when summaries consistently miss what your team scans for — e.g., "always state the customer's request in the first sentence and end with the resolution status."
+
+**Analyze Fields Configuration** — structured data extracted from every conversation. Each field has:
+
+| Field | Notes |
+|-------|-------|
+| **Name** (required) | Name them like variables — `customerName`, `orderNumber` — since they become data keys downstream, not display labels. |
+| **Type** (required) | Text, Number, or Boolean (default Text). Use Boolean for yes/no facts ("mentioned a competitor") — they're far easier to filter on than free text. |
+| **Description** (required) | Written for the analysis model. Be precise about what qualifies: "The order number the customer is asking about, digits only. Leave empty if none mentioned." |
+| **Format** (optional) | A format hint like `YYYY-MM-DD` — set it for dates and anything you'll pipe into another system. |
+
+## Conversation Categories
+
+Define categories the agent uses to classify each conversation — one name plus a description per category, editable inline. A locked default category **Unknown** ("Not one of the above categories") always exists and can't be renamed or deleted; every other category needs both a name and a description. Write descriptions as decision rules, not labels — "Billing: questions about invoices, charges, or payment methods" — because the description is what the classifier actually reads. Keep the list short and mutually exclusive; overlapping categories produce noisy reports.
+
+## Notification
+
+Alerts your team when a condition you describe is met in a conversation. Off by default. When enabled, four things are required: the trigger description, a **Title**, a channel, and valid recipients.
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **When would you like to send a notification?** | Empty (required) | Write the trigger like an instruction to a colleague: "If a customer asks for sales information, notify the team." One condition per agent works best — a laundry list of triggers fires constantly and gets ignored. |
+| **Channel** | Email | Email always works. **Slack** appears only if the Slack app is installed — otherwise you'll see an install prompt linking to the Apps page. |
+| **Title** | Empty (required) | The subject line your team sees. Make it scannable: "Sales inquiry — website bot". |
+| **Recipients** (Email) | Empty | Add at least one email, and/or use **Also send to contact** to pick a contact field holding an email — useful for routing the alert to an account owner stored on the contact. |
+| **Slack Integration / Channel ID** (Slack) | — | Select the integration and paste the channel ID (e.g. `C01234ABCDE`). |
+
+## Feedback
+
+<Note>Website channel only.</Note>
+
+Two independent switches:
+
+- **Message Feedback** — when enabled, users see thumbs up/down buttons on chatbot messages. Cheap signal; turn it on unless your widget design forbids it.
+- **Conversation Feedback** — lets users rate the overall conversation when the chat ends. When enabled, choose when the prompt appears (**Show feedback when user:** — **Click on ⭐**, the default, or **Close conversation**), and use the **Customize** modal to rewrite every string: thank-you message, the question text ("Please rate your experience"), input placeholder, skip/submit button labels, success message, the five rating labels (Very Dissatisfied through Very Satisfied), and the low-rating follow-up ("Thanks for your feedback! What could be improved?"). This modal is the one place on the tab that saves manually — click save before closing it.
+
+## Social Feedback
+
+<Note>Messenger, Zalo OA, TikTok, and LinkedIn channels only.</Note>
+
+Automated feedback collection with a follow-up when the rating comes back low.
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **Rating Threshold** | 3 (range 1–5) | The follow-up is sent when the rating is at or below this. Lower it to 2 if you only want to chase genuinely unhappy customers; 3 also catches the lukewarm middle. |
+| **Follow-up Message** | "We're sorry to hear that. Could you tell us more about what went wrong?" | Keep it open-ended — a yes/no question here wastes the one reply you'll get. |
+| **Response Wait Time (minutes)** | 10 (minimum 1) | How long a reply still counts as feedback. After the window, a response starts a new conversation instead. Raise it for channels where people reply slowly (LinkedIn); keep it tight for live-feeling channels. |
+| **Thank You Message (After Feedback)** | "Thank you for your feedback! This helps us improve our service." | Fine as-is. |
+| **Thank You Message (High Ratings)** | "Thank you for your positive feedback! We're glad we could help you." | Sent for 4–5 star ratings if not empty. Clear it if you'd rather stay silent on high ratings. |
+
+## Bridge Configuration
+
+Technical settings for embedding the chat widget inside a native mobile app: a boot timeout and boot-message requirement, the iOS/Android handler function names (default `chatboxTriggerToApp`) and callback (`appTriggerToChatbox`), optional JWT authentication with an RS256 public key, and event mappings that turn external app events into chat messages. If you're not shipping the widget inside a native app, skip this panel entirely; if you are, your mobile developers set these values, not the agent builder.
+
+## Security
+
+**Domain Allowed List** (website channel only) — controls which domains can embed and use your chatbot widget. Empty means all domains are allowed. Two matching modes, and the distinction bites: `example.com` is an exact match — it allows `example.com` and nothing else; `*.example.com` allows `sub.example.com` but **not** `example.com` itself. To cover both the apex and subdomains, add both entries. Lock this down before launch on the website channel — an unrestricted widget can be embedded (and its message budget burned) by anyone.
+
+**Message Limit** — when the limit is reached, the bot stops responding in that thread:
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **Max User Messages Per Thread** | 50 (range 1–500) | A cost and abuse cap. 50 is generous for support; drop it for public-facing marketing bots where long threads are almost always abuse or aimless chatter. Raise it only for genuinely long workflows. |
+| **Limit Banner Text** | "You've reached the maximum number of messages for this conversation. Please start a new chat." | Match your brand voice; keep the instruction to start a new chat. |
+| **Limit Input Placeholder** | "Message limit reached. Please start a new chat." | Shown in the disabled input box. |
+
+## Schedule Meeting
+
+<Note>Single Prompt engine only — Conversational Flow agents use a booking node instead ([Flow Node Features](/conversational-flow/flow-node-features)).</Note>
+
+A switch plus a **Calendar App** selector that lets the agent book meetings mid-conversation. The full booking setup — connecting a calendar, availability, event types — is covered in [Scheduling and Booking](/integrations/scheduling-and-booking).
+
+## Contact Collection
+
+<Note>Single Prompt engine only — Conversational Flow agents use Contact Collection nodes instead ([Flow Node Features](/conversational-flow/flow-node-features)).</Note>
+
+Collects contact information and syncs it to your CRM. When enabled, at least one field is required.
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **Sync contact to** | — | Multi-select of installed apps with contact-sync capability (you'll see **Install App** if none are connected). Connect the CRM first — collected contacts with nowhere to go help nobody. |
+| **How do you want to collect contact information?** | **Ask Questions** | **Ask Questions** collects details naturally through conversation — better completion rates, feels less like a gate. **Show Form** displays a form — pick it when you need structured, validated input up front (compliance, precise formats). |
+| **Form Title** / **Submit Button Label** / **Success Message** | "Contact Information" / "Submit" / "Thank you! We've received your information." | Form mode only. |
+| **Fields** | — | Each field has a name, type, label/question, required flag, description, and validation rules (min/max length, regex, error message). Field choices come from the standard contact fields plus your team's custom fields. Ask for the minimum you need — every required field costs completions. |
+
+## Message Approval
+
+<Note>Single Prompt engine only.</Note>
+
+Holds outgoing messages for human approval before they're sent — for quality and compliance review of what the agent says at runtime.
+
+**This is not the [publish approval workflow](/governance-access/publish-approval-workflow).** That feature gates publishing a *draft agent version*; this one gates *individual messages* the live agent wants to send. You can use either or both.
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **Approval Requirement** | Require approval for all outgoing messages | The strict mode — right for regulated industries or a brand-new agent you don't trust yet. Switch to **Require approval only for campaign messages** once organic replies have earned autonomy but bulk outreach still needs a human check. |
+| **Connection Request Approval** | Off | Requires approval before sending connection requests to new leads. Turn on for LinkedIn-style outreach where a bad connection request burns the lead permanently. |
+| **Slack Channel ID (Optional)** | Empty | Route approval requests to a Slack channel. If Slack isn't installed, an alert points you to Apps settings. Without a Slack channel, expect slower approvals — messages wait on someone checking the app. |
+
+## Others
+
+**AI Response Settings**
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **AI Generation Delay (seconds)** | 5 (range 0–1000) | How long the agent waits before generating a response. The default gives customers a beat to finish a multi-message thought — reply too fast and you answer half a question. Lower toward 2–3 for snappy website support; raise on messaging channels where people habitually send four short messages in a row. |
+
+**Automated Messages**
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **Farewell Message** | Off | Sent when conversations end actively. Text is required when on — e.g. "Thank you for chatting with us!". Turn on to close threads politely instead of silently. |
+| **Pending Timeout** | Off | Sent when pending conversations time out. Text is required when on — e.g. "We haven't heard from you. Closing soon...". Gives customers a warning before the thread closes on them. |
+
+On Zalo OA and Messenger channels, each of these has a **Feedback Button** sub-switch that attaches a feedback prompt to the message.
+
+**Daily Report** (website channel only) — an **Auto-generate Reports** switch that tracks daily performance metrics. See [Daily Reports](/history-analytics/daily-reports) for what the report contains.
+
+## A configuration pass that works
+
+1. **Escalation first.** Rewrite the **Escalation Criteria** with your product's real failure modes, and set both **Auto-Reply Messages**. A bot that fails gracefully buys you time to tune everything else.
+2. **Analysis fields next.** Define your **Analyze Fields** and **Conversation Categories** before launch — you can't retroactively extract structured data from conversations analyzed without them.
+3. **Wire up Notification.** One specific trigger, a scannable title, the right channel. This is how you find out what's happening without reading every thread.
+4. **Then limits and security.** Set the **Domain Allowed List** (website), sanity-check the **Message Limit**, and decide whether this agent needs **Message Approval** while it earns trust.
+5. Leave the rest at defaults until a real conversation shows you the problem a setting solves.
+
+## What's Next
+
+- [Human Takeover](/inbox/human-takeover) — how your team receives and works the conversations this tab escalates.
+- [Conversation Analysis Panel](/inbox/conversation-analysis-panel) — where your summary, analyze fields, and categories show up.
