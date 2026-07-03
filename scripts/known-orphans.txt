@@ -1,5 +1,3 @@
 # Pages that intentionally exist outside docs.json navigation.
 # One page id per line (path without .mdx). Remove entries when the page
 # ships into the nav.
-automations/automation-rules-overview
-automations/creating-automation-rules

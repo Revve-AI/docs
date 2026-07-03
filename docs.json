@@ -95,6 +95,13 @@
             ]
           },
           {
+            "group": "Automations",
+            "pages": [
+              "automations/automation-rules-overview",
+              "automations/creating-automation-rules"
+            ]
+          },
+          {
             "group": "Evaluations",
             "pages": [
               "evaluations/evaluations-overview",
