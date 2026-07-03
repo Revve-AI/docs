@@ -8,7 +8,7 @@ Open your chat agent and select the **Advanced Settings** tab. Panels are listed
 
 Two things about how editing works here:
 
-- **Changes auto-save into your draft.** Almost every panel saves as you type — there's no Save button (the one exception: the **Customize** modal in the Feedback panel saves manually). You need the draft edit lock (**Start Editing**) to change anything; viewing a historical version is read-only. Auto-saved changes still only affect the live agent once you publish — see [Publishing and Versioning](/getting-started/publishing-and-versioning).
+- **Changes auto-save into your draft.** Almost every panel saves as you type — there's no panel-level Save button (dialogs like Add Testimonial or Add Field have their own Save; the **Customize** modal in the Feedback panel is the one that saves manually). Note that testimonial content lives in a team-level library and saves immediately — only the agent's selection of testimonials is draft-gated. You need the draft edit lock (**Start Editing**) to change anything; viewing a historical version is read-only. Auto-saved changes still only affect the live agent once you publish — see [Publishing and Versioning](/getting-started/publishing-and-versioning).
 - **Some panels only appear for some agents.** Visibility depends on the agent's channel and engine:
 
 | Panel | Appears when |
@@ -36,7 +36,7 @@ Two cards: when to hand off, and what the bot says while the human is on the way
 
 | Setting | Default | When to change |
 |---------|---------|----------------|
-| **Escalation Criteria** | Escalate when customers ask for a human, express frustration or anger, or have complex issues requiring human help | Always rewrite this. The default catches the universal cases, but the escalations that hurt are product-specific: name *your* failure modes — "asks about a refund over $200", "reports the widget not loading", "mentions a competitor's quote". Vague criteria produce both missed escalations and a bot that gives up too easily. |
+| **Escalation Criteria** | A three-bullet starter: "Escalate to human when customers: ask to speak with a human; express frustration or anger; have complex issues requiring human help" | Always rewrite this. The default catches the universal cases, but the escalations that hurt are product-specific: name *your* failure modes — "asks about a refund over $200", "reports the widget not loading", "mentions a competitor's quote". Vague criteria produce both missed escalations and a bot that gives up too easily. |
 
 <Tip>
 The escalation criteria don't have to cover everything — when you need to escalate in other cases, your prompt or tools can call the `escalate_to_human` tool directly.
@@ -46,8 +46,8 @@ The escalation criteria don't have to cover everything — when you need to esca
 
 | Setting | Default | When to change |
 |---------|---------|----------------|
-| **Waiting in Queue Message** | "Please wait, our agent will be with you as soon as possible." | Sent when the customer messages after escalation, while the thread waits for agent assignment. Set expectations honestly — if your team replies within business hours only, say so here. |
-| **Agent Joined Message** | "Please wait a moment, our agent has joined and will respond shortly." | Sent after an agent is assigned but before their first reply. Fine as-is for most teams. |
+| **Waiting in Queue Message** | Empty — no auto-reply is sent until you set one | Sent when the customer messages after escalation, while the thread waits for agent assignment. Set it — silence after "let me connect you to a human" reads as being abandoned. The placeholder is a good starting point: "Please wait, our agent will be with you as soon as possible." Set expectations honestly — if your team replies within business hours only, say so here. |
+| **Agent Joined Message** | Empty — no auto-reply is sent until you set one | Sent after an agent is assigned but before their first reply. The placeholder text works for most teams: "Please wait a moment, our agent has joined and will respond shortly." |
 
 ## Testimonials
 
@@ -160,7 +160,7 @@ Collects contact information and syncs it to your CRM. When enabled, at least on
 | **Sync contact to** | — | Multi-select of installed apps with contact-sync capability (you'll see **Install App** if none are connected). Connect the CRM first — collected contacts with nowhere to go help nobody. |
 | **How do you want to collect contact information?** | **Ask Questions** | **Ask Questions** collects details naturally through conversation — better completion rates, feels less like a gate. **Show Form** displays a form — pick it when you need structured, validated input up front (compliance, precise formats). |
 | **Form Title** / **Submit Button Label** / **Success Message** | "Contact Information" / "Submit" / "Thank you! We've received your information." | Form mode only. |
-| **Fields** | — | Each field has a name, type, label/question, required flag, description, and validation rules (min/max length, regex, error message). Types come from the standard contact fields plus your team's custom fields. Ask for the minimum you need — every required field costs completions. |
+| **Fields** | — | Each field has a name, type, label/question, required flag, description, and validation rules (min/max length, regex, error message). Field choices come from the standard contact fields plus your team's custom fields. Ask for the minimum you need — every required field costs completions. |
 
 ## Message Approval
 
