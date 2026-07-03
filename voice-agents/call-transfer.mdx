@@ -15,6 +15,8 @@ This is the voice equivalent of [Human Takeover](/inbox/human-takeover) in the c
 3. It generates a call summary (guided by your **Summary Prompt**) for the human who picks up.
 4. It routes the call according to **Transfer To**: ringing an available agent in the Revve app, or dialing out to a SIP address or phone number.
 
+For **SIP Address** and **Phone Number** transfers using the default **Bridge Transfer** type, there's an extra step between 3 and 4: the caller is put on hold with music while the agent privately briefs the human — see [Bridge or cold transfer](#bridge-or-cold-transfer) below.
+
 ## Step 1: Configure Call Transfer on the agent
 
 Open your voice agent, go to **Advanced Settings** → **Call Transfer**, and flip the toggle on to reveal the settings.
@@ -39,7 +41,7 @@ For **SIP Address** and **Phone Number** transfers, choose a **Transfer Type**:
 
 | Type | Mechanics | Choose it when |
 |------|-----------|----------------|
-| **Bridge Transfer** (default) | SIP INVITE — the human joins the call. The AI goes silent but keeps logging. | You want the full conversation recorded and analyzed end to end. For phone-number transfers, also pick the **Outbound Phone Number** used to dial the human into the call. |
+| **Bridge Transfer** (default) | A warm consult transfer with a private briefing. The caller is put on hold with music while the agent dials the human privately and speaks the call summary to them — the caller can't hear it. Only once the human is briefed are the two connected, and the AI goes silent (but keeps logging). | You want the human to walk in already knowing who's calling and why — valuable for escalations like fraud or account disputes, where the customer shouldn't overhear the handoff. You also get the full conversation recorded and analyzed end to end. For phone-number transfers, also pick the **Outbound Phone Number** used to dial the human into the call. |
 | **Cold Transfer** | SIP REFER — the call is handed off entirely. No further logging of the customer-agent conversation. | Compliance contexts where the AI must fully exit the call once a human takes over. |
 
 **Revve User** transfers don't have this choice — the call routes in-app.

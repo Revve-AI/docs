@@ -108,6 +108,23 @@ curl -X POST https://app.revve.ai/api/campaigns/enrollments \
 
 Returns `200` with an `enrollmentId`, or `409` if the contact is already enrolled. API keys live in **Settings**.
 
+If the contact doesn't exist in Revve yet — e.g. it's coming straight from your core system or CRM — use `contact-enrollments` instead, which creates the contact and enrolls it in one call:
+
+```bash
+curl -X POST https://app.revve.ai/api/campaigns/contact-enrollments \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "teamId": "TEAM_UUID",
+    "campaignId": "CAMPAIGN_UUID",
+    "phoneNumber": "+84775352590",
+    "name": "Jane Doe",
+    "email": "jane@example.com"
+  }'
+```
+
+`phoneNumber` and `teamId` are required; `campaignId` is optional (omit it to just create/update the contact without enrolling). Returns `200` with a `contactId`.
+
 ## Step 6: Monitor
 
 The **Dashboard** tab answers "is it working?" at a glance — total, active, and completed leads, average time in campaign, and breakdowns by status, engagement state, and exit outcome, plus per-channel performance:
@@ -130,3 +147,4 @@ To pause everything, click **Stop Campaign** in the top-right; the campaign goes
 
 - [What Is a Campaign?](/campaigns/campaign-overview) — concepts and use-case patterns.
 - [Voice Agent Settings](/voice-agents/voice-agent-settings) — tune voicemail and retry behavior for calling campaigns.
+- [Build a Payment Reminder Campaign](/guides/payment-reminder-campaign) — a full voice-then-SMS recipe applying these steps to a concrete scenario.

@@ -1,0 +1,138 @@
+---
+
+title: "Build a Payment Reminder Campaign (Voice + SMS Fallback)"
+description: "A complete, copy-paste recipe: a campaign that calls customers about upcoming or overdue payments, then automatically follows up by SMS when the call goes unanswered — one AI making the channel decision per contact."
+---
+
+**What you'll build:** a campaign that reaches out to customers about an upcoming or overdue payment. The AI calls first; if the call isn't answered, it automatically follows up by SMS on the same contact — no separate workflow, no manual handoff between channels. You write the tone, the calling hours, and the attempt limits in plain language; the AI decides, per contact, whether the next action is a call or a text.
+
+**Time:** about 25 minutes, assuming you already have a published Voice Agent and a published SMS Chat Agent. Every Instructions block and setting on this page is copy-paste — adjust the bracketed parts for your product.
+
+<Note>
+This recipe uses a payment-reminder scenario to illustrate the mechanism, since it's the clearest example of voice and chat working as one campaign. Revve doesn't have banking-specific compliance features (no built-in regulatory certification, PCI handling, or KYC). Anything about tone, disclosures, or calling hours here is a **script you write into the campaign's Instructions field** — plain language the AI follows — not a canned compliance feature. Review your script with your compliance team before using it for real collections outreach.
+</Note>
+
+## Prerequisites
+
+- A published [Voice Agent](/voice-agents/creating-your-first-voice-agent) that can talk about the payment (amount, due date, what happens next).
+- A published SMS Chat Agent — see [SMS Channel Setup](/channel-setup/sms-channel-setup) if you haven't connected one yet.
+- A list of contacts with phone numbers to enroll (a CSV, or contacts already in your Contacts list).
+
+If you're new to campaigns, read [What Is a Campaign?](/campaigns/campaign-overview) first — this recipe assumes you know the five building blocks (Campaign Agents, Instructions, Engagement Flow, Exit Conditions, Next Campaign) and jumps straight to concrete values for this scenario.
+
+## Step 1: Create the campaign and attach both agents
+
+Go to **Campaigns** in the left sidebar, click **New Campaign**, and give it a name and description:
+
+| Field | Value |
+|-------|-------|
+| Campaign Name | Payment Reminders — [Product/Loan Line] |
+| Description | Calls customers about upcoming or overdue payments; follows up by SMS if the call isn't answered. |
+
+Click **Create**, then **Start Editing** to open the working draft (see [Creating a Campaign](/campaigns/creating-a-campaign) for the draft/publish mechanics if this is your first campaign).
+
+On the **Setup** tab, under **Campaign Agents**, click **+ Add Agent** twice and set a **Role** for each:
+
+| Agent | Role |
+|-------|------|
+| Your Voice Agent | Call customers about upcoming or overdue payments and capture whether they'll pay, have already paid, or dispute the charge. |
+| Your SMS Chat Agent | Follow up by text if the call isn't answered — remind the customer of the amount and due date, and answer simple questions about the payment. |
+
+Turn on **Enable Multi Channels**. This is what lets the same contact be worked across both agents — the AI reads the call outcome and decides whether the next action is another call, an SMS, or nothing (contact reached, exit). With it off, the campaign would stick to a single channel and the SMS fallback would never fire.
+
+## Step 2: Write the Engagement Flow, Instructions, and Exit Conditions
+
+These three fields are what the AI reads before every decision — the channel choice comes from the Instructions, not from a separate setting.
+
+### Engagement Flow
+
+Add four states with **+ Add State**:
+
+| State | Description |
+|-------|-------------|
+| `not_contacted` | No outreach attempted yet. |
+| `reminder_sent` | At least one call or SMS has gone out; no confirmation from the customer yet. |
+| `payment_confirmed` | Customer confirmed they'll pay, or confirmed they've already paid. |
+| `escalated` | Customer disputes the charge, asks not to be contacted, or needs a human to review the account. |
+
+### Instructions
+
+Paste and adjust:
+
+```text
+This campaign reminds customers about an upcoming or overdue payment on
+their [loan/account]. Start outreach [3 days before the due date] for
+upcoming payments, or immediately for overdue ones.
+
+Call the customer first. Attempt the call up to [3] times, at least
+[4 hours] apart, only between [8:00 and 19:00] in the customer's
+timezone. If a call goes unanswered, hits voicemail, or the customer
+asks to be called back later, follow up the same day with an SMS
+summarizing the amount due, the due date, and how to pay.
+
+Tone: respectful and informational, never threatening. State the amount
+and due date plainly. Do not discuss legal consequences, do not
+negotiate a settlement amount, and do not promise any change to the
+customer's account status — offer to connect them with a human for
+anything beyond a simple reminder.
+
+If the customer disputes the charge, says they already paid, or asks
+not to be contacted again, stop outreach immediately and move them to
+escalated for human review. Do not attempt further calls or texts.
+```
+
+<Tip>
+Write the calling-hours and attempt-limit rules as concrete numbers, not "reasonable hours" or "a few times" — the AI is only as precise as the instructions it's given, and vague wording is where a compliance review will send you back to rewrite this field anyway.
+</Tip>
+
+### Exit Conditions
+
+Paste and adjust:
+
+```text
+A contact exits the campaign when they confirm the payment, confirm
+they've already paid, or dispute the charge (moved to escalated for
+manual follow-up). A contact also exits, unsuccessfully, after 3 call
+attempts and 1 SMS follow-up with no response.
+```
+
+## Step 3: Tune the voice agent for this call type
+
+A few settings on your Voice Agent's **Model Settings** and **Advanced Settings** tabs matter more for payment reminders than the defaults — full reference in [Voice Agent Settings](/voice-agents/voice-agent-settings):
+
+- **Temperature** — lower it from the 0.7 default toward 0.3. Payment reminders are exactly the "compliance-sensitive calls where wording must stay consistent" case that setting's guidance calls out: you want the agent repeating your amount/due-date/tone script consistently, not paraphrasing it differently on every call.
+- **Max Duration** — the 5-minute default is fine here. A reminder call that's still running at 5 minutes has gone off-script; keeping the cap short bounds cost on calls that go nowhere.
+- **Voicemail detection** (Advanced Settings → Voicemail) — turn it on. Outbound reminder calls are exactly where voicemail is worth enabling, and a personalized message beats a silent hangup. Write a **Voicemail Message** using the contact's name, e.g. "Hi `{{firstName}}`, this is [Company] calling about your upcoming payment — please call us back or reply to our text to confirm."
+
+## Step 4: Enroll contacts and test
+
+Before touching a real list, enroll yourself: on the **Enrollments** tab, click **+ Enroll**, choose **one at a time**, and add your own contact record. Let the campaign call you, don't answer, and confirm the SMS follow-up arrives with the right amount, due date, and tone.
+
+Once that feels right:
+
+- **CSV import** for a list — map columns (Phone Number is required), and for anything beyond a handful of contacts, choose **Scheduled** enrollment (e.g. staggered batches) rather than **Immediate**, so you're not placing hundreds of calls at once.
+- **API enrollment** for contacts flowing in continuously from your core banking system or CRM — the same `POST /api/campaigns/enrollments` call documented in [Creating a Campaign](/campaigns/creating-a-campaign), with the `contactId` of the customer whose payment is due.
+
+Open any enrollment's row to see its **engagement timeline** — the call, the SMS if it fired, and the state the AI moved the contact to after each one.
+
+## Test scenarios
+
+Run these against your own enrollment (or a small test batch) before enrolling a real list:
+
+| Scenario | Expect |
+|----------|--------|
+| Customer answers and confirms they'll pay | State moves to `payment_confirmed`; contact exits successfully; no SMS sent. |
+| Customer doesn't answer, no voicemail | Call logged as unanswered; state stays `reminder_sent` (or `not_contacted` if it was the first attempt) with a retry; once retries or the daily window are exhausted, an SMS follows the same day. |
+| Voicemail detected | Voice agent leaves the personalized voicemail message; state moves to `reminder_sent`; the AI decides the next action (retry call or SMS) at the next scheduled touch. |
+| Customer answers and disputes the charge | Voice agent stops discussing payment details per the Instructions, state moves to `escalated`, no further calls or texts go out. |
+| Customer replies to the SMS follow-up | The SMS Chat Agent answers using the campaign context (amount, due date); reply also lands in your [Inbox](/inbox/inbox-overview) as a normal conversation. |
+| 3 call attempts and 1 SMS pass with no response | Contact exits per Exit Conditions, marked unsuccessful. |
+
+Fix issues at the field level: wrong channel choice or timing → sharpen the Instructions wording (attempt counts, hours, fallback trigger); wrong tone or content on the call → sharpen the voice agent's system prompt, not the campaign Instructions.
+
+## Variations
+
+- **Overdue vs. upcoming, same campaign:** adjust the Instructions' opening line to branch on `[days until/since due date]` rather than running two separate campaigns — the Engagement Flow and agents stay the same.
+- **Loan application follow-up:** same voice-then-SMS mechanism, different subject — Role becomes "Call applicants about a pending loan application status" and the SMS agent's Role becomes "Follow up with a status update if the call isn't answered." Swap the Instructions script accordingly; the setup is identical.
+- **Branch appointment reminder:** call to confirm an upcoming branch or advisor appointment, SMS fallback with a reschedule option if the call isn't answered. Exit Conditions become "confirmed" or "rescheduled" instead of "payment_confirmed".
+- **Give customers a way out to a human:** if disputes are common, add [Call Transfer](/voice-agents/call-transfer) to the voice agent so it can hand a live call straight to a person instead of only escalating after the fact.
