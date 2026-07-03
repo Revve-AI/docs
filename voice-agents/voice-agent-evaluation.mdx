@@ -15,14 +15,16 @@ Don't confuse this with the **Human Feedback** widget you'll see on an individua
 </Note>
 
 <Note>
-Chat Agents have their own "Evaluations" tab, but it's a different feature entirely — pre-ship regression testing against defined test cases (see [Creating Your First Chat Agent](/getting-started/creating-your-first-chat-agent)). This page covers the automatic post-call grading policy, which exists only for Voice Agents.
+Chat Agents have their own "Evaluations" tab, but it's a different, older feature — pre-ship regression testing against defined test cases (see [Creating Your First Chat Agent](/getting-started/creating-your-first-chat-agent)). This page covers the automatic post-call grading policy, which exists only for Voice Agents.
+
+For pre-ship regression testing that works across both Text and Voice agents, see the [Evaluations](/evaluations/evaluations-overview) product in the left nav — Evaluators, Profiles, Metrics, Scorecards, and Runs, starting with [Creating an Evaluator](/evaluations/creating-an-evaluator).
 </Note>
 
 ## How it works
 
 1. **Turn it on.** The whole feature is gated behind a single **Enable** switch, off by default. No metric runs, and nothing appears in Call History, until you flip it on.
 2. **Configure two independent groups: Caller and Agent.** Each has its own set of metrics, its own weights, and its own minimum pass score — grading how well the *caller* engaged is a different question from grading how well the *agent* performed, so they're scored separately rather than blended into one number.
-3. **Add metrics from your team's library, or create one inline.** Metrics belong to your team, not to a single agent — you can reuse the same metric across multiple Voice Agents. Adding a metric to a group lets you set its **weight** (default 1) and, optionally, a **threshold score** for that policy.
+3. **Add metrics from your team's library, or create one inline.** Metrics belong to your team, not to a single agent — you can reuse the same metric across multiple Voice Agents. Adding a metric to a group lets you set its **weight** (default 1) and, optionally, a **threshold score** for that policy. See [Evaluation Metrics](/evaluations/evaluation-metrics) for the standalone library page — the same metrics are also usable by [Evaluators](/evaluations/creating-an-evaluator) and Scorecards.
 4. **A call finishes, evaluation runs, results land in Call History.** No manual step — every completed call for an enabled agent gets scored against both groups automatically.
 
 Once enabled, the tab switches to separate **Caller** / **Agent** tabs, a **Minimum passing score**, and a table of the group's metrics:

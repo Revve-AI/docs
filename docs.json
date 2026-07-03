@@ -111,6 +111,14 @@
         ]
       },
       {
+        "group": "Evaluations",
+        "pages": [
+          "evaluations/evaluations-overview",
+          "evaluations/evaluation-metrics",
+          "evaluations/creating-an-evaluator"
+        ]
+      },
+      {
         "group": "Governance & Access",
         "pages": [
           "governance-access/roles-and-permissions",

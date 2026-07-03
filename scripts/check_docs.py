@@ -28,7 +28,7 @@ SCREENSHOT_PREFIXES = (
     "voice-", "campaign-", "chatbot-", "chatbots-", "flow-", "knowledge-",
     "automation-", "website-", "inbox-", "email-", "sms-", "whatsapp-",
     "zalo-", "messenger-", "analytics-", "chat-", "dashboard-", "channel-",
-    "new-agent-", "build-from-", "settings-",
+    "new-agent-", "build-from-", "settings-", "evaluations-",
 )
 ALLOWED_LOWER_TAGS = {
     "a", "b", "br", "code", "div", "em", "hr", "i", "iframe", "img", "kbd",
