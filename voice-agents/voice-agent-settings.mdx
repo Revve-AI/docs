@@ -79,11 +79,26 @@ This section controls the *feel* of the conversation — it's where voice agents
 |---------|---------|----------------|
 | **Turn detection model** | Voice Activity Detection (VAD) | VAD detects silence — fast, but can cut in during natural pauses. Switch to a **Smart Turn Detection** model when callers are being interrupted mid-thought; it understands sentence completeness, not just silence. Three variants: **English**, **Multilingual**, and **Vietnamese** — the Vietnamese model is tuned for Vietnamese speech patterns and is the best pick for Vietnamese conversations. |
 | **Smart turn threshold** | 0.7 (0–1) | Shown when a Smart Turn model is selected; stored per speech language. How confident the model must be that the caller finished their turn before the agent replies. Agent still cutting in → raise it (waits for clearer end-of-turn cues, at the cost of slower responses). Agent feels slow to answer → lower it, accepting it may occasionally cut in. Move in 0.05 steps. |
-| **Min silence duration** | 0.3 s | The classic trade-off knob. Callers getting cut off mid-pause → raise toward 0.8–1.0 s. Agent feels sluggish → lower slightly. Move in 0.1 s steps and re-test. (Agents created earlier keep their previously saved value.) |
+| **Min silence duration** | 0.3 s | The classic trade-off knob. Callers getting cut off mid-pause → raise toward 0.8–1.0 s. Agent feels sluggish → lower slightly. Move in 0.1 s steps and re-test. (Agents created before this field existed show 0.55 s until you save new settings.) |
 | **Min speech duration** | 0.05 s | Leave it — filters out clicks and pops from counting as speech. |
 | **Activation threshold** | 0.5 (0–1) | Raise on noisy lines (background TV, street noise triggers the agent to stop talking); lower for quiet, soft-spoken callers it fails to hear. |
 | **Prefix padding** | 0.5 s | Leave it — audio buffered before detected speech so first syllables aren't clipped. |
 | **Response timing** | Fixed, 0.5–3.0 s wait | "Min delay" is the shortest pause before responding; "Max delay" the longest. Tighten the max for snappy reminder calls; widen for thoughtful, consultative conversations. |
+
+<Note>
+Voice agents created for Vietnamese-language teams start with different turn-taking defaults, tuned for the language's speech patterns:
+
+| Setting | Vietnamese default | Generic default |
+|---------|---------------------|------------------|
+| **Turn detection model** | Smart Turn Detection | Voice Activity Detection (VAD) |
+| **Smart turn threshold** | 0.45 | 0.7 |
+| **Response timing** | Fixed, max 1.8 s / min 0.3 s | Fixed, max 3.0 s / min 0.5 s |
+| **Min silence duration** | 0.25 s | 0.3 s |
+
+The lower Smart Turn threshold compensates for Vietnamese being Smart Turn's weakest-performing language — it scores complete Vietnamese utterances lower on average than other languages.
+
+These values are set once, at agent creation, based on the team's language setting — they're not a live runtime fallback. An agent created before this change keeps its original values (threshold 0.65, max delay 4 s, min delay 0.4 s) until you edit and re-save its settings.
+</Note>
 
 **Interruption Handling**
 
@@ -92,6 +107,36 @@ This section controls the *feel* of the conversation — it's where voice agents
 | **Interruption mode** | VAD | VAD treats *any* voice longer than the minimum duration as an interruption. Switch to **Adaptive** when backchannels — callers saying "uh-huh", "right" — keep stopping the agent mid-sentence. Adaptive ignores them. |
 | **Min duration** | — | Raise it if coughs and short noises interrupt the agent. |
 | **Backchannel words** | Empty | VAD mode only. Words the agent ignores as interruptions — filler acknowledgments like the Vietnamese "vâng", "dạ", "ạ". Type a word and press Enter to add it. Use this when specific short acknowledgments keep stopping the agent but you want to stay in VAD mode; switching to **Adaptive** is the broader alternative. Empty list = suppression disabled. |
+
+**Quiet Speech Handling**
+
+Prompts callers who are speaking too quietly to speak up — worth enabling for audiences skewing older or soft-spoken, or calls prone to a noisy line (driving, retail floor, poor mic).
+
+![Quiet Speech Handling settings showing the Ask Caller to Speak Up toggle on, the Loudness threshold slider, and the Verbatim instruction template](/screenshots/voice-quiet-speech-handling.png)
+
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **Ask Caller to Speak Up** | Off | Detects when the caller's voice is too quiet and prompts them to speak louder. Turn on for elderly or soft-spoken audiences, or calls likely to bury the caller's voice in background noise. |
+| **Loudness threshold** | 0.50 (slider, 0–0.70) | Shown only when the toggle above is on. Minimum loudness for speech to count as "normal" — anything quieter triggers the reminder. Raise it if genuinely quiet callers aren't triggering the nudge; the slider caps at 0.70 so you can't accidentally flag normal conversational speech, which would otherwise loop the agent on the speak-up nudge forever. |
+| **Low-speech prompt** | **Verbatim** mode, Vietnamese template | Shown only when the toggle above is on. **Verbatim** speaks fixed text word-for-word; **Prompt** hands the LLM an instruction and lets it generate the reply instead. Both default texts are in Vietnamese — for a non-Vietnamese agent, replace both the Verbatim template and the Prompt instruction with your own language; there's no automatic localization. |
+
+The **Verbatim** default is a gender-conditional template using the `predicted_gender` variable:
+
+```
+{{#if predicted_gender = 'male'}}
+Anh có thể nói to hơn một xíu được không ạ ?
+{{/if}}
+{{#if predicted_gender = 'female'}}
+Chị có thể nói to hơn một xíu được không ạ ?
+{{/if}}
+{{#if !predicted_gender}}
+Bạn có thể nói to hơn một xíu được không ạ ?
+{{/if}}
+```
+
+The **Prompt** mode's default instruction: `Người gọi đang nói quá nhỏ. Hãy lịch sự đề nghị họ nói to hơn một chút, xưng hô phù hợp với {{predicted_gender}} (anh/chị), giọng thân thiện và ngắn gọn.`
+
+The runtime caps this at 2 speak-up prompts per call session, so a caller who stays quiet won't get nagged repeatedly.
 
 **Silence Handling**
 
