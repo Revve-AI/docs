@@ -1,0 +1,93 @@
+---
+
+title: "Creating an Evaluator"
+description: "Define a test case, attach it to a Text or Voice agent, launch a Run, and read the pass/fail results — the full create-run-inspect loop for Evaluations."
+---
+
+By the end of this page you'll have created an Evaluator, run it, and read the results. This assumes you already have at least one [Metric](/evaluations/evaluation-metrics) in your team's library — every Evaluator requires at least one — and, if you're building a voice Evaluator, at least one Profile (Step 2 covers this).
+
+## Step 1: Create an evaluator
+
+Go to **Evaluations > Evaluators** in the left nav:
+
+![The Evaluators list with no evaluators yet, showing the New Evaluator button, search and filter controls, and the table's column headers](/screenshots/evaluations-evaluators-list.png)
+
+Click **New Evaluator**:
+
+![The New Evaluator form, showing the Basics section (Name, Description, Agent under test) and the top of the Behavior section (Message Mode)](/screenshots/evaluations-evaluator-form.png)
+
+Fill in three sections:
+
+**Basics**
+
+- **Name** — required, e.g. "Appointment Cancellation".
+- **Description** — optional, what this evaluator tests.
+- **Agent** — required. Pick the Text or Voice agent under test, then use the version picker to pin the evaluator to a specific published version or the current draft.
+
+**Behavior**
+
+- **Message Mode** — **LLM Generated** or **Fixed Messages**. LLM Generated has a simulated user improvise within instructions you write; Fixed Messages plays back an exact script with no improvisation.
+  - For LLM Generated: write **Instructions** (the customer persona and scenario) and, optionally, an **Expected Outcome** describing what the agent should achieve.
+  - For Fixed Messages: build the **User Messages** list — the exact turns the simulated user will send, in order.
+
+**Scoring & Limits**
+
+- **Metrics** — required, at least one. Multi-select from your team's shared library; see [Evaluation Metrics](/evaluations/evaluation-metrics) if you need to create one first.
+- **Max Turns** — required. How many conversation turns the simulation is allowed before it stops. Voice evaluators also set **Max Duration (seconds)**, a hard cap on call length. Both are per-evaluator numbers you choose based on how long a real conversation for this scenario should reasonably take — there's no team-wide default, so start from what a normal call or chat for this scenario looks like and pad it a bit.
+- **Min Pass Threshold** — a slider from 0-100% in 5% steps, defaulting to 80%. This is the score an individual run result must clear to count as "passed."
+
+<Tip>
+Set **Min Pass Threshold** deliberately, not just at the 80% default. A threshold that's too low lets a mediocre run read as "passed" and hides real regressions; too high and a run with one minor, acceptable miss reads as a failure and trains the team to ignore the badge. Calibrate it against a run you've already read the transcript for.
+</Tip>
+
+An **Advanced** section (collapsed by default) holds four more fields you don't need for a first evaluator: **Mock Tools** (stub tool-call responses so the evaluator runs without real integrations), **Dynamic Variables** (key/value template variables available to the scenario), **Tags**, and **Folder Path** (a dot-delimited grouping path, e.g. "Sales.Inbound").
+
+## Step 2: Add a Profile (voice evaluators only)
+
+If **Agent** is a Voice agent, Basics also shows a required **Profile** picker — a reusable simulated-caller definition: which LLM plays the caller and at what temperature, its TTS voice and language, its STT, and a free-text **Instruction** describing the persona (e.g. "Frustrated caller"). Text evaluators skip this entirely; there's no simulated voice to configure.
+
+If your team has no Profiles yet, go to **Evaluations > Profiles** and click **New profile** before returning to finish the evaluator. Profile creation isn't covered further here — this section is only a prerequisite call-out.
+
+<Tip>
+Build a small set of reusable Profiles (a calm caller, a frustrated caller, a caller with background noise) rather than a one-off Profile per evaluator. The same Profile can drive many Evaluators, so the effort of tuning one persona's voice and temperature pays off across every scenario that needs that kind of caller.
+</Tip>
+
+Voice evaluators also get an **Agent speaks first** switch in Behavior, off by default — it controls whether the simulated agent or the simulated caller opens the conversation. Leave it off unless the scenario you're testing specifically depends on the agent greeting first (e.g. an outbound call flow).
+
+## Step 3: Run it
+
+There's no "New Run" button on the Runs page — a Run always starts from the **Evaluators** list. Either:
+
+- Click **Run** on a single evaluator's row, or
+- Check several evaluators' boxes and click **Run Selected (N)**.
+
+<Tip>
+**Run Selected** requires every checked evaluator to target the same agent — it's meant for running a whole regression suite against one agent at once, not for mixing scenarios across agents. Group your evaluators by agent (Tags or Folder Path help here) if you want to select-and-run a suite in one click.
+</Tip>
+
+Launching a run enqueues it for asynchronous background execution — it doesn't run inline in your browser, so you can navigate away and come back.
+
+## Step 4: Read the results
+
+Go to **Evaluations > Runs**. The list shows Name, Status, Agent, Results ("X/Y passed"), Success Rate, Duration, and Created, and auto-refreshes every 5 seconds while any run is Pending or Running. Filter by status — **All Statuses**, **Pending**, **Running**, **Completed**, **Failed**, **Cancelled** — if the list gets long.
+
+Click a run to open its detail page:
+
+- KPI tiles: **Total**, **Passed**, **Failed**, **Errors**, plus a **Success Rate** bar.
+- Below, each individual result shows a status badge (Pending / Running / Evaluating / Passed / Failed / Error / Skipped). Click a result to open its detail panel: the full simulated transcript, tool-call logs, and the per-metric score breakdown.
+
+<Tip>
+When a result fails, read the transcript before the metric breakdown — it's usually obvious within a few turns whether the agent went wrong or the scenario itself was unrealistic (a persona instruction that no real caller would say). Fix whichever one is actually broken rather than loosening the metric to make the run pass.
+</Tip>
+
+From the run detail page, two actions let you re-run: **Re-run** repeats the exact same configuration, and **Re-run with…** opens a dialog to explicitly pick a different agent version or draft before re-running.
+
+<Tip>
+After fixing a prompt or flow that caused a failure, use **Re-run with…** against the new draft rather than eyeballing whether the diff looks right. It re-executes the same scenario against the specific version you point it at, so you get a pass/fail verdict on the actual fix instead of a guess.
+</Tip>
+
+## What's Next
+
+- [Evaluation Metrics](/evaluations/evaluation-metrics) — the deterministic and LLM-judged metric types you attach to an Evaluator's Scoring & Limits section.
+- [What Is Evaluations?](/evaluations/evaluations-overview) — the concept-level tour of Evaluators, Profiles, Metrics, Scorecards, and Runs.
+- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — if what you actually want is automatic post-call grading of every live call, not pre-ship testing.
