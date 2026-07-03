@@ -119,7 +119,9 @@
               "inbox/managing-conversations",
               "inbox/filtering-and-searching",
               "inbox/conversation-analysis-panel",
-              "inbox/human-takeover"
+              "inbox/human-takeover",
+              "tickets/working-with-tickets",
+              "contacts/managing-contacts"
             ]
           },
           {
