@@ -177,16 +177,16 @@ See [Call Transfer](/voice-agents/call-transfer) for the full warm-transfer work
 
 ### Everything else
 
-The remaining sections are situational — enable them when their trigger appears:
+The remaining sections are covered in depth on [Voice Agent Advanced Capabilities](/voice-agents/voice-agent-advanced-capabilities) — the short version:
 
 | Section | What it's for |
 |---------|---------------|
-| **Phone Number** | Assign a team phone number so this agent answers inbound calls on it. |
+| **Phone Number** | Pick the outbound caller ID — a single team number or a number pool (a random pool number per call). |
 | **Phone Verification** | Confirm the caller's identity by having them state their phone number, checked against the number already on file for that contact. |
-| **Normalization** | Normalize spoken data like addresses into structured formats. |
-| **Retry & Callback** | Automatic retry rules for unanswered outbound calls. |
+| **Normalization** | Normalize spoken data like addresses and license plates into structured formats. |
+| **Retry & Callback** | Auto-retry failed outbound calls (busy, no answer, failed) and let customers request callbacks. |
 | **Tools** | Attach custom tools (API calls, SMS sending) the agent can use mid-call, plus presets: two calendar tools, a ticket-creation tool, and a deterministic value-validation tool. Not every preset in the dropdown works on a phone call — see [Voice Agent Tools](/voice-agents/voice-agent-tools) before you attach one. |
-| **Webhook** | Notify your systems about call events. |
+| **Webhook** | Send call events to a URL on your side. |
 | **Analysis & Summary** | Configure the post-call summary and the data fields extracted from each call (these appear in Call History). |
 | **Security** | Sensitive-data handling for this agent's calls. |
 | **Notification** | Alert your team about call outcomes. |
