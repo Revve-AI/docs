@@ -370,6 +370,162 @@
           }
         }
       }
+    },
+    "/api/voice-agents/{agentId}/calls": {
+      "post": {
+        "summary": "Trigger an outbound call",
+        "description": "Places (or schedules) an outbound call from a voice agent to a phone number. The contact is created or updated from the identifying fields before dialing, so the agent's `{{contact}}` placeholders resolve. Any additional body fields beyond the ones listed become dynamic variables available to the agent's prompt templates.\n\nA call requested outside the agent's allowed calling hours is scheduled for the next allowed slot and returns `rescheduled: true` with `runsAt` (this scheduling happens before the guardrail checks below, which then apply when the scheduled call fires).\n\nGuardrails: team call limits and plan limits (429); the outbound whitelist when enabled (400); numbers on the Do Not Call list are not dialed; a number with a call already processed in the last 12 hours is not re-dialed (both of the latter surface through the 500 response with an explanatory message).\n\nCaller ID: uses the agent's configured outbound number or pool. Override per call with `fromPhoneNumber` (must be an active team number with outbound calling provisioned) or `numberPoolId` — when both are sent, the pool wins.",
+        "operationId": "triggerOutboundCall",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "The voice agent ID."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "phoneNumber"
+                ],
+                "properties": {
+                  "phoneNumber": {
+                    "type": "string",
+                    "description": "The number to call.",
+                    "example": "+84775352590"
+                  },
+                  "fullName": {
+                    "type": "string",
+                    "description": "Contact full name (alias: `name`).",
+                    "example": "Jane Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "companyName": {
+                    "type": "string"
+                  },
+                  "companyWebsite": {
+                    "type": "string"
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "description": "IANA timezone for the contact; used for calling-hours evaluation.",
+                    "example": "Asia/Ho_Chi_Minh"
+                  },
+                  "fromPhoneNumber": {
+                    "type": "string",
+                    "description": "Optional caller-ID override. Must be an active phone number belonging to your team with outbound calling provisioned."
+                  },
+                  "numberPoolId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Optional number pool to pick the caller ID from. Takes precedence over fromPhoneNumber and the agent's configured pool."
+                  }
+                },
+                "additionalProperties": {
+                  "description": "Any extra keys are passed to the agent as dynamic template variables."
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Call queued for dialing, or scheduled for the next allowed calling window (`rescheduled: true` with `runsAt`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "callRequestId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "rescheduled": {
+                      "type": "boolean",
+                      "description": "Present and true when the call was scheduled for the next allowed calling window."
+                    },
+                    "runsAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the rescheduled call will run."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid `fromPhoneNumber` (not a team number), or the destination is not on the whitelist while whitelist-only outbound is enabled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Plan limit reached, or the per-number call limits (daily/weekly/monthly) are exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returned for unexpected errors and for several not-dialed outcomes, with the reason in `message`: unknown agent ID (\"Agent not found\"), wrong API key (\"Invalid API Key for agent\"), a number on the Do Not Call list, a number already called within the last 12 hours, or a call already scheduled for this number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Agent not found"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "Machine-readable reason code when available (e.g. AGENT_NOT_FOUND, INVALID_API_KEY)."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

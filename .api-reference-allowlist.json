@@ -14,7 +14,18 @@
       "endpoint": "POST /api/contacts",
       "approvedAt": "2026-07-04",
       "note": "Bearer API-key auth (validateTeamApiKey against teams.api_key). Creates a contact with custom properties; optional campaignId triggers a best-effort background enrollment. Overlaps with contact-enrollments (create-and-enroll); accepts the private api_key only."
+    },
+    {
+      "endpoint": "POST /api/voice-agents/{agentId}/calls",
+      "approvedAt": "2026-07-04",
+      "note": "Bearer auth: team api_key, public_api_key, or the agent's trigger_call_api_key (libs/callBot.ts). Triggers an outbound call; upserts the contact; honors number pools, call limits, whitelist, calling-hours rescheduling, DNC."
     }
   ],
-  "rejected": []
+  "rejected": [
+    {
+      "endpoint": "POST /api/voice-agents/{agentId}/web-calls",
+      "rejectedAt": "2026-07-04",
+      "reason": "Serves Revve's own call/preview pages — internal frontend plumbing, not a customer integration surface."
+    }
+  ]
 }
