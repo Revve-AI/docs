@@ -7,7 +7,7 @@ description: "For workspace admins and agent builders: connect a TikTok Business
 Connect your TikTok Business account to Revve and your chat agent answers TikTok Direct Messages automatically. This guide walks through connecting the account, assigning it to an agent, and keeping the connection healthy.
 
 <Note>
-The TikTok channel handles **Direct Messages only**. Inbound DMs from users reach your agent, and the agent replies with text messages. Comments, mentions, and video interactions are not processed, and the AI does not answer DMs that contain only an image or video.
+The TikTok channel handles **Direct Messages only**. Inbound text and image DMs reach your agent — image content is read via text extraction, so the AI can answer a photo of a receipt or a screenshot. Other message types (such as video) are logged in the conversation but not answered. Comments, mentions, and video interactions on your content are not processed, and the agent's replies are always text.
 </Note>
 
 ---
@@ -58,7 +58,7 @@ From then on, DMs sent to that TikTok account are routed to the agent, and its t
 
 ### Optional: collect ratings after conversations
 
-**Social Channel Feedback**, in the agent's Advanced Settings, asks users for a rating when a conversation ends on TikTok (and other social channels), and sends a follow-up when the rating is at or below the threshold you set. See [Chat agent advanced settings](/general-configuration/chat-agent-advanced-settings).
+**Social Feedback**, in the agent's Advanced Settings, asks users for a rating when a conversation ends on TikTok (and other social channels), and sends a follow-up when the rating is at or below the threshold you set. See [Chat agent advanced settings](/general-configuration/chat-agent-advanced-settings).
 
 ---
 
@@ -67,7 +67,7 @@ From then on, DMs sent to that TikTok account are routed to the agent, and its t
 Access tokens refresh automatically — day to day you don't need to do anything. The longer-lived authorization TikTok grants does expire, though:
 
 - **Before expiry:** if Channel Alerts are enabled, Revve emails a reconnect warning ("expires in N days — reconnect to avoid service interruption"). Enable alerts in [Workspace settings](/administration/workspace-settings) so this doesn't catch you off guard.
-- **After expiry:** the account card shows **Token Expired** / **Disconnected**, and the agent stops receiving DMs. Click **Reconnect** on the card to re-run the OAuth flow and restore service.
+- **After expiry:** the account card shows **Disconnected**, and the agent stops receiving DMs. Click **Reconnect** on the card to re-run the OAuth flow and restore service.
 
 ---
 
@@ -78,12 +78,12 @@ Access tokens refresh automatically — day to day you don't need to do anything
 | "Permission denied. Please authorize the app to connect your TikTok account." | You declined the authorization on TikTok's page. Start the connection again and approve the requested permissions. |
 | "OAuth session expired. Please try again." or "Invalid or expired OAuth state" | The connect window sat open too long before you approved. Close it and start the flow again from **Settings → Channels**. |
 | "Failed to connect TikTok account" | A generic connection failure. Retry, and check that you're logged into the right TikTok **Business** account — personal accounts can't complete the flow. |
-| Agent doesn't reply to a DM that contains only an image or video | Non-text messages aren't supported — the AI only answers text DMs. A human can pick up the conversation from the Inbox. |
-| Account card shows **Token Expired** | The TikTok authorization has lapsed. Click **Reconnect** on the account card to re-run the OAuth flow. |
+| Agent doesn't reply to a DM that contains only a video or another non-text/non-image type | Only text and image DMs get AI replies; other types are logged without a response. A human can pick up the conversation from the Inbox. |
+| Account card shows **Disconnected** | The TikTok authorization has lapsed (or was revoked). Click **Reconnect** on the account card to re-run the OAuth flow. |
 
 ---
 
 ## What's Next
 
 - [Creating your first chat agent](/getting-started/creating-your-first-chat-agent) — build the agent that will answer your TikTok DMs.
-- [Chat agent advanced settings](/general-configuration/chat-agent-advanced-settings) — enable Social Channel Feedback and other behavior tuning.
+- [Chat agent advanced settings](/general-configuration/chat-agent-advanced-settings) — enable Social Feedback and other behavior tuning.
