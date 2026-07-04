@@ -370,6 +370,169 @@
           }
         }
       }
+    },
+    "/api/voice-agents/{agentId}/calls": {
+      "post": {
+        "summary": "Trigger an outbound call",
+        "description": "Places (or schedules) an outbound call from a voice agent to a phone number. The contact is created or updated from the identifying fields before dialing, so the agent's `{{contact}}` placeholders resolve.\n\nGuardrails applied automatically: team call limits and plan limits (429), the outbound whitelist when enabled (400), Do Not Call list (the call is not placed), and the agent's allowed calling hours — a call requested outside them is scheduled for the next allowed slot and returns `rescheduled: true` with `runsAt`.\n\nCaller ID: uses the agent's configured outbound number or pool; override per call with `fromPhoneNumber` (must be one of your team's numbers) or `numberPoolId`.",
+        "operationId": "triggerOutboundCall",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "The voice agent ID."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "phoneNumber"
+                ],
+                "properties": {
+                  "phoneNumber": {
+                    "type": "string",
+                    "description": "The number to call.",
+                    "example": "+84775352590"
+                  },
+                  "fullName": {
+                    "type": "string",
+                    "description": "Contact full name (alias: `name`).",
+                    "example": "Jane Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "companyName": {
+                    "type": "string"
+                  },
+                  "companyWebsite": {
+                    "type": "string"
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "description": "IANA timezone for the contact; used for calling-hours evaluation.",
+                    "example": "Asia/Ho_Chi_Minh"
+                  },
+                  "fromPhoneNumber": {
+                    "type": "string",
+                    "description": "Optional caller-ID override. Must be a phone number belonging to your team."
+                  },
+                  "numberPoolId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Optional number pool to pick the caller ID from (overrides the agent's configured pool)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Call queued for dialing, or scheduled for the next allowed calling window (`rescheduled: true` with `runsAt`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "callRequestId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "rescheduled": {
+                      "type": "boolean",
+                      "description": "Present and true when the call was scheduled for the next allowed calling window."
+                    },
+                    "runsAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the rescheduled call will run."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid `fromPhoneNumber` (not a team number), or the destination is not on the whitelist while whitelist-only outbound is enabled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found (also returned when the API key does not match the agent's team).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Plan limit reached, or the per-number call limits (daily/weekly/monthly) are exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. Also currently returned when the number is on the Do Not Call list — the call is not placed and the message states the reason.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
