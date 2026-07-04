@@ -42,10 +42,10 @@ Ask Revve's capabilities come in three tiers, ordered by how much they change:
 | Tier | Examples | Review step? |
 |------|----------|--------------|
 | **Answer and analyze** | Search conversations, calls, and metrics; summarize recent calls; surface negative feedback | None — read-only |
-| **Act directly** | Create a voice agent; create [evaluation metrics](/evaluations/evaluation-metrics) and attach them to an agent; create custom contact fields; create a [draft campaign](/campaigns/creating-a-campaign) and attach an agent; save skills | None — happens immediately |
+| **Act directly** | Create a voice agent; create [evaluation metrics](/evaluations/evaluation-metrics) and attach them to an agent; create custom contact fields; create a [campaign](/campaigns/creating-a-campaign) and attach an agent; save skills | None — happens immediately (requires **Manage Agents**) |
 | **Propose agent changes** | Edit a chat or voice agent's prompt or conversation flow | Yes — you review a diff and apply per change |
 
-Direct actions create *new* things — a new agent, a new metric, a new draft campaign — so there's nothing live to break. Anything that would modify an existing agent's behavior goes through the proposal flow below.
+Direct actions create *new* things — a new agent, a new metric, a new campaign. One caveat to know: a copilot-created campaign lands **active** (though empty — no contacts are enrolled until you add them), not as a draft. Anything that would modify an existing agent's prompt or flow goes through the proposal flow below.
 
 ## Proposals: review before anything changes
 
@@ -63,7 +63,7 @@ The safety story, stated plainly:
 
 - Proposals write to the agent's **draft**, never to the live published version.
 - **Publishing stays a separate, human step** — the same [draft/publish workflow](/getting-started/publishing-and-versioning) as any manual edit, including [publish approval](/governance-access/publish-approval-workflow) if your workspace requires review.
-- Applying a proposal requires the **Manage Agents** permission. Without it, you'll see "You need the 'Manage Agents' permission to apply this change." — you can still discuss and refine proposals, but a permitted teammate has to apply them.
+- Proposing and applying agent changes both require the **Manage Agents** permission — without it, the copilot declines to propose changes at all (and conversations are private to each user, so there is no hand-off-to-a-teammate path).
 
 <Note>
 Drafts are single-editor. If a teammate holds the agent's edit lock, applying fails with `Draft is locked by {name}. Try again later.` — coordinate with them or wait for the lock to release.
@@ -74,7 +74,7 @@ Drafts are single-editor. If a teammate holds the agent's edit lock, applying fa
 | Action | Who can do it |
 |--------|---------------|
 | Chat with Ask Revve, run analyses | Any team member |
-| Direct actions (create agents, metrics, draft campaigns) | Any team member |
+| Direct actions (create agents, metrics, campaigns) | **Manage Agents** |
 | Apply a proposal to an agent's draft | **Manage Agents** permission |
 | Create custom contact fields or team-scoped skills via the copilot | **Manage Settings** permission |
 | Publish an agent draft | Unchanged — your normal publish flow and approvals |

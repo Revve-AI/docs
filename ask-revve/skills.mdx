@@ -9,7 +9,7 @@ A **skill** is a named markdown instruction module that [Ask Revve](/ask-revve/a
 One thing to get straight before anything else: **skills steer the copilot, not your customers' agents**. A skill changes how Ask Revve behaves when *you* chat with it inside the dashboard. It is never attached to your customer-facing chat or voice agents — their behavior lives in their prompts and conversation flows.
 
 <Note>
-The Skills page has no sidebar entry today. Reach it through the **Manage skills** link next to the composer's **Skill** button, or go directly to the `/skills` URL.
+The Skills page appears under **Settings → Skills** for members with the Manage Settings permission; everyone else reaches it through the **Manage skills** link next to the composer's **Skill** button.
 </Note>
 
 ## Scopes
@@ -22,7 +22,7 @@ Skills live in three tabs, each with its own ownership and permission model:
 | **Team** | Every member of the workspace | Anyone with the **Manage Settings** permission — others see the tab read-only, with no **New skill** button |
 | **Global** | Everyone | No one — built in by Revve, read-only |
 
-Global skills are the copilot's stock playbooks. The ones that ship include `analyze-bot-feedback`, `create-voice-agent`, `improve-bot-prompt`, `summarize-recent-calls`, and `skill-creator`.
+Global skills are the copilot's stock playbooks. The ones that ship include `analyze-bot-feedback`, `create-voice-agent`, `improve-bot-prompt`, `revve-voice-prompt-vi`, `summarize-recent-calls`, and `skill-creator`.
 
 Start in **Personal** while a workflow is still yours to refine; promote it to **Team** once it's stable and you want every teammate's copilot following the same procedure. Team scope is the point of the feature — it turns individual habits into shared process. See [Roles & Permissions](/governance-access/roles-and-permissions) for how **Manage Settings** is granted.
 
