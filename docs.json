@@ -154,7 +154,8 @@
               "governance-access/publish-approval-workflow",
               "administration/workspace-settings",
               "administration/conversation-routing",
-              "administration/phone-numbers"
+              "administration/phone-numbers",
+              "administration/conversation-fields"
             ]
           }
         ]
