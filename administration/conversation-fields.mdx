@@ -36,7 +36,7 @@ Deleting a definition (a value) happens **immediately, with no confirmation dial
 
 ### Import and Export
 
-**Export** downloads the full taxonomy as a JSON file (`custom-fields-{team}-{date}.json`). **Import** reads such a file and creates the field types in it, **skipping** any field type whose name already exists (it reports which ones were skipped). Together they cover two jobs: backing up before a restructure, and copying a taxonomy from one team to another.
+**Export** downloads the full taxonomy as a JSON file (`custom-fields-{team}-{date}.json`). **Import** reads such a file and creates the field types in it, **skipping** any field type whose name already exists (it reports which ones were skipped). Their main job is backing up before a restructure so you can restore if it goes wrong.
 
 ## Where conversation fields surface
 
@@ -44,7 +44,7 @@ A taxonomy is only worth building because four features consume it:
 
 | Surface | How the field is used |
 |---------|----------------------|
-| **Inbox** | Each field type appears as a chip on the conversation's detail panel — "`+ {name}`" when unset, "`{name}: A › B › C`" when set. Clicking opens a searchable picker, so operators classify conversations by hand. See the [conversation analysis panel](/inbox/conversation-analysis-panel). |
+| **Inbox** | Each field type appears as a chip in the conversation header, next to the contact name and label — "`+ {name}`" when unset, "`{name}: A › B › C`" when set. Clicking opens a searchable picker, so operators classify conversations by hand. See [Inbox Overview](/inbox/inbox-overview). |
 | **Routing rules** | A custom rule condition can target a conversation field: pick the field, an operator (equals, not equals, contains, not contains, starts with, ends with), and a value from the multi-column "Select Field Value" tree picker (columns Level 1, Level 2, …). See [Conversation Routing](/administration/conversation-routing). |
 | **Flow automations** | A flow node or transition can set a field automatically — **Add Node Automation** → "1. Select Custom Field Type:" → "2. Select Field Value:" — so "When users reach this node, set `{FieldType}` to `{A › B}`" with no human touch. See [Flow Node Features](/conversational-flow/flow-node-features). |
 | **Tickets** | The conversation's field values surface on the ticket detail, giving the assigned agent the classification at a glance. See [Working with Tickets](/tickets/working-with-tickets). |
