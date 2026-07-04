@@ -26,7 +26,9 @@
             "pages": [
               "guides/lead-qualification-agent",
               "guides/payment-reminder-campaign",
-              "guides/appointment-booking-voice-agent"
+              "guides/appointment-booking-voice-agent",
+              "guides/support-agent-with-escalation",
+              "guides/speed-to-lead-campaign"
             ]
           },
           {
