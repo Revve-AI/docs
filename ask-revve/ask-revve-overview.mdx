@@ -1,0 +1,91 @@
+---
+
+title: "Ask Revve: Your In-App Copilot"
+description: "For every Revve user: chat with the built-in copilot to analyze calls, create agents and campaigns, and propose prompt changes — with a review-and-apply safety net for app owners."
+---
+
+**Ask Revve** is the AI copilot built into the Revve dashboard. Ask it questions in plain language — "why did this call fail?", "show calls with negative feedback" — and it searches your conversations, calls, and metrics to answer. It can also do work for you: create a voice agent, set up evaluation metrics, draft a campaign, or propose edits to an agent's prompt that you review before anything changes.
+
+It never publishes anything. Changes to your agents arrive as proposals, apply only to a draft, and going live remains a human decision.
+
+## Where to find it
+
+Ask Revve is one click away on every dashboard page, via the pill dock at the bottom right:
+
+- The orange **Ask Revve** button (sparkles icon) starts a fresh conversation.
+- Up to three pills show your most recent conversations — click one to pick it back up.
+- The **Chat history** clock icon opens your full conversation history.
+- The chevron (**Collapse dock** / **Expand dock**) tucks the dock away when you need the space.
+
+![The Ask Revve dock with recent conversation tabs at the bottom right of the dashboard](/screenshots/evaluations-scorecards.png)
+
+The dashboard home page *is* the copilot: landing on the dashboard shows a centered composer with three suggestion chips — **Summarize recent voice calls**, **Show calls with negative feedback**, and **Help me improve a agent prompt** — so you can start with a question instead of hunting through menus.
+
+Once a chat is open, it runs in a floating window at the bottom right. Use **Expand** to take it full-surface and **Minimize** to shrink it back. The header shows the conversation title (or "New chat") and a status dot that pulses while the copilot is responding.
+
+## Conversations and history
+
+Each chat is a thread with its own context. **Ask Revve** always starts a new one; the dock pills are your three most recent. For anything older, open **Chat history** — it has a **Search chat history** box and groups threads by Today, Yesterday, Last week, 2 weeks ago, Last month, and Older. Threads title themselves automatically after the first exchange, so you don't need to name anything.
+
+<Tip>
+Keep one thread per task rather than one giant thread. "Improve the greeting for my support bot" and "why did enrollment drop last week?" are separate investigations — separate threads keep the copilot's context focused and make the history searchable.
+</Tip>
+
+## It knows what you're looking at
+
+On a chat agent, voice agent, or call-detail page, Ask Revve attaches the thing you're viewing as a context chip in the composer (for example **This call**). That means "improve this bot's greeting" or "why did this call fail?" just works — you don't have to name the agent or paste a call ID. Click the chip's dismiss control if you want a question answered without that context. Other pages attach no context, so name what you're asking about.
+
+## What it can do
+
+Ask Revve's capabilities come in three tiers, ordered by how much they change:
+
+| Tier | Examples | Review step? |
+|------|----------|--------------|
+| **Answer and analyze** | Search conversations, calls, and metrics; summarize recent calls; surface negative feedback | None — read-only |
+| **Act directly** | Create a voice agent; create [evaluation metrics](/evaluations/evaluation-metrics) and attach them to an agent; create custom contact fields; create a [draft campaign](/campaigns/creating-a-campaign) and attach an agent; save skills | None — happens immediately |
+| **Propose agent changes** | Edit a chat or voice agent's prompt or conversation flow | Yes — you review a diff and apply per change |
+
+Direct actions create *new* things — a new agent, a new metric, a new draft campaign — so there's nothing live to break. Anything that would modify an existing agent's behavior goes through the proposal flow below.
+
+## Proposals: review before anything changes
+
+When you ask Ask Revve to change an agent — "make the greeting warmer", "add an objection-handling step to the flow" — it doesn't edit the agent. It replies with a **proposal card** titled "Proposed N change(s)" for that agent, with a per-change **diff** showing exactly what would change.
+
+From the card you can:
+
+- **Apply** an individual change, or use **Apply all** / **Apply selected (n)** for several at once.
+- **Discard all** / **Discard selected (n)** to reject changes you don't want.
+- Edit the proposed text inline before applying — supported for the system/global prompt and for node instructions — when the suggestion is close but not quite right.
+
+Applying opens a confirmation dialog — **Apply to draft?** — that spells out the contract: the changes are applied to the agent's *draft* only, and won't go live until you publish. After you confirm, the card shows an **Applied** badge and a **View draft** link that takes you to the agent's General tab to inspect the result.
+
+The safety story, stated plainly:
+
+- Proposals write to the agent's **draft**, never to the live published version.
+- **Publishing stays a separate, human step** — the same [draft/publish workflow](/getting-started/publishing-and-versioning) as any manual edit, including [publish approval](/governance-access/publish-approval-workflow) if your workspace requires review.
+- Applying a proposal requires the **Manage Agents** permission. Without it, you'll see "You need the 'Manage Agents' permission to apply this change." — you can still discuss and refine proposals, but a permitted teammate has to apply them.
+
+<Note>
+Drafts are single-editor. If a teammate holds the agent's edit lock, applying fails with `Draft is locked by {name}. Try again later.` — coordinate with them or wait for the lock to release.
+</Note>
+
+## Permissions at a glance
+
+| Action | Who can do it |
+|--------|---------------|
+| Chat with Ask Revve, run analyses | Any team member |
+| Direct actions (create agents, metrics, draft campaigns) | Any team member |
+| Apply a proposal to an agent's draft | **Manage Agents** permission |
+| Create custom contact fields or team-scoped skills via the copilot | **Manage Settings** permission |
+| Publish an agent draft | Unchanged — your normal publish flow and approvals |
+
+See [Roles and Permissions](/governance-access/roles-and-permissions) for how these permissions map to roles.
+
+## Teach it your playbooks with skills
+
+The **Skill** button (book icon) in the composer lets you invoke a specific skill — a reusable, named instruction module — for a message, and the **Manage skills** link opens the Skills page where you author your own. Skills are how you turn a one-off prompt like "review this week's calls the way our team does" into a procedure every teammate's copilot follows the same way. See [Skills](/ask-revve/skills) for scopes, authoring, and the built-in skills that ship with Revve.
+
+## What's Next
+
+- [Skills](/ask-revve/skills) — encode your team's workflows so Ask Revve follows them consistently.
+- [Publishing and Versioning](/getting-started/publishing-and-versioning) — the draft/publish model that keeps applied proposals from going live on their own.

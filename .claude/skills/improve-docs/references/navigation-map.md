@@ -19,6 +19,7 @@ by persona would force them to keep switching tabs.
 | # | Group | Folder(s) | Charter — what belongs here |
 |---|-------|-----------|------------------------------|
 | 1 | Getting Started | `getting-started/` | First-run orientation: what Revve is, quickstart, publishing/versioning basics. Not feature-specific how-tos. |
+| 1b | Ask Revve | `ask-revve/` | The in-app AI copilot: the dock/dashboard-home chat, page context, direct actions, the propose-then-Apply-to-draft flow, and Skills (copilot instruction modules — NOT customer-agent config). Sits right after Getting Started because the dashboard home is the copilot. Added 2026-07-04. |
 | 2 | Recipes | `guides/` | End-to-end, copy-paste-able recipes for one complete use case (qualify a lead, run a payment-reminder campaign, book an appointment by voice). |
 | 3 | Voice Agents | `voice-agents/` | Everything specific to phone-call agents: creation, settings, evaluation, tools, call transfer, do-not-call, publishing/versioning. Comes before Chat Agents (owner priority — voice is the higher-intent, higher-cost surface). |
 | 4 | Chat Agents | `getting-started/` (chat concept pages) + `general-configuration/` + nested `conversational-flow/` | Everything specific to text-channel agents: what a chat agent is, creating one, engine types, identity/model/welcome-message/tone configuration, and the nested **Conversation Flow** subgroup for the flow-editor pages. New chat-agent configuration pages keep landing in `general-configuration/` even though the nav label is "Chat Agents" (see placement rule 4). |
