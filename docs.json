@@ -79,6 +79,7 @@
           {
             "group": "Channels",
             "pages": [
+              "channel-setup/channels-overview",
               "channel-setup/website-appearance-and-styling",
               "channel-setup/website-installation",
               "channel-setup/website-bubble-messages",
@@ -86,7 +87,8 @@
               "channel-setup/sms-channel-setup",
               "channel-setup/whatsapp-channel-setup",
               "channel-setup/zalo-channel-setup",
-              "channel-setup/messenger-channel-setup"
+              "channel-setup/messenger-channel-setup",
+              "channel-setup/tiktok-channel-setup"
             ]
           },
           {
