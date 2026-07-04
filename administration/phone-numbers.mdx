@@ -40,8 +40,8 @@ The edit dialog covers:
 | Field | What it controls |
 |-------|------------------|
 | **Label** | The human-readable name shown in the table. |
-| **Region** | Where the number's call traffic is anchored. |
-| **Inbound enablement + inbound voice agent** | Whether the number accepts inbound calls, and which voice agent picks up when someone dials it. This is how you put an agent "on" a number — build the agent first ([Creating Your First Voice Agent](/voice-agents/creating-your-first-voice-agent)), then assign it here. |
+| **Region** | Where the number's call traffic is anchored. Shown for SIP numbers only and read-only — it's fixed when the SIP number is added. |
+| **Enable Voice + inbound voice agent** | Whether the number accepts inbound calls, and which voice agent picks up when someone dials it. This is how you put an agent "on" a number — build the agent first ([Creating Your First Voice Agent](/voice-agents/creating-your-first-voice-agent)), then assign it here. |
 | **SMS enablement** | Turns on texting for the number (Twilio numbers only). Enabling SMS here is the prerequisite for using the number as an SMS channel — see [SMS Channel Setup](/channel-setup/sms-channel-setup) for the rest of that configuration. |
 
 ## Insights tab: catch spam-blocking early
@@ -51,7 +51,7 @@ Carriers silently spam-label numbers that make lots of outbound calls. You won't
 Revve surfaces this two ways:
 
 1. **A warning banner on the Phone Numbers tab** when it detects numbers "connecting well below peers and may be spam-blocked." The banner links straight to Insights.
-2. **The Insights tab itself**: per-number connectivity trends over the last 30 days.
+2. **The Insights tab itself**: per-number connectivity trends over the last 30 days by default (7- and 90-day windows available).
 
 When you see the banner (or a Trend sparkline falling off a cliff):
 

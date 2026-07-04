@@ -4,7 +4,7 @@ title: "Conversation Routing"
 description: "For the admin who decides which humans get which conversations: set up the routing pool, tune the preset rules, and add custom rules for specific customer segments."
 ---
 
-Conversation Routing controls what happens after a conversation or ticket needs a human: which team member it lands on, what happens when everyone is busy, and what the customer hears while they wait. You configure it under **Settings → Conversation Routing** ("Manage conversation assignment for your team"), which has two tabs: **Human Agents** (who can receive work) and **Rules** (how work is distributed).
+Conversation Routing controls what happens after a conversation or ticket needs a human: which team member it lands on, what happens when everyone is busy, and what the customer hears while they wait. You configure it under **Settings → Conversation Routing** ("Manage conversation assignment" for your team), which has two tabs: **Human Agents** (who can receive work) and **Rules** (how work is distributed).
 
 <Note>
 The entire Settings section requires the **Manage Settings** permission. See [Roles and Permissions](/governance-access/roles-and-permissions) for how permissions are granted. For the rest of the Settings section, see [Workspace Settings](/administration/workspace-settings).
@@ -18,9 +18,9 @@ Each pool entry shows:
 
 | Column | What it shows |
 |--------|---------------|
-| **Agent** | The team member and their email. |
+| **Agent** | The team member's email. |
 | **Groups** | Group membership chips — custom rules can target a specific group. |
-| **Status** | An enable/disable switch. Only **enabled** agents receive routed conversations and tickets. |
+| **Status** | An enable/disable switch. Only **enabled** agents receive routed conversations. (One caveat for tickets: the 24-hour continuity path checks the agent's personal ticket availability, not this pool switch — a disabled agent can still receive a continuity ticket.) |
 | **Actions** | Remove the agent from the pool (with a "Remove Routing Agent" confirmation). |
 
 <Tip>
@@ -63,7 +63,7 @@ Sets the maximum open tickets per agent (1–500). At the limit, the agent stops
 
 Custom rules are ordered condition → assignment rules for when specific conversations should go to specific people. Each rule has:
 
-- **Rule name** (required — e.g. "VIP Customers", "Technical Support") and an optional description.
+- **Rule name** (required — e.g. "VIP Customers", "Technical Support").
 - **When** — one or more conditions that must **all** match (AND logic). Each condition is a **Field Type** (Contact Field or Conversation Field), a **Field**, an **Operator** (equals, not equals, contains, not contains, starts with, ends with), and a **Value**.
 - **Then** — assign to a **Specific Group** (one group from the pool) or **Any Available Agent**.
 
@@ -80,9 +80,9 @@ When a conversation escalates to a human, expect routing to resolve in this orde
 1. **Continuity first** — if the 24-Hour Continuity Rule is on and the contact's previous agent (from the last 24 hours) is enabled and under their workload limit, they get it.
 2. **Custom rules** — otherwise, the conversation is checked against your custom rules; the first enabled rule whose conditions all match assigns it to that rule's group (or any available agent).
 3. **Fallback** — if no rule matches, or the matched group has no one available, Fallback Assignment routes it to any available agent in the pool.
-4. **Queue** — if nobody in the pool is available (everyone disabled, at their limit, or outside working hours), the conversation queues unassigned (when queuing is on) and the customer sees your out-of-office or wait-time message.
+4. **Queue** — if nobody in the pool is available (everyone disabled, marked unavailable, or at their limit), the conversation queues unassigned (when queuing is on) and the customer sees your wait-time message.
 
-"Available" throughout means: in the pool, **Status** enabled, and under the Workload Distribution limit (or the Ticket Distribution limit, for tickets). What the assigned team member sees on their end is covered in [Human Takeover](/inbox/human-takeover).
+"Available" throughout means: in the pool, **Status** enabled, personally marked available, and under the Workload Distribution limit (or the Ticket Distribution limit, for tickets). Working hours act as a team-wide pre-check instead: outside working hours, if the Out-of-Office Escalation Message is enabled, the customer gets that message immediately and no routing happens; with it disabled, out-of-hours conversations route normally. What the assigned team member sees on their end is covered in [Human Takeover](/inbox/human-takeover).
 
 ## What's Next
 

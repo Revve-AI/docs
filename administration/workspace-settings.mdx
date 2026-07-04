@@ -6,7 +6,7 @@ description: "The team-wide settings reference for workspace admins — general 
 
 Everything under **Settings** applies to your whole team, and everything on this page requires the **Manage Settings** permission — see [Roles and Permissions](/governance-access/roles-and-permissions). One section, **Audit Logs**, is stricter: it requires the admin role.
 
-Settings pages are organized as cards, and **each card has its own Save button** that enables only when you've changed something in that card. Saving one card does not save the others — if you edit Working Hours and the Call Window in one sitting, save both.
+Settings pages are organized as cards, and **most cards have their own Save button** that enables only when you've changed something (some tabs — Brand, Global Limits — share one Save for the whole tab). Saving one card does not save the others — if you edit Working Hours and the Call Window in one sitting, save both.
 
 This page covers **General** (all six tabs), **Alerts**, **Secrets**, **Audit Logs**, **Conversation Settings**, and **Address**. Two Settings sections get their own pages: [Conversation Routing](/administration/conversation-routing) and [Phone Numbers](/administration/phone-numbers).
 
@@ -25,7 +25,7 @@ Five cards of team-wide defaults:
 | **Default Timezone** (Time & Schedule card) | — | Set to the timezone your *contacts* live in, not where your office is — Working Hours and the Call Window both interpret times in this timezone. |
 | **Working Hours** | 08:00–20:00 every day | Per-weekday start/end (end must be after start). This is your team's declared availability — routing features such as the out-of-office escalation message key off it. |
 | **Enable Call Window** | Off | Turn this on as a compliance guardrail wherever calling-hours regulations apply. When enabled, outbound calls outside the allowed hours are **automatically failed** — a hard stop, not a warning. Uses the team timezone. |
-| **Delay (seconds)** (Auto-save Delay card) | 2 seconds (the field's helper text says 1.5) | How long after you stop typing before agent settings auto-save. Range 1–5 in 0.1 steps. Raise it if edits are saving mid-thought; lower it if you keep navigating away before changes persist. |
+| **Delay (seconds)** (Auto-save Delay card) | 1.5 seconds effective default (the settings form prefills 2) | How long after you stop typing before agent settings auto-save. Range 1–5 in 0.1 steps. Raise it if edits are saving mid-thought; lower it if you keep navigating away before changes persist. |
 
 <Note>
 When you enable the Call Window, the seed schedule is Mon–Fri 09:00–18:00 with weekends off. Adjust the per-weekday enable and start/end times ("Allowed Calling Hours") to match your local regulations before launching a campaign — the window fails calls silently from the caller's perspective, so a too-narrow window looks like a campaign that mysteriously stopped dialing.
