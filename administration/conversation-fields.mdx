@@ -18,15 +18,15 @@ The page has two panes: field types on the left, the selected type's value tree 
 
 The left pane lists your field types (empty state: "No field types found"). Click **Add Field Type** at the bottom — the "Create Field Type" popover asks for a name only. The ⋯ menu on each row offers **Edit** (rename) and **Delete**.
 
-Deleting a field type asks for confirmation: "Are you sure you want to delete "{name}"? This will permanently delete the field type and all its definitions. This action cannot be undone."
+Deleting a field type asks for confirmation: "Are you sure you want to delete `{name}`? This will permanently delete the field type and all its definitions. This action cannot be undone."
 
 ### Definitions (the value tree)
 
-Select a field type and the right pane shows "{name} Definitions" — "Manage the hierarchical structure for this field type". To build the tree:
+Select a field type and the right pane shows "`{name}` Definitions" — "Manage the hierarchical structure for this field type". To build the tree:
 
 1. Click **Add** in the header to create a root value (the "Add Definition" popover).
 2. Hover any existing value and click the **+** icon → **Add Child** to nest a value under it.
-3. Repeat to whatever depth you need. Each value shows an **L{level}** badge (L1 for roots, L2 for their children, and so on) and chevrons to expand or collapse its branch.
+3. Repeat to whatever depth you need. Each value shows an `L{level}` badge (L1 for roots, L2 for their children, and so on) and chevrons to expand or collapse its branch.
 
 Each value's ⋯ menu offers **Edit** and **Delete**.
 
@@ -44,7 +44,7 @@ A taxonomy is only worth building because four features consume it:
 
 | Surface | How the field is used |
 |---------|----------------------|
-| **Inbox** | Each field type appears as a chip on the conversation's detail panel — "+ {name}" when unset, "{name}: A › B › C" when set. Clicking opens a searchable picker, so operators classify conversations by hand. See the [conversation analysis panel](/inbox/conversation-analysis-panel). |
+| **Inbox** | Each field type appears as a chip on the conversation's detail panel — "`+ {name}`" when unset, "`{name}: A › B › C`" when set. Clicking opens a searchable picker, so operators classify conversations by hand. See the [conversation analysis panel](/inbox/conversation-analysis-panel). |
 | **Routing rules** | A custom rule condition can target a conversation field: pick the field, an operator (equals, not equals, contains, not contains, starts with, ends with), and a value from the multi-column "Select Field Value" tree picker (columns Level 1, Level 2, …). See [Conversation Routing](/administration/conversation-routing). |
 | **Flow automations** | A flow node or transition can set a field automatically — **Add Node Automation** → "1. Select Custom Field Type:" → "2. Select Field Value:" — so "When users reach this node, set `{FieldType}` to `{A › B}`" with no human touch. See [Flow Node Features](/conversational-flow/flow-node-features). |
 | **Tickets** | The conversation's field values surface on the ticket detail, giving the assigned agent the classification at a glance. See [Working with Tickets](/tickets/working-with-tickets). |
