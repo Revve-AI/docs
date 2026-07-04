@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Revve AI API",
-    "description": "Endpoints for integrating your own systems with Revve \u2014 enrolling contacts into campaigns from your CRM, core banking system, or any external source.",
+    "description": "Endpoints for integrating your own systems with Revve — enrolling contacts into campaigns from your CRM, core banking system, or any external source.",
     "version": "1.0.0"
   },
   "servers": [
@@ -147,7 +147,7 @@
     "/api/campaigns/contact-enrollments": {
       "post": {
         "summary": "Create a contact and enroll it in a campaign",
-        "description": "Creates (or updates, if a matching contact already exists) a Revve contact from a phone number and enrolls it into a campaign in one call. Use this when the contact doesn't exist in Revve yet \u2014 for example, a lead arriving straight from your core system or CRM. If `campaignId` is omitted, this only creates/updates the contact without enrolling it in anything.",
+        "description": "Creates (or updates, if a matching contact already exists) a Revve contact from a phone number and enrolls it into a campaign in one call. Use this when the contact doesn't exist in Revve yet — for example, a lead arriving straight from your core system or CRM. If `campaignId` is omitted, this only creates/updates the contact without enrolling it in anything.",
         "operationId": "createAndEnrollContact",
         "requestBody": {
           "required": true,
@@ -251,7 +251,7 @@
     "/api/contacts": {
       "post": {
         "summary": "Create a contact",
-        "description": "Creates a contact in your team. Any keys beyond the standard fields are stored as custom contact properties. If `campaignId` is provided, the new contact is also enrolled into that campaign as a best-effort background action \u2014 enrollment failure does not fail this request, so verify enrollment separately for critical flows (or use `POST /api/campaigns/contact-enrollments`, which creates and enrolls atomically in one call).\n\nDuplicate contacts (same identifying fields within the team) are rejected with `400 Contact existed`.",
+        "description": "Creates a contact in your team. Any keys beyond the standard fields are stored as custom contact properties. If `campaignId` is provided, the new contact is also enrolled into that campaign on a best-effort basis — enrollment failures are logged but do not fail this request, so verify enrollment separately for critical flows. (`POST /api/campaigns/contact-enrollments` also creates the contact and attempts enrollment in one call; enrollment there is likewise best-effort.) The target campaign must be active.\n\nDuplicate contacts (same identifying fields within the team) are rejected with `400 Contact existed`.",
         "operationId": "createContact",
         "requestBody": {
           "required": true,
@@ -289,7 +289,7 @@
                   "campaignId": {
                     "type": "string",
                     "format": "uuid",
-                    "description": "Optional. Enrolls the created contact into this campaign (best-effort, asynchronous)."
+                    "description": "Optional. Enrolls the created contact into this active campaign (best-effort — a failed enrollment does not fail the request)."
                   }
                 },
                 "additionalProperties": {
@@ -353,7 +353,7 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
+            "description": "Contact insert failed (`Failed to create contact`) or an unexpected error occurred (`Internal server error`).",
             "content": {
               "application/json": {
                 "schema": {
