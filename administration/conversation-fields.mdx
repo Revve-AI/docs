@@ -46,7 +46,7 @@ A taxonomy is only worth building because four features consume it:
 |---------|----------------------|
 | **Inbox** | Each field type appears as a chip on the conversation's detail panel — "+ {name}" when unset, "{name}: A › B › C" when set. Clicking opens a searchable picker, so operators classify conversations by hand. See the [conversation analysis panel](/inbox/conversation-analysis-panel). |
 | **Routing rules** | A custom rule condition can target a conversation field: pick the field, an operator (equals, not equals, contains, not contains, starts with, ends with), and a value from the multi-column "Select Field Value" tree picker (columns Level 1, Level 2, …). See [Conversation Routing](/administration/conversation-routing). |
-| **Flow automations** | A flow node or transition can set a field automatically — **Add Node Automation** → "1. Select Custom Field Type:" → "2. Select Field Value:" — so "When users reach this node, set {FieldType} to {A › B}" with no human touch. See [Flow Node Features](/conversational-flow/flow-node-features). |
+| **Flow automations** | A flow node or transition can set a field automatically — **Add Node Automation** → "1. Select Custom Field Type:" → "2. Select Field Value:" — so "When users reach this node, set `{FieldType}` to `{A › B}`" with no human touch. See [Flow Node Features](/conversational-flow/flow-node-features). |
 | **Tickets** | The conversation's field values surface on the ticket detail, giving the assigned agent the classification at a glance. See [Working with Tickets](/tickets/working-with-tickets). |
 
 Every field change is also recorded on the conversation's history as old path → new path, so you can see when and how a conversation was reclassified.
