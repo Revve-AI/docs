@@ -9,6 +9,11 @@
       "endpoint": "POST /api/campaigns/contact-enrollments",
       "approvedAt": "2026-07-03",
       "note": "Bearer API-key auth (team.api_key / team.public_api_key via validateTeamApiKey). Creates-and-enrolls a contact in one call."
+    },
+    {
+      "endpoint": "POST /api/contacts",
+      "approvedAt": "2026-07-04",
+      "note": "Bearer API-key auth (validateTeamApiKey against teams.api_key). Creates a contact with custom properties; optional campaignId triggers a best-effort background enrollment. Overlaps with contact-enrollments (create-and-enroll); accepts the private api_key only."
     }
   ],
   "rejected": []

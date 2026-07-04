@@ -27,7 +27,11 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["contactId", "teamId", "campaignId"],
+                "required": [
+                  "contactId",
+                  "teamId",
+                  "campaignId"
+                ],
                 "properties": {
                   "contactId": {
                     "type": "string",
@@ -78,7 +82,9 @@
             "description": "Missing required fields (`contactId`, `teamId`, or `campaignId`), or the campaign is not active / does not exist.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           },
@@ -86,7 +92,9 @@
             "description": "Missing `Authorization` header, or the API key is invalid for the given `teamId`.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           },
@@ -94,7 +102,9 @@
             "description": "No contact found with the given `contactId`.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           },
@@ -125,7 +135,9 @@
             "description": "Unexpected server error.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           }
@@ -143,7 +155,10 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["phoneNumber", "teamId"],
+                "required": [
+                  "phoneNumber",
+                  "teamId"
+                ],
                 "properties": {
                   "phoneNumber": {
                     "type": "string",
@@ -204,7 +219,9 @@
             "description": "Missing `phoneNumber` or `teamId`.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           },
@@ -212,7 +229,9 @@
             "description": "Missing `Authorization` header, or the API key is invalid for the given `teamId`.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           },
@@ -220,7 +239,132 @@
             "description": "Unexpected server error.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contacts": {
+      "post": {
+        "summary": "Create a contact",
+        "description": "Creates a contact in your team. Any keys beyond the standard fields are stored as custom contact properties. If `campaignId` is provided, the new contact is also enrolled into that campaign on a best-effort basis — enrollment failures are logged but do not fail this request, so verify enrollment separately for critical flows. (`POST /api/campaigns/contact-enrollments` also creates the contact and attempts enrollment in one call; enrollment there is likewise best-effort.) The target campaign must be active.\n\nDuplicate contacts (same identifying fields within the team) are rejected with `400 Contact existed`.",
+        "operationId": "createContact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "phoneNumber",
+                  "teamId"
+                ],
+                "properties": {
+                  "phoneNumber": {
+                    "type": "string",
+                    "description": "The contact's phone number. Required.",
+                    "example": "+84775352590"
+                  },
+                  "teamId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Your team ID. Must match the team the API key belongs to."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Full name.",
+                    "example": "Jane Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "companyName": {
+                    "type": "string"
+                  },
+                  "campaignId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Optional. Enrolls the created contact into this active campaign (best-effort — a failed enrollment does not fail the request)."
+                  }
+                },
+                "additionalProperties": {
+                  "description": "Any additional keys are stored as custom contact properties."
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Contact 123e4567-e89b-12d3-a456-426614174000 created successfully"
+                    },
+                    "contactId": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required fields, or the contact already exists (`Contact existed`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Contact existed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing authorization header or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid API key"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Contact insert failed (`Failed to create contact`) or an unexpected error occurred (`Internal server error`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
               }
             }
           }
