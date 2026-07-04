@@ -1,0 +1,217 @@
+---
+
+title: "Build a Speed-to-Lead Callback Campaign"
+description: "A complete, copy-paste recipe for the team wiring web forms or a CRM into Revve: one API call per new lead, and a voice agent calls them back within minutes, qualifies them, and books a meeting on your calendar."
+---
+
+**What you'll build:** a pipeline where every new inbound lead gets a phone call within minutes of submitting your form. Your website or CRM makes one API call per lead; a campaign enrolls them and places the call; a voice agent references the request they just made, qualifies them against your criteria, and books a meeting on your team's calendar while they're still on the line. Leads who don't pick up are retried on the schedule you write — in plain language, not in a flow builder.
+
+**Time:** about 45 minutes, including building the voice agent. Every prompt, Instructions block, and API call on this page is copy-paste — adjust the bracketed parts for your business.
+
+## Prerequisites
+
+- A scheduling provider connected in **Settings → Apps** — Calendly, Cal.com, ChiliPiper, or HubSpot. See [Scheduling & Booking with Agents](/integrations/scheduling-and-booking) for the four providers and their setup.
+- At least one team phone number for outbound calls — see [Phone Numbers](/administration/phone-numbers).
+- Your team's API key, from **Settings → General → Privacy & Security** (see [Workspace Settings](/administration/workspace-settings)).
+- A way to make an HTTP request when a lead submits: your backend, your CRM's workflow engine, or a form tool that can send a webhook.
+
+If you're new to campaigns, read [What Is a Campaign?](/campaigns/campaign-overview) first — speed-to-lead is its first listed use case, and this recipe assumes you know the five building blocks (Campaign Agents, Instructions, Engagement Flow, Exit Conditions, Next Campaign).
+
+## Step 1: Build and publish the qualification voice agent
+
+Go to **Agents > Voice Agents**, click **+ New Voice Agent**, and pick the **Telesales** template — it's built for outbound calls that qualify leads and close on the call. In the setup step:
+
+- **Voice agent name** — e.g. "Speed-to-lead callback — [Product]".
+- **Custom requirement** — describe your company, product, target customer, and the call goal ("qualify inbound demo requests and book a meeting with sales").
+- **Contact fields the bot will know** — check `{{fullName}}` (and any other fields your form captures) so the agent can greet the lead by name instead of opening cold.
+
+Click **Generate & create**, then open the **General** tab and replace or refine the generated **System Prompt**. Paste and adjust:
+
+```text
+You are [Alex], calling on behalf of [Acme], a [B2B invoicing platform
+for mid-size companies]. The person you are calling, {{fullName}}, just
+submitted a form on our website asking about [a demo]. This is a
+callback they asked for, not a cold call — say so early.
+
+Open by confirming you're speaking with {{fullName}}, then reference
+their request: "You just asked about [a demo] on our site, so I wanted
+to reach you while it's fresh."
+
+Qualify conversationally, one question at a time:
+1. What problem are they trying to solve?
+2. [Company size — rough headcount or team size].
+3. Timeline — evaluating now, or researching for later?
+
+A lead is QUALIFIED if [they have a problem we solve, a company size of
+10+ employees, and an active timeline (now or within 3 months)].
+
+If qualified, book the meeting on this call: check the calendar for
+availability, offer two or three concrete slots out loud, and book the
+one they pick. Collect anything still missing for the booking — their
+email and timezone — before you book.
+
+Never quote custom pricing or discounts, never promise features, and
+never press a lead who says it's a bad time — offer to call back at a
+time they name instead. If they're clearly not a fit, thank them and
+end warmly.
+```
+
+Check **Region** (pick the one closest to your callers), set the speech and voice **Language** on **Model Settings**, then test in **Preview** — fill in a test value for `fullName` first so the greeting works. When it behaves, publish it from the **Versions** tab. The full walkthrough of each of these steps is in [Creating Your First Voice Agent](/voice-agents/creating-your-first-voice-agent).
+
+<Tip>
+The prompt tells the agent to "check the calendar" and "book" — that only works once the calendar tools in Step 2 are attached. Keep the Preview tab open and re-test after attaching them.
+</Tip>
+
+## Step 2: Attach the calendar tools
+
+In the agent's **Advanced Settings**, open the **Tools** section and add both calendar presets — an agent that can check availability but not book leaves the caller with a slot and no appointment:
+
+| Preset | What it does |
+|--------|--------------|
+| **Check Availability** ("Check Calendar Availability") | Looks up open slots so the agent can offer them out loud |
+| **Book Appointment** ("Book on the Calendar") | Creates the booking while the caller is still on the line |
+
+In each tool's dialog, pick your **Calendar** — the selector lists every installed calendar profile by alias, so choose the sales calendar, not a support one — and turn on **Global Tool** so booking works wherever the conversation happens to be. If the selector shows **No calendar apps available**, use its **Install new app** shortcut to connect a provider without abandoning the agent.
+
+On the call, if the requested time is taken, the availability check returns near-slot suggestions the agent can offer instead ("2 PM is taken — I have 2:30 or 3:15"). A booking requires the caller's name, email, booking time, and timezone — the agent collects whatever is missing before it books. Details and provider setup are in [Scheduling & Booking with Agents](/integrations/scheduling-and-booking); for a deeper treatment of the two tools and their prompt wiring, see [Build a Voice Agent That Books Appointments Mid-Call](/guides/appointment-booking-voice-agent).
+
+## Step 3: Create the campaign
+
+Go to **Campaigns**, click **New Campaign**, and fill in:
+
+| Field | Value |
+|-------|-------|
+| Campaign Name | Speed to Lead — [Product/Form] |
+| Description | Calls new inbound leads back within minutes, qualifies them, and books a meeting with sales. |
+
+Click **Create**, then **Start Editing** to open the working draft (see [Creating a Campaign](/campaigns/creating-a-campaign) for the draft/publish mechanics).
+
+On the **Setup** tab, under **Campaign Agents**, click **+ Add Agent**, attach your voice agent, and set its **Role**:
+
+| Agent | Role |
+|-------|------|
+| Your voice agent | Call new inbound leads back within minutes of enrollment, qualify them against our criteria, and book a meeting with the sales team while they're on the line. |
+
+### Engagement Flow
+
+Add four states with **+ Add State**:
+
+| State | Description |
+|-------|-------------|
+| `new_lead` | Just enrolled from a form submission; no call attempted yet. |
+| `contacted` | We reached the lead (or left a voicemail) but haven't finished qualifying. |
+| `qualified` | Lead matches our criteria but no meeting is booked yet. |
+| `meeting_booked` | A meeting with the sales team is on the calendar. |
+
+### Instructions
+
+Paste and adjust:
+
+```text
+This campaign calls back leads who just submitted a form on our
+website. Speed is the whole point: place the first call as soon as a
+lead is enrolled — within minutes, not hours — as long as it falls
+inside the allowed calling hours below. A lead enrolled outside those
+hours gets the first call when the next window opens.
+
+Call each lead up to [5] times. If a call goes unanswered, try again
+[later the same day, then once per day after that]. Calls must only be
+scheduled between [8:00 and 20:00] in the lead's timezone.
+
+The goal per lead is a booked meeting with [the sales team]. If a lead
+is qualified but can't book on the call, schedule one follow-up call
+at the time they suggest. If a lead asks not to be contacted again,
+stop all outreach immediately.
+```
+
+### Exit Conditions
+
+Paste and adjust:
+
+```text
+A lead exits the campaign successfully when a meeting is booked with
+the sales team. A lead exits unsuccessfully when they are clearly not
+a fit, when they ask not to be contacted again, or after [5] call
+attempts with no answer.
+```
+
+Publish the campaign from the draft banner (**Publish**, or **Submit for Review** if you don't have the Publish Campaigns permission).
+
+<Tip>
+Write attempt counts and calling hours as concrete numbers, not "call quickly" or "a few tries" — the AI is only as precise as the Instructions it's given.
+</Tip>
+
+## Step 4: Wire the trigger from your form or CRM
+
+This is the "speed" in speed-to-lead: the moment a lead submits, your system makes one API call, and the lead is enrolled — the campaign's first decision is the callback. Use the `contact-enrollments` endpoint, which creates the contact and enrolls it in one call (documented in [Creating a Campaign](/campaigns/creating-a-campaign)):
+
+```bash
+curl -X POST https://app.revve.ai/api/campaigns/contact-enrollments \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "teamId": "TEAM_UUID",
+    "campaignId": "CAMPAIGN_UUID",
+    "phoneNumber": "+84775352590",
+    "name": "Jane Doe",
+    "email": "jane@example.com"
+  }'
+```
+
+Map your form fields into the request:
+
+- `phoneNumber` and `teamId` are **required**. Send the lead's phone from your form's phone field.
+- `campaignId` — this campaign's ID. (It's technically optional on the endpoint — omitting it just creates/updates the contact without enrolling — but for speed-to-lead you always include it.)
+- `name` and `email` — from your form. `name` and `email` come from your form — the contact's name is what fills the `{{fullName}}` placeholder your agent's greeting uses.
+- Returns `200` with a `contactId`.
+
+If the lead already exists as a Revve contact — say your CRM syncs contacts separately — use `POST /api/campaigns/enrollments` instead, with `contactId`, `teamId`, and `campaignId`. It returns `200` with an `enrollmentId`, or `409` if the contact is already enrolled, which is exactly what you want when someone submits your form twice. (The `409` applies to the `enrollments` endpoint; the main `contact-enrollments` call updates the existing contact instead.)
+
+Fire the request from wherever the submission lands first: your backend's form handler, your CRM's "new lead" workflow, or your form tool's webhook action. Every second between submit and enrollment is a second added to the callback.
+
+## Step 5: Protect the experience
+
+Four guardrails to set before real leads flow in:
+
+- **Do Not Call list** — you don't need an opt-out rule in your form handler. Every outbound call is checked against the team's [Do Not Call List](/voice-agents/do-not-call-list) before it's placed; a matching call step is simply skipped, and post-call analysis adds numbers automatically when a lead says "don't call me again" on a call.
+- **Call Window** — the Instructions' calling hours are a request to the AI; the **Enable Call Window** setting in [Workspace Settings](/administration/workspace-settings) is a hard stop that automatically fails any outbound call outside the allowed hours. Turn it on where calling-hours regulations apply, and keep its hours aligned with what you wrote in the Instructions — a mismatch looks like a campaign that mysteriously stopped dialing.
+- **Caller ID rotation** — a single number making all your speed-to-lead calls is exactly what gets spam-labeled, and a "Spam Likely" caller ID defeats the entire recipe. Create a number pool on the **Number Pools** tab of [Phone Numbers](/administration/phone-numbers) and attach it in the voice agent's phone number configuration, so each call picks a caller ID from the pool.
+- **Voicemail** — voicemail detection is off by default, which means a missed callback is a silent hangup. Enable it in the agent's **Advanced Settings → Voicemail** (see [Voice Agent Settings](/voice-agents/voice-agent-settings)) and write a **Voicemail Message** using contact placeholders, e.g. "Hi `{{firstName}}`, this is [Alex] from [Acme] — you asked about [a demo] on our site. I'll try you again shortly." A personalized message measurably improves callback rates versus silent hangups.
+
+## Step 6: Test by enrolling yourself
+
+Before pointing your form at the endpoint, run the Step 4 curl by hand with your own phone number, name, and email. Then:
+
+1. Time the gap between the request and your phone ringing — this is your speed-to-lead number.
+2. Answer, let the agent qualify you, and book a test meeting. Confirm the invitation arrives from your scheduling provider and the appointment shows on your contact record in Revve.
+3. Open the campaign's **Enrollments** tab and click your row to see the engagement timeline — the enrollment, the call, and the state the AI moved you to.
+4. Run the curl again with the same contact via `POST /api/campaigns/enrollments` and confirm the `409` — your double-submit protection.
+
+## Test scenarios
+
+Run these before wiring up the real form:
+
+| Scenario | Expect |
+|----------|--------|
+| You answer and qualify | Agent references your form request, offers concrete slots, books one; state moves to `meeting_booked`; enrollment exits successfully; calendar invitation arrives from your provider. |
+| You ask for a slot that's taken | The availability check returns near-slot suggestions and the agent offers them instead. |
+| You don't answer | Retry per the Instructions (same day, then daily); after [5] attempts the lead exits unsuccessfully per the Exit Conditions. |
+| Voicemail picks up | Agent leaves the personalized voicemail message; the AI schedules the next attempt. |
+| You say "don't call me again" | Outreach stops per the Instructions; post-call analysis flags the request and the number lands on the Block List automatically. |
+| Your number is on the Block List | The call step is skipped before dialing — the enrollment moves on as if that attempt didn't happen. |
+| Enrollment lands at 23:00 with Call Window on | No call goes out overnight; the first call comes when the allowed hours open. |
+| Enrolling an already-enrolled contact | `POST /api/campaigns/enrollments` returns `409`; the lead isn't double-enrolled. |
+
+Fix issues at the right layer: wrong timing or attempt count → sharpen the campaign Instructions; wrong conversation (weak qualifying, pushy tone) → sharpen the voice agent's System Prompt; booking failures → check the calendar tool's **Calendar** selection and your provider's event-type settings.
+
+## Variations
+
+- **SMS fallback for unanswered calls:** attach a published SMS Chat Agent as a second Campaign Agent, turn on **Enable Multi Channels**, and add an Instructions line telling the AI to text the lead when calls go unanswered. The full voice-then-SMS mechanism is the subject of [Build a Payment Reminder Campaign](/guides/payment-reminder-campaign) — same pattern, different script.
+- **Automatic reminders after the booking:** teams can configure a default "after appointment booked" campaign — every contact your agent books is auto-enrolled into it, so no-shows drop without anyone sending manual reminders. See [Scheduling & Booking with Agents](/integrations/scheduling-and-booking).
+- **Trigger from inside Revve instead of your form:** if the lead event already happens inside Revve, an automation rule with the **Enroll in Campaign** action can enroll contacts without any external API call — see [Creating Automation Rules](/automations/creating-automation-rules).
+- **Nurture the unreached:** set the campaign's **Next Campaign** so leads who exit after [5] failed attempts flow into a slower nurture campaign instead of going cold.
+
+## What's Next
+
+- [Creating a Campaign](/campaigns/creating-a-campaign) — the full campaign reference: publishing, the enrollment API, managing in-flight enrollments, and monitoring.
+- [Voice Agent Settings](/voice-agents/voice-agent-settings) — tune turn-taking, voicemail, and retry behavior once real calls surface rough edges.

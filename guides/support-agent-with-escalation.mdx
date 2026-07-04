@@ -1,0 +1,196 @@
+---
+
+title: "Build a Support Agent with Human Escalation"
+description: "A complete, copy-paste recipe for the support lead: a website agent that answers from your knowledge base, escalates the right conversations to your team, and files tickets for issues that need follow-up."
+---
+
+**What you'll build:** a website Chat Agent that answers customer questions from your knowledge base (and admits it when the answer isn't there), escalates frustrated customers and human requests to your team with honest wait-time messaging, and files a ticket whenever an issue needs follow-up — one evolving ticket per conversation, not a pile of duplicates.
+
+**Time:** about 45 minutes. Every prompt and setting you need is on this page — copy, paste, adjust the bracketed parts.
+
+## Prerequisites
+
+- **Support content to load** — a help center or docs site URL, and/or files (PDF, DOCX, TXT) with your policies and product guides.
+- **The Manage Settings permission** — Step 4 configures **Settings → Conversation Routing**, which requires it. See [Roles and Permissions](/governance-access/roles-and-permissions).
+- **At least one active ticket type** in **Settings → Ticket Types** (e.g. "Support Request (SUP)") — the Create Ticket tool needs a type to file into. How to create one: [Working with Tickets](/tickets/working-with-tickets#configuring-ticket-types).
+- Optional: the Slack app installed, if you want escalation notifications in a channel instead of email.
+
+## Step 1: Create the agent and load the knowledge base
+
+Go to **Agents > Chat Agents** → **+ New Chat Agent**. The fastest start is **Auto-Create from Website**: enter your site's URL and Revve crawls it, generates instructions, and builds a knowledge base automatically. Otherwise pick **Build from scratch** and fill in:
+
+| Field | Value |
+|-------|-------|
+| Chatbot Name | Support Agent |
+| Channel Type | Website |
+| Chatbot Type | **Simple Prompt** |
+
+Simple Prompt is the right engine here: support is open-ended Q&A, not a staged funnel. (The full creation walkthrough is in [Creating Your First Chat Agent](/getting-started/creating-your-first-chat-agent).)
+
+Next, give it something to answer from. Open the agent's **Knowledge** tab, click **Start Editing**, then **Add** a web page or upload a document — sources added here are automatically attached to this agent. For a help center with many pages, set up a [website crawler](/knowledge-base/adding-web-pages-and-documents#website-crawlers) instead: **Knowledge Base > Website Crawlers** → **New Crawler**, with **Full Site (Crawl)** as the indexing type and a **Content Update Schedule** so re-crawls keep answers current.
+
+<Note>
+Knowledge base changes are not versioned — they take effect immediately, without publishing. Everything else you configure in this recipe stays in your draft until you publish in Step 8.
+</Note>
+
+<Tip>
+Start with the content behind your top 10–20 support questions — pull them from existing tickets or chat logs. For questions with one definitive answer (return policy, business hours), add them as [FAQs](/knowledge-base/managing-faqs); the agent prioritizes FAQ matches. More on how retrieval works: [Knowledge Base Overview](/knowledge-base/knowledge-base-overview).
+</Tip>
+
+## Step 2: Write the Role and Objectives
+
+Open the **Basic** tab (click **Start Editing** if you haven't). Set **Communication Tone** to whatever fits your brand — "Friendly and Casual" suits most support teams — then fill the two prompt fields.
+
+**Role** — paste and adjust:
+
+```text
+You are the customer support agent for [Acme], a [cloud accounting
+platform for small businesses]. You are patient, empathetic, and precise.
+You write short, clear answers — 1–4 sentences, plain language, no jargon.
+```
+
+**Objectives** — paste and adjust:
+
+```text
+Your goal is to resolve customer support questions using the knowledge
+base, and to hand the conversation to a human whenever you can't resolve
+it well.
+
+How to work:
+- Answer only from the knowledge base. If it doesn't cover the question,
+  say you don't have that information and offer to connect the customer
+  with the team — never guess.
+- If a request is ambiguous (which plan? which error message?), ask one
+  clarifying question before answering.
+- When the customer reports a problem you can't fix in chat — a bug, a
+  billing error, a broken [integration] — create a ticket so the team
+  can follow up, and tell the customer you've logged it.
+
+Never do:
+- Never invent product behavior, prices, dates, or policies.
+- Never promise refunds, credits, or delivery dates — escalate instead.
+- Never share internal information or another customer's details.
+- Never argue with a frustrated customer — acknowledge their frustration,
+  then escalate.
+```
+
+The "create a ticket" line matters: it tells the agent *when* to use the tool you'll enable in Step 5.
+
+Click **Save Changes**.
+
+## Step 3: Configure Human Escalation
+
+Open the **Advanced Settings** tab and select the **Human Escalation** panel. There are two cards to set up — the full field reference is in [Chat Agent Advanced Settings](/general-configuration/chat-agent-advanced-settings#human-escalation).
+
+**Card 1 — Human Agent Escalation.** Turn the master switch on, then replace the default **Escalation Criteria**. The default three-bullet starter only catches the universal cases; the escalations that hurt are product-specific. Paste and adjust:
+
+```text
+Escalate to a human when the customer:
+- Explicitly asks for a human, an agent, or a real person
+- Expresses frustration or anger, or threatens to cancel or leave a
+  bad review
+- Asks for a refund, credit, or billing correction
+- Reports [your product] being down, data loss, or a security concern
+- Asks the same question twice because the previous answer didn't help
+- Still needs help after you've said the knowledge base doesn't cover
+  their question
+```
+
+**Card 2 — Auto-Reply Messages.** Both messages **default to empty — if you skip this card, customers hear nothing between escalation and a human's first reply**, which reads as being abandoned. Set both:
+
+| Message | Paste and adjust |
+|---------|------------------|
+| **Waiting in Queue Message** | "Thanks for your patience — a member of our team will be with you shortly. We reply [Mon–Fri, 9am–6pm ICT]." |
+| **Agent Joined Message** | "Please wait a moment, our agent has joined and will respond shortly." |
+
+Set expectations honestly in the queue message — if your team only replies during business hours, say so.
+
+<Note>
+While you're on this tab, sanity-check **Security → Message Limit**: the agent stops responding in a thread after **Max User Messages Per Thread** (default 50 — generous for support). And lock down the **Domain Allowed List** before launch so only your own site can embed the widget.
+</Note>
+
+## Step 4: Set up routing so escalations land on someone
+
+Escalation flags the conversation for a human; [Conversation Routing](/administration/conversation-routing) decides *which* human. Without it, escalated chats sit in the Inbox's **Unassigned** tab waiting for someone to claim them manually.
+
+Go to **Settings → Conversation Routing** (requires the **Manage Settings** permission):
+
+1. **Human Agents tab** — click **Add Agent** for each team member who should receive escalations. Being a workspace member is not enough; routing only considers people explicitly in this pool. Use each entry's **Status** switch for vacations instead of removing people.
+2. **Rules tab** — configure the presets, then click **Save**:
+
+| Setting | Set it to | Why |
+|--------|-----------|-----|
+| **24-Hour Continuity Rule** | On | Returning customers go back to the agent who handled them last — nobody re-explains their problem. |
+| **Fallback Assignment** | On | The safety net: anything unmatched still routes to any available agent instead of sitting unassigned. |
+| **Workload Distribution** | Max concurrent conversations a person can genuinely juggle (start low, e.g. 3–5) | An agent at the limit counts as unavailable, so routing skips them — a low cap protects response quality. |
+| **Queue when agents unavailable** | On | When everyone is at capacity, conversations hold in a queue instead of overloading agents. |
+| **Queue-Based Wait Time Messages** | One honest message per queue-size range | Escalate the tone as ranges grow — acknowledge the wait, offer another channel in the longest range. |
+| **Ticket Distribution** | Max open tickets per agent | Separate from the conversation cap — ticket work is asynchronous, so agents can carry more tickets than live chats. Step 5's auto-created tickets honor this. |
+
+Skip custom rules for now — run on presets until a real pattern emerges (the routing page explains [when to add them](/administration/conversation-routing#custom-rules)).
+
+Once routed, your team works escalations from the Inbox — claiming with **Assign to me**, replying, and handing back to the AI when done. That workflow is covered in [Human Takeover](/inbox/human-takeover).
+
+## Step 5: Enable the Create Ticket tool
+
+Some issues can't be resolved in chat — bugs, billing corrections, anything needing engineering. Give the agent the ability to file them as tickets: in **Advanced Settings → Tools**, add the preset **Create Ticket** tool ("Automatically create tickets from conversations"). It files into the ticket types you configured in **Settings → Ticket Types**.
+
+Two behaviors worth knowing (details in [Working with Tickets](/tickets/working-with-tickets#how-tickets-get-created)):
+
+- **One ticket per conversation.** The tool deduplicates: if an open ticket already exists for the conversation, the agent *updates* it instead of creating a duplicate. A long back-and-forth produces one evolving ticket; a new one is only created once the previous is closed.
+- **Auto-assignment.** Tickets created by the agent with no assignee are routed automatically — preferring whoever handled the same contact in the last 24 hours, then your routing rules, then the least-loaded agent — and respect the **Ticket Distribution** cap from Step 4.
+
+Tickets created from chat show a **View in Inbox** link back to the originating thread, so whoever picks one up has full context.
+
+## Step 6 (optional): Notify on angry customers, automate on unresolved chats
+
+**Angry-customer notification.** In **Advanced Settings → Notification**, turn the panel on and fill the four required fields ([reference](/general-configuration/chat-agent-advanced-settings#notification)):
+
+| Field | Paste and adjust |
+|-------|------------------|
+| **When would you like to send a notification?** | "If a customer expresses anger, threatens to cancel, or mentions legal action, notify the team." |
+| **Title** | "Angry customer — support bot" |
+| **Channel** | Email (or Slack, if the Slack app is installed) |
+| **Recipients** | Your support lead's email, or the Slack channel ID |
+
+Keep it to this one trigger — a laundry list of conditions fires constantly and gets ignored.
+
+**Automation on unresolved conversations.** To catch chats that ended badly even without an escalation, pair an analyze field with an automation rule:
+
+1. In **Advanced Settings → Analysis & Summary → Analyze Fields Configuration**, add a field: Name `resolved`, Type **Boolean**, Description "True if the customer's issue was fully answered or resolved in the conversation. False if they left without an answer or the issue needs follow-up."
+2. In **Automations → Rules**, click **Create Rule**, rename it "Unresolved chat follow-up", and set the trigger to **Chat Analyzed** — it fires when a chat conversation finishes analysis, and its payload includes your custom analysis data.
+3. Run a test chat so a real event appears in the **Event Preview** panel, then use its autocomplete to add a condition on your `resolved` field equaling `false` — the panel is how you find the exact field path without guessing.
+4. Add a **Create Ticket** or **Send Email** action, test it, then **Activate**.
+
+The full builder walkthrough — conditions, template syntax, testing — is in [Creating Automation Rules](/automations/creating-automation-rules).
+
+## Step 7: Test it
+
+Open the **Preview** tab and play each customer below:
+
+| # | Play this customer | Expect |
+|---|--------------------|--------|
+| 1 | Ask a question your knowledge base covers | A correct, short answer sourced from your content — no escalation |
+| 2 | Ask something the knowledge base doesn't cover ("Do you integrate with [obscure tool]?") | The agent says it doesn't have that information and offers the team — **no invented answer** |
+| 3 | "Can I talk to a real person?" — then send another message | Immediate escalation; your **Waiting in Queue Message** appears; the conversation lands in the [Inbox](/inbox/human-takeover) assigned via routing (or in **Unassigned** if the pool is empty) |
+| 4 | Angry: "This is the third time [feature] broke, I want to cancel" | Escalation without arguing — plus your notification, if you set one in Step 6 |
+| 5 | Report a bug: "The [export] button does nothing, please have someone look into it" | The agent logs it and tells you so; a ticket appears on the **Tickets** page with a **View in Inbox** link |
+| 6 | In the same conversation, add more detail about that bug | The existing open ticket is **updated** — no second ticket |
+
+Fix wrong escalation behavior by sharpening the **Escalation Criteria** wording; fix wrong answers by filling the gap in your knowledge base (the [Knowledge Gaps](/knowledge-base/knowledge-gaps) page shows exactly what the agent couldn't answer).
+
+## Step 8: Publish and install
+
+1. Click **Publish** and confirm — draft changes only go live in a version (see [Publishing & Versioning](/getting-started/publishing-and-versioning)).
+2. Install the widget on your site — embed snippet and WordPress instructions in [Website Installation](/channel-setup/website-installation).
+
+## Variations
+
+- **After-hours behavior:** in **Settings → Conversation Routing → Workload Distribution**, enable the **Out-of-Office Escalation Message**. Outside working hours, an escalating customer gets that message immediately and no routing happens — e.g. "Our human agents will be available during business hours. Please leave your message and we'll get back to you." Pair it with the Create Ticket tool from Step 5 so overnight issues are waiting in the ticket queue at 9am.
+- **Categories for reporting:** in **Advanced Settings → Conversation Categories**, define a short, mutually exclusive list — "Billing: questions about invoices, charges, or payment methods", "Bug report: …", "How-to: …". Write descriptions as decision rules, since the description is what the classifier reads. Categories land in the [conversation analysis panel](/inbox/conversation-analysis-panel), so you can see what your support volume is actually made of.
+- **Route segments to specialists:** once a pattern emerges — VIP accounts, a second language — add a [custom routing rule](/administration/conversation-routing#custom-rules) targeting a group, and keep **Fallback Assignment** on so everything else still gets picked up.
+
+## What's Next
+
+- [Human Takeover](/inbox/human-takeover) — how your team claims escalated conversations, replies, and hands back to the AI.
+- [Working with Tickets](/tickets/working-with-tickets) — triaging and resolving the tickets your agent files, and configuring ticket types.
