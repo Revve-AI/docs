@@ -162,10 +162,10 @@ Map your form fields into the request:
 
 - `phoneNumber` and `teamId` are **required**. Send the lead's phone from your form's phone field.
 - `campaignId` — this campaign's ID. (It's technically optional on the endpoint — omitting it just creates/updates the contact without enrolling — but for speed-to-lead you always include it.)
-- `name` and `email` — from your form. `name` is what fills the `{{fullName}}` placeholder your agent's greeting uses.
+- `name` and `email` — from your form. `name` and `email` come from your form — the contact's name is what fills the `{{fullName}}` placeholder your agent's greeting uses.
 - Returns `200` with a `contactId`.
 
-If the lead already exists as a Revve contact — say your CRM syncs contacts separately — use `POST /api/campaigns/enrollments` instead, with `contactId`, `teamId`, and `campaignId`. It returns `200` with an `enrollmentId`, or `409` if the contact is already enrolled, which is exactly what you want when someone submits your form twice.
+If the lead already exists as a Revve contact — say your CRM syncs contacts separately — use `POST /api/campaigns/enrollments` instead, with `contactId`, `teamId`, and `campaignId`. It returns `200` with an `enrollmentId`, or `409` if the contact is already enrolled, which is exactly what you want when someone submits your form twice. (The `409` applies to the `enrollments` endpoint; the main `contact-enrollments` call updates the existing contact instead.)
 
 Fire the request from wherever the submission lands first: your backend's form handler, your CRM's "new lead" workflow, or your form tool's webhook action. Every second between submit and enrollment is a second added to the callback.
 
