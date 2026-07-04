@@ -1,0 +1,178 @@
+---
+
+title: "What Can Ask Revve Do?"
+description: "The complete capability catalog for anyone who works in the Revve dashboard: everything you can ask the copilot to look up, create, or propose — with copy-paste example prompts — and a clear list of what it will never do."
+---
+
+Ask Revve does three kinds of work, in increasing order of how much they change: it **looks things up** (read-only, any team member), it **creates new things** on your confirmation (agents, metrics, campaigns — requires the right permission), and it **proposes edits** to existing agents that you review before anything changes. This page is the full catalog of each — what you can ask for, in the terms the copilot actually understands, with prompts you can paste as-is and adapt.
+
+If you haven't met the copilot yet, start with the [Ask Revve overview](/ask-revve/ask-revve-overview) — it covers where the dock lives, how threads work, and the review-and-apply proposal flow. This page assumes that and answers the next question: *what, exactly, can I ask it to do?*
+
+## Look things up
+
+Everything in this section is read-only and available to any team member. The copilot searches your team's real data — no exports, no SQL, just a question.
+
+### Your agents
+
+Ask Revve can list your chat and voice agents (filtered by name) and open any one of them in depth:
+
+- Its **instructions** and settings — the summary prompt and conversation categories for a chat agent; speech and model settings for a voice agent.
+- Its **conversation flow**, node by node.
+- Its **recent evaluation runs** (up to the last 20).
+- Its **version history** — the 10 most recent published versions with their publish notes — including the prompt or flow of a specific *historical* version.
+
+That last one is the underrated feature: because it can pull any past version's prompt or flow, questions like "what changed between v3 and v4?" get a real diff-style answer instead of a shrug.
+
+> "List my voice agents and tell me which ones have evaluation enabled."
+>
+> "Show me the prompt from version 3 of the Renewals agent and compare it to the current draft."
+
+### Calls
+
+Call search is the workhorse. You can filter by any combination of:
+
+| Ask for calls by | What you can say |
+|---|---|
+| What was discussed | Any keyword — matched against the call summary |
+| Contact | A name, phone number, or email |
+| When | A date range, or "the last N days" (up to 365) |
+| Campaign | Calls belonging to a specific campaign |
+| Direction | Inbound or outbound |
+| Channel | Phone calls vs. web calls |
+| Outcome | Successful or unsuccessful |
+| Caller sentiment | Positive, Neutral, Negative, or Unknown |
+| AI evaluation | Passed or failed |
+| Human review | Reviewer verdict passed or failed |
+| How it ended | Disconnection reason |
+| Status | Call status |
+
+Searches return up to 100 calls, and test calls are excluded unless you ask for them. Every call row shows which agent version (or draft) handled it, plus the human reviewer's verdict and notes if the call was reviewed.
+
+For any single call, it can go deep: the one-paragraph summary, the full analysis fields, the complete transcript (including the agent's tool calls), and the full per-metric evaluation with the judge's reasoning and evidence. The full evaluation is heavy, so the copilot asks before pulling it.
+
+> "Show me failed outbound calls from the last 7 days with negative sentiment — which agent version handled them?"
+>
+> "Which calls did the human reviewers fail this week, and why?"
+
+<Tip>
+On a call-detail page, the call is already attached as context — "pull the transcript" or "why did this call fail?" works without pasting an ID.
+</Tip>
+
+### Chat conversations
+
+Website chat threads get the same treatment. Filter by:
+
+| Ask for threads by | What you can say |
+|---|---|
+| What was discussed | Any keyword — matched against the thread summary |
+| Contact | A name, phone number, or email |
+| When | A date range, or "the last N days" |
+| Agent | Threads handled by a specific chat agent |
+| User rating | A 1–5 rating range ("rated 2 or lower") |
+| AI evaluation | Passed or failed |
+| Lead outcome | Whether a lead was saved |
+| Escalation | Whether the thread was handed to a human |
+| Last responder | Who replied last, by email |
+| Status | Active, pending, or closed |
+
+Searches return up to 100 threads; asking about a single thread returns its full message history.
+
+> "Find closed website chats from this month rated 2 or lower where no lead was saved."
+>
+> "How many threads were handed off to a human last week, and who responded?"
+
+### Evaluation metrics
+
+Ask Revve can search your team's [metric library](/evaluations/evaluation-metrics) by keyword or by agent, filtered by type (LLM judge vs. deterministic) and scoring style (binary vs. 1–5 scale). Results are ordered by how widely each metric is already used across your agents — so when you ask it to add evaluation to an agent, it reuses your existing metrics instead of quietly creating duplicates.
+
+> "Do we already have a metric that checks whether the agent confirmed the appointment time?"
+
+### Phone numbers and contact fields
+
+Two lookups that mostly power its other work, but that you can ask for directly:
+
+- **Phone numbers and number pools** — the team's inventory, used when assigning a caller ID to a new voice agent.
+- **Contact fields** — the six built-ins (`firstName`, `lastName`, `fullName`, `email`, `companyName`, `phoneNumber`), your custom fields with their types, and the runtime variables. The copilot checks this list before writing any `{{variable}}` into a prompt, so it never invents a placeholder your contacts don't have.
+
+> "What contact fields can I reference in an agent prompt?"
+
+## Create things directly
+
+These actions happen **immediately when you confirm in conversation** — there is no Apply diff for creations, because they only ever create *new* things rather than touching existing agents. All of them require the **Manage Agents** permission except where noted.
+
+### Create a voice agent
+
+Give it a goal and it builds a Vietnamese or English voice agent: name, instructions, greeting, your choice of a single-prompt or [conversational-flow](/voice-agents/voice-conversational-flow) engine, whether the AI speaks first, and a caller ID drawn from one team number or a number pool (one or the other, not both). The agent lands **unpublished and fully editable**, with language-appropriate speech, transcription, and model defaults already set.
+
+It cannot create chat agents — voice only today.
+
+> "Create a Vietnamese voice agent that calls insurance leads to confirm their renewal appointment. Use the flow engine, have the AI speak first, and pick a number from our outbound pool."
+
+### Create evaluation metrics
+
+It can create up to 20 metrics in one go, of either kind:
+
+- **LLM-judge metrics** — binary or 1–5 scale with a full score rubric, judged on either the agent's side or the caller's side of the conversation.
+- **Deterministic checks** — a tool was called / not called / called with specific arguments, the transcript contains or doesn't contain given text, a regex match, or a turn count.
+
+> "Create a 1–5 metric that scores how clearly the agent explained the pricing, with a rubric, and a deterministic check that the `save_lead` tool was called."
+
+### Attach metrics to a voice agent
+
+It can attach metrics to a voice agent with per-metric weights, optional thresholds, and a minimum pass score (it keeps the agent's current value, or defaults to 4). This writes to the agent's **draft** and merges with metrics already attached — and like everything else, it cannot publish the result.
+
+> "Attach our three call-quality metrics to the Renewals agent's draft, weighted equally, minimum pass score 4."
+
+### Create custom contact fields
+
+Up to 20 at once, typed text, number, or boolean. This is the one creation that requires **Manage Settings** rather than Manage Agents, because contact fields are team-wide configuration.
+
+> "Add custom contact fields for policy number (text) and renewal opted-in (boolean)."
+
+### Create a campaign
+
+It can create a [campaign](/campaigns/creating-a-campaign) — name, description, instructions, exit conditions — and attach an agent to it.
+
+<Note>
+A copilot-created campaign lands **active but empty**: no contacts are enrolled until you add them in the dashboard, and steps, scheduling, and contact upload are dashboard-only. Nothing dials on its own.
+</Note>
+
+> "Create a campaign for the Q3 renewal outreach with exit conditions for 'appointment booked' and 'do not call', and attach the Renewals agent."
+
+### Save a skill
+
+Turn a workflow you just ran into a reusable, named procedure — personal skills for yourself, or team skills with **Manage Settings**. See [Skills](/ask-revve/skills) for scopes and authoring.
+
+## Propose changes to existing agents
+
+Anything that would modify an existing agent goes through the reviewed proposal flow instead of happening directly. Ask Revve can propose:
+
+- A rewrite of the agent's **system/global prompt**.
+- **Conversation-flow edits**: change a node's instruction, add a node, remove a node (inbound connections are cleaned up), add or remove a transition, or edit a transition's condition or name.
+
+It makes one proposal per turn; you review per-change diffs, can edit the proposed text inline, and applying commits to the agent's **draft** only — it cannot publish. Proposing and applying both require **Manage Agents**. The full review-and-apply mechanics — proposal cards, Apply/Discard, the draft-lock caveat — are covered in the [Ask Revve overview](/ask-revve/ask-revve-overview).
+
+> "The Renewals agent keeps skipping the identity check — add a verification node before the payment step."
+
+## What it can't do
+
+The boundaries are as deliberate as the capabilities. Ask Revve will **not**:
+
+| It can't… | Instead |
+|---|---|
+| **Publish** — ever | Drafts only; [going live](/getting-started/publishing-and-versioning) is always your call |
+| Edit an existing agent's prompt or flow directly | Only via the reviewed proposal flow above |
+| Create chat agents, or attach metrics to chat agents | Voice agents only, for now — build chat agents in the dashboard |
+| Delete anything | No agent, metric, campaign, field, or skill deletion; use the dashboard |
+| Touch knowledge bases | No adding, editing, or removing KB content |
+| Send messages, reply in threads, or place calls | All conversation access is read-only |
+| Change settings | Channels, team settings, phone-number and pool config, and an existing agent's speech/model settings are dashboard-only |
+| Configure campaign internals | No contact enrollment, scheduling, or step configuration |
+| Act beyond your permissions | Every action is checked against [your role](/governance-access/roles-and-permissions) at the moment it runs |
+
+If a request lands in this column, the copilot says so and points you at the right place in the dashboard rather than half-doing it.
+
+## What's Next
+
+- [Skills](/ask-revve/skills) — turn the prompts on this page that you use repeatedly into named procedures your whole team's copilot follows.
+- [Evaluation Metrics](/evaluations/evaluation-metrics) — what the metrics Ask Revve creates and attaches actually measure, and how scoring works.
