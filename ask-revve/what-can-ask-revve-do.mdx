@@ -46,7 +46,7 @@ Call search is the workhorse. You can filter by any combination of:
 | How it ended | Disconnection reason |
 | Status | Call status |
 
-Searches return up to 100 calls, and test calls are excluded unless you ask for them. Every call row shows which agent version (or draft) handled it, plus the human reviewer's verdict and notes if the call was reviewed.
+Searches return up to 100 calls, and test calls are excluded unless you ask for them. Every call row shows which agent version (or draft) handled it, plus the human reviewer's verdict if the call was reviewed (the reviewer's notes come with the individual call detail).
 
 For any single call, it can go deep: the one-paragraph summary, the full analysis fields, the complete transcript (including the agent's tool calls), and the full per-metric evaluation with the judge's reasoning and evidence. The full evaluation is heavy, so the copilot asks before pulling it.
 
@@ -148,7 +148,7 @@ Turn a workflow you just ran into a reusable, named procedure — personal skill
 Anything that would modify an existing agent goes through the reviewed proposal flow instead of happening directly. Ask Revve can propose:
 
 - A rewrite of the agent's **system/global prompt**.
-- **Conversation-flow edits**: change a node's instruction, add a node, remove a node (inbound connections are cleaned up), add or remove a transition, or edit a transition's condition or name.
+- **Conversation-flow edits**: change a node's instruction, add a node, remove a node (inbound transitions are detached), add or remove a transition, or edit a transition's condition or name.
 
 It makes one proposal per turn; you review per-change diffs, can edit the proposed text inline, and applying commits to the agent's **draft** only — it cannot publish. Proposing and applying both require **Manage Agents**. The full review-and-apply mechanics — proposal cards, Apply/Discard, the draft-lock caveat — are covered in the [Ask Revve overview](/ask-revve/ask-revve-overview).
 
