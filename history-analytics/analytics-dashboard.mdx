@@ -51,7 +51,7 @@ Summary cards compare today's numbers to yesterday, each with the current value 
 
 Below the cards, three groups of charts break down the past week:
 
-- **Conversation distribution** — a pie chart of conversation volume by channel (Website, SMS, WhatsApp, Messenger, Email, Zalo, Zalo OA) and a stacked bar chart of daily volume by channel.
+- **Conversation distribution** — a pie chart of conversation volume by channel (Website, SMS, WhatsApp, Messenger, Email, Zalo, Zalo OA) and a line chart of daily volume per channel.
 - **Ticket distribution** — daily tickets by status (Open, In Progress, Closed) and daily ticket volume by channel.
 - **Escalation trends** — escalations per day, and a breakdown of which channels generate the most escalations.
 
@@ -126,22 +126,21 @@ A sortable per-agent table with these columns:
 |--------|---------|
 | **Agent** | The chat agent. |
 | **Volume** | Conversations handled in the period. |
-| **Containment Rate** | Resolved by AI without human handoff. |
-| **AI Fail Rate** | AI evaluation fail rate. |
-| **Quality Failed** | Count of conversations that failed evaluation. |
-| **Avg Response Time (s)** | Average AI response time in seconds. |
+| **Containment %** | Resolved by AI without human handoff. |
+| **Fail %** | AI evaluation fail rate. |
+| **Avg Response** | Average AI response time (shown as seconds or minutes). |
 
-Sort by **AI Fail Rate** to find the agent that most needs prompt or knowledge base work; sort by **Volume** to see where a fix pays off fastest.
+Sort by **Fail %** to find the agent that most needs prompt or knowledge base work; sort by **Volume** to see where a fix pays off fastest.
 
 ### Response and escalation charts
 
 - **Response time histogram** — the distribution of AI response times, with the average.
 - **Messages per conversation** — how long a typical AI conversation runs, with the average.
 - **Conversations by day** — daily volume broken down per agent.
-- **Conversation heatmap** — conversation volume by day of week and hour. Use it to see when visitors are most active.
+- **Conversation heatmap** — conversation volume by date and hour of day. Use it to see when visitors are most active.
 - **Escalation heatmap** — when handoffs to humans happen, by time of day.
 
-If containment starts falling, check the **escalation heatmap** first: escalations concentrated in specific hours usually point to a traffic pattern (a topic your agent can't handle that spikes at certain times, or after-hours questions it defers) rather than a general quality regression. Escalations spread evenly across the week point back to the agent itself — review recent prompt or knowledge base changes. For what happens after a handoff, see [Human Takeover](/inbox/human-takeover).
+If containment starts falling, check the **escalation heatmap** first: escalations concentrated in specific hours usually point to a traffic pattern (a topic your agent can't handle that spikes at certain times, or after-hours questions it defers) rather than a general quality regression. Escalations spread evenly across days point back to the agent itself — review recent prompt or knowledge base changes. For what happens after a handoff, see [Human Takeover](/inbox/human-takeover).
 
 ## Human Agents
 
@@ -156,20 +155,20 @@ Five cards summarize the team:
 | **First Response Time (FRT)** | How long customers wait for the first human reply. |
 | **Avg Handle Time (AHT)** | How long an agent actively works a conversation. |
 | **Time to Resolution (TTR)** | Total time from handoff to resolved. |
-| **Resolution Rate** | Share of handled conversations that reach resolution. |
+| **Resolution Rate (Resolved %)** | Share of handled conversations that reach resolution. |
 | **CSAT** | Customer satisfaction rating, on a 1–5 scale. |
 
 CSAT comes from conversation feedback ratings — customers must be asked to rate. Enable feedback in the **Feedback** section of [Chat Agent Advanced Settings](/general-configuration/chat-agent-advanced-settings), or this card stays empty.
 
 ### Agent leaderboard
 
-A sortable per-agent table: **Agent**, **Active Conversations**, **Total Conversations**, **Tickets Assigned**, **Tickets Resolved**, **Avg First Response Time**, **Avg Handle Time**, **Avg Resolution Time**, **Resolution Rate**, **Avg CSAT**.
+A sortable per-agent table: **Agent**, **Active** (open conversations), **Total** (conversations), **Tickets Assigned**, **Tickets Resolved**, **FRT**, **Handle Time**, **Resolution Time**, **Resolution %**, **CSAT**.
 
 Use it to compare like with like: an agent with a slow FRT but the highest ticket load isn't underperforming — they're overloaded. Ticket columns reflect the workflows described in [Working with Tickets](/tickets/working-with-tickets).
 
 ### Workload and response charts
 
-- **Workload distribution** — how conversations and tickets spread across team members.
+- **Workload distribution** — conversations per agent and peak hours.
 - **Ticket trend** — ticket creation and resolution over the period.
 - **Response time analysis** — human response times, including first response time by hour.
 
