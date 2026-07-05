@@ -17,6 +17,15 @@ You are navigating a **production** system with real customer data.
 
 Saved cookies/state don't survive: Supabase rotates refresh tokens, so any stored auth state is dead within days. Sign in fresh each run:
 
+0. **Launch gotcha (this machine):** headless Chrome dies with `No usable sandbox` and there's no X display, so `--headed` also fails. The `--args "--no-sandbox"` flag only applies on the *first* daemon launch, not on the follow-up commands that relaunch Chrome — so set a persistent wrapper once and point agent-browser at it:
+   ```bash
+   REAL=$(ls -d ~/.agent-browser/browsers/chrome-*/chrome | head -1)
+   printf '#!/bin/sh\nexec "%s" --no-sandbox "$@"\n' "$REAL" > ~/.agent-browser/chrome-nosandbox.sh
+   chmod +x ~/.agent-browser/chrome-nosandbox.sh
+   export AGENT_BROWSER_EXECUTABLE_PATH=~/.agent-browser/chrome-nosandbox.sh
+   export AGENT_BROWSER_PROFILE=~/.agent-browser-profiles/revve   # persist session across commands
+   ```
+   Export both in every shell that runs an `agent-browser` command. The sign-in path is `/signin` (`/login` 404s).
 1. Start the browser: `agent-browser set viewport 1440 900`, then `agent-browser open "https://app.revve.ai/signin"`.
 2. `agent-browser snapshot -i`, fill the email box with `trung@revve.ai`, click **Get Sign-in Link**.
 3. Read the link from Gmail with the `gws` CLI (its keyring auth works on this machine; the claude.ai Gmail MCP token may be expired):
