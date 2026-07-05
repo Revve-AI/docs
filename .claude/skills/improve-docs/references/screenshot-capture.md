@@ -2,6 +2,8 @@
 
 Authenticated capture from the live app at app.revve.ai, proven 2026-06-11. Run this from the **main agent** (it needs the browser and Gmail); writers never log in.
 
+**THE BROWSER IS THE `agent-browser` CLI** (headless Playwright on this machine) — it is always available. It is NOT the claude-in-chrome extension: do not check the extension, and never treat "browser extension is not connected" as "screenshots are blocked" (that mistake parked capturable screenshots three times in 2026-07). Gmail access is the `gws` CLI, not the Gmail MCP.
+
 ## Production-safety rules (absolute)
 
 You are navigating a **production** system with real customer data.
