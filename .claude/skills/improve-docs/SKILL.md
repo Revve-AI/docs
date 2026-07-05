@@ -71,7 +71,7 @@ Then do the editor pass yourself: consistent tone across new pages, no duplicate
 
 ## Phase 4 — Capture screenshots
 
-Collect the writers' needed-capture lists and capture them from the live app. Read `references/screenshot-capture.md` for the full authenticated workflow (magic-link sign-in via Gmail, agent-browser mechanics, naming, and the production-safety rules — they are strict: read-only navigation, release any edit locks, never publish).
+Collect the writers' needed-capture lists and capture them from the live app. Read `references/screenshot-capture.md` for the full authenticated workflow — the browser is the always-available `agent-browser` CLI (NOT the claude-in-chrome extension; an unconnected extension does not mean captures are blocked) with `gws` for the magic-link email (naming and the production-safety rules — they are strict: read-only navigation, release any edit locks, never publish).
 
 For each needed shot: navigate to the screen, put it in the state the page describes, capture at 1440×900 into `/screenshots/`, then **view the image** to confirm it shows what the alt text claims before moving on.
 
