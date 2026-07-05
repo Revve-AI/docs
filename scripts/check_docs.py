@@ -4,7 +4,7 @@
 Deterministic checks used by .claude/skills/improve-docs and api-reference
 (via scripts/verify.sh). Catches the failure modes that have actually bitten
 this repo: nav entries without files, orphan pages, missing screenshots, raw
-{{...}} outside code (blanks the whole MDX page body), duplicate headings,
+{{...}} outside code (blanks the whole MDX page body), single {expr}\noutside code (renders as empty text), duplicate headings,
 frontmatter drift, and link-convention violations.
 
 Usage:
@@ -125,6 +125,10 @@ def check_page(path, all_page_ids):
             add("double-brace", rel, i,
                 "raw {{ outside code — this blanks the entire page body; "
                 "wrap in backticks")
+        elif re.search(r"(?<![={])\{[A-Za-z_][^{}]*\}", line):
+            add("single-brace", rel, i,
+                "raw {expression} outside code — MDX evaluates it as JSX and "
+                "renders EMPTY text (no error); wrap in backticks")
         hm = re.match(r"^(#{1,6})\s+(.*)", line)
         if hm:
             headings.append((i, hm.group(2).strip()))
