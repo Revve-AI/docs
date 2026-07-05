@@ -24,7 +24,7 @@ bash scripts/prod_scan.sh begin
 
 It fetches `origin/prod` in both repos, computes the unscanned commit range from `.improve-docs-state.json` (first run: last 4 weeks), creates detached **read-only prod worktrees** for code exploration, and prints JSON with the commit lists and worktree paths. Exit 3 means no new prod commits anywhere — Agent A/B have nothing to do; run only Agent C. All code reads happen in the worktrees, never the live checkouts.
 
-Spawn **three Explore subagents in parallel** (single message, three Agent calls):
+Spawn **three Explore subagents in parallel** (single message, three Agent calls). **Fact-sheet-via-file rule:** any agent whose output is a fact sheet destined for writers must WRITE it to a file under the session scratchpad (via Bash heredoc — Explore agents lack the Write tool) and return only a ~5-line summary plus the file path. Returning multi-thousand-word fact sheets through the agent result, then re-typing them into files, doubles the token cost — this bit us for six rounds before we noticed.
 
 **Agent A — revve-web recent changes.** Give it the commit list and prod worktree path from `prod_scan.sh begin`, so it never derives git refs itself. Ask it to identify which commits are *customer-facing* (dashboard UI, widget, API routes, integrations, migrations that add user-visible features — not refactors, tests, or internal tooling) and, for each, report: what shipped, exact UI labels/fields/defaults from the code, and which docs page it affects or requires. Tell it the current docs nav (paste the `docs.json` page list).
 
@@ -65,7 +65,7 @@ When the writers finish, run the scope guard before touching anything:
 bash scripts/check_writer_scope.sh <assigned-page-1>.mdx <assigned-page-2>.mdx …
 ```
 
-Any `UNEXPECTED:` path means a writer strayed — revert that file (`git checkout -- <path>`) unless the change was genuinely needed, in which case own it deliberately in the editor pass.
+Any `UNEXPECTED:` path means a writer strayed — revert that file (`git checkout -- <path>`) unless the change was genuinely needed, in which case own it deliberately in the editor pass. Your own editor-pass edits (`docs.json`, `scripts/known-orphans.txt`, `navigation-map.md`, rubric annotations) will always show as UNEXPECTED — that's the guard working, not a problem; just confirm nothing ELSE is in the list.
 
 Then do the editor pass yourself: consistent tone across new pages, no duplicated content with existing pages, cross-links in both directions, and add the new pages to the `docs.json` navigation (nav now lives under `navigation.tabs`, with groups per tab and nested groups-within-groups for subsections) at the position `references/navigation-map.md` specifies. If a page needs a group that isn't in the map yet, add it to the map first, in its own deliberate edit — don't invent nav structure inline.
 
@@ -84,6 +84,8 @@ Run the single gate — it must print `VERIFY PASSED`:
 ```bash
 bash scripts/verify.sh
 ```
+
+**Exit-code discipline:** never pipe verify into `tail`/`grep` inside a `&&` chain — the pipe's exit status masks a failure and the chain proceeds to commit/PR on a broken gate (this shipped a failing PR once). Run it alone, or `bash scripts/verify.sh > /tmp/vout 2>&1; tail -2 /tmp/vout` and only chain on the script's own status (`if bash scripts/verify.sh ...`).
 
 It runs `mint broken-links`, the structural linter (`scripts/check_docs.py`: nav↔file consistency, orphans, missing images, the `{{…}}` page-blanking gotcha, frontmatter, link conventions), and a rendered-body check of every changed page via `mint dev`. Fix errors and re-run until green; warnings don't block but read them — they're usually next-run backlog material (unused screenshots, dimension drift). If a new page intentionally stays out of nav, add it to `scripts/known-orphans.txt` rather than ignoring the error.
 

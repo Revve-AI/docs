@@ -38,7 +38,7 @@ If sign-in fails twice, stop trying: fall back to the PR-body "Missing screensho
 
 ## Capture conventions
 
-- Viewport 1440×900; full-window `agent-browser screenshot /Users/trungvu/dev/revve/docs/screenshots/<name>.png`.
+- Viewport 1440×900; full-window `agent-browser screenshot <docs-repo>/screenshots/ (resolve the absolute repo path first — do not assume the machine)<name>.png`.
 - Names: feature-prefixed kebab-case matching existing files — `voice-*`, `campaign-*`, `chatbot-*`, `flow-node-*`, `knowledge-*`.
 - Give the page a beat to settle before capturing (`agent-browser wait --load networkidle` plus ~2s).
 - **Always Read the captured PNG afterward** and check it shows what the doc's alt text claims — wrong-state screenshots are worse than none. Re-capture if a toast, spinner, or the Ask-Revve dock obscures the subject.

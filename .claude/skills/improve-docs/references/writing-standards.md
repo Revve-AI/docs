@@ -36,6 +36,7 @@ The old docs failed as "an outdated list of features & knobs — not actionable"
 ## MDX gotchas (these have bitten us)
 
 - **Raw `{{variable}}` outside backticks silently blanks the entire page body** (parsed as a JSX expression; the TOC still renders, so it looks half-working). Always write template variables as `` `{{firstName}}` ``.
+- **Raw single-brace `{expression}` is worse — it renders as EMPTY text with no error** ( `{name}` is valid JS, so MDX evaluates it to undefined and drops it; the page loses content silently). The linter now errors on this. Backtick every literal `{...}` including quoted UI strings like "`{name}` Definitions".
 - Raw `<` followed by a letter starts a JSX tag — write `&lt;` or backtick it.
 - Duplicate headings on one page break anchor links.
 
