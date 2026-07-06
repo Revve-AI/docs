@@ -1,5 +1,4 @@
 ---
-
 title: "Creating Your First Voice Agent"
 description: "Create a Voice Agent from a template, test it with a live call from your browser, and publish it — step by step."
 ---
@@ -8,12 +7,12 @@ This guide takes you from nothing to a Voice Agent you can actually talk to. The
 
 ## Step 1: Start from a template
 
-Go to **Agents > Voice Agents** in the left sidebar and click **+ New Voice Agent**. Pick the template closest to your use case:
+Go to **Agents \> Voice Agents** in the left sidebar and click **\+ New Voice Agent**. Pick the template closest to your use case:
 
 ![Template picker showing the available Voice Agent templates](/screenshots/voice-template-picker.png)
 
 | Template | Built for |
-|----------|-----------|
+| --- | --- |
 | **Telesales** | Outbound sales — qualifies leads and closes on the call. |
 | **Receptionist** | Greets callers, qualifies intent, routes or schedules. |
 | **Customer support** | Handles existing-customer questions and incidents. |
@@ -22,7 +21,7 @@ Go to **Agents > Voice Agents** in the left sidebar and click **+ New Voice Agen
 | **Start blank** | Skip the generator and write the prompt yourself. |
 
 <Tip>
-Pick a template even if it's not a perfect match — editing a generated prompt is much faster than writing one from scratch. Choose **Start blank** only when you already have a prompt, or when you want a [Conversational Flow](/getting-started/understanding-engine-types) engine (the blank path lets you pick the engine type).
+  Pick a template even if it's not a perfect match — editing a generated prompt is much faster than writing one from scratch. Choose **Start blank** only when you already have a prompt, or when you want a [Conversational Flow](/getting-started/understanding-engine-types) engine (the blank path lets you pick the engine type).
 </Tip>
 
 ## Step 2: Describe your agent
@@ -32,7 +31,7 @@ The setup step asks for three things:
 ![Voice agent setup step with name, custom requirement, and contact field placeholders](/screenshots/voice-template-setup.png)
 
 - **Voice agent name** — e.g. "Sales agent — North region".
-- **Custom requirement (optional)** — the more specific, the better the generated prompt. Tell it your company, product, target customer, and call goal: *"Bank X selling personal loans up to 30M VND, target young professionals, goal: get them to install the app and start onboarding."*
+- **Custom requirement (optional)** — the more specific, the better the generated prompt. Tell it your company, product, target customer, and call goal: _"Bank X selling personal loans up to 30M VND, target young professionals, goal: get them to install the app and start onboarding."_
 - **Contact fields the bot will know** — check the fields (like `{{fullName}}` or `{{lastState}}`) you want available as placeholders. At call time these are filled with the contact's real data, so the agent can open with "Hi Minh, I'm calling about…" instead of a generic greeting.
 
 Click **Generate & create**. Revve writes the full system prompt and creates the agent.
@@ -41,7 +40,9 @@ Click **Generate & create**. Revve writes the full system prompt and creates the
 
 You land on the agent's page. Open the **General** tab and read the generated **System Prompt** end to end:
 
-![General settings showing name, region, and system prompt](/screenshots/voice-general-settings.png)
+<Frame>
+  ![Image](/images/image.png)
+</Frame>
 
 - Fix anything factually wrong about your business — the generator only knows what you told it.
 - Add guardrails it missed: what the agent must never promise, when it should give up gracefully.
@@ -49,9 +50,11 @@ You land on the agent's page. Open the **General** tab and read the generated **
 
 ## Step 4: Choose models and a voice
 
-Open the **Model Settings** tab. Three sections, top to bottom:
+Open the **Model Settings** tab. Three sections, top to bottom:\
 
-![Model Settings tab showing Speech Recognition, AI Model, and Voice Synthesis sections](/screenshots/voice-model-settings.png)
+<Frame>
+  ![Image](/images/image-2.png)
+</Frame>
 
 1. **Speech Recognition** — set the **Language** your callers speak. If your calls contain brand names or technical terms the transcriber might mishear, add them to **Key Terms**.
 2. **AI Model** — the provider and model that powers responses. Defaults are sensible; see [Voice Agent Settings](/voice-agents/voice-agent-settings) for when to deviate.
@@ -61,7 +64,9 @@ Open the **Model Settings** tab. Three sections, top to bottom:
 
 Open the **Preview** tab and click **Start a test call**. The call runs right in your browser — no phone needed:
 
-![Preview tab with the in-browser test call interface](/screenshots/voice-preview.png)
+<Frame>
+  ![Image](/images/image-3.png)
+</Frame>
 
 - If your prompt uses contact placeholders, fill in test values for them first (e.g. set `fullName` to your own name).
 - Watch the **live transcript** as you talk — it shows exactly what the speech recognition heard, which is invaluable when an answer goes wrong.
@@ -83,11 +88,11 @@ Published versions are immutable — you can always see exactly what was live wh
 
 A published agent can already take **web calls**. For real phone traffic:
 
-- **Inbound** — assign one of your team's phone numbers to the agent under **Advanced Settings > Phone Number**. From then on, calls to that number are answered by this agent.
+- **Inbound** — assign one of your team's phone numbers to the agent under **Advanced Settings \> Phone Number**. From then on, calls to that number are answered by this agent.
 - **Outbound** — enroll contacts in a [Campaign](/campaigns/campaign-overview) that uses this agent, or trigger calls via the API.
 
 <Note>
-Phone numbers are managed at the team level (imported from Twilio or connected via SIP). If your team has no numbers yet, contact your Revve administrator to get one provisioned.
+  Phone numbers are managed at the team level (imported from Twilio or connected via SIP). If your team has no numbers yet, contact your Revve administrator to get one provisioned.
 </Note>
 
 ## What's Next
