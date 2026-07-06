@@ -1,10 +1,9 @@
 ---
-
 title: "Voice Agent Advanced Capabilities"
 description: "The remaining Advanced Settings tabs — outbound caller ID, Vietnamese phone verification and normalization, retries, webhooks, call analysis, security, and notifications — for the agent builder taking a working agent to production."
 ---
 
-[Voice Agent Settings](/voice-agents/voice-agent-settings) covers the conversation-shaping tabs of Advanced Settings — Call Behavior, Conversation, Voicemail, and Call Transfer. This page covers the remaining operational tabs: the capabilities you enable once the agent talks well and you need it to *operate* well — verify identities, retry failed dials, feed your systems, and alert your team.
+[Voice Agent Settings](/voice-agents/voice-agent-settings) covers the conversation-shaping tabs of Advanced Settings — Call Behavior, Conversation, Voicemail, and Call Transfer. This page covers the remaining operational tabs: the capabilities you enable once the agent talks well and you need it to _operate_ well — verify identities, retry failed dials, feed your systems, and alert your team.
 
 Everything here follows the same editing model as the rest of Advanced Settings: changes **auto-save to the draft** (there's no Save button), and the tabs are read-only when you're viewing a published version or don't hold the edit lock. Two of these tabs — **Phone Verification** and **Normalization** — are Vietnamese-oriented capabilities, built for Vietnamese spoken digits, addresses, and license plates.
 
@@ -13,13 +12,13 @@ Everything here follows the same editing model as the rest of Advanced Settings:
 The **Outbound Phone Number** card controls which number appears as caller ID when this agent places outbound calls. One field:
 
 | Setting | Default | When to change |
-|---------|---------|----------------|
+| --- | --- | --- |
 | **Phone Number or Pool** | None | Pick a single **Phone Number** when callers should see one consistent, recognizable number (and can call it back). Pick a **Number Pool** — shown as "name (N numbers)" — to rotate a random number from the pool on each outbound call, which spreads dialing volume across numbers in high-volume campaigns. Selecting one clears the other. |
 
 If the select is empty, follow the inline link to the Phone Numbers page to add a number first.
 
 <Note>
-This tab selects the **outbound caller ID only**. It does not assign an inbound number to the agent — there is no inbound routing control here.
+  This tab selects the **outbound caller ID only**. It does not assign an inbound number to the agent — there is no inbound routing control here.
 </Note>
 
 ## Phone Verification
@@ -30,45 +29,34 @@ Confirms the caller's identity by having them speak their phone number and check
 - `verify_phone` — compares the extracted number with the existing phone number in the system. Both numbers are normalized before comparing, so formatting differences don't cause false mismatches.
 
 | Setting | Default | When to change |
-|---------|---------|----------------|
+| --- | --- | --- |
 | **Validation Field Name** | Empty (placeholder `phoneNumber`) | The contact field containing the number to verify against. Required when verification is on — leaving it blank blocks saving. Change it only if your phone number lives in a different field. |
 | **Success Message** / **Fail Message** | Empty | What the agent says when the number matches or doesn't. Write both — the fail message especially, so a mismatch leads somewhere useful ("let me update your number") instead of a dead end. |
 | **Tool Call Messages** | Empty | One static sentence per tool, spoken while the tool executes so the caller doesn't sit through dead air. The placeholders show the register to aim for: `Dạ vâng ạ, em cảm ơn.` for extraction, `Để em kiểm tra giúp anh/chị nhé.` for verification. Always fill these in — a few seconds of silence mid-verification feels like a dropped call. |
 
-## Normalization
-
-Two independent toggles, both **Vietnamese-specific**, that turn messy spoken input into structured data. Each adds one tool to the agent. License-plate normalization has the agent read the normalized plate back digit by digit for confirmation ("có đúng không ạ?"), so transcription mistakes get caught on the call; address normalization returns the cleaned, structured address for the agent to use in the conversation.
-
-| Setting | Default | When to change |
-|---------|---------|----------------|
-| **Address Normalization** | Off | Adds the `norm_address` tool, which normalizes and validates a user-provided address. Turn on whenever the agent collects delivery or billing addresses from Vietnamese callers. |
-| **License Plate Normalization** | Off | Adds the `norm_license_plate` tool. Turn on for insurance, parking, or fleet use cases where the agent records vehicle plates. |
-
-Each card has an optional **Tool Call Message** — a sentence spoken while the tool runs (e.g. `Dạ vâng, để em ghi nhận địa chỉ ạ.` / `Dạ vâng, để em ghi nhận biển số ạ.`). As with Phone Verification, set it to avoid mid-call silence.
-
 ## Retry & Callback
 
-Two cards that decide what happens when a call *doesn't* happen.
+Two cards that decide what happens when a call _doesn't_ happen.
 
 ![The Retry & Callback tab in a voice agent's Advanced Settings, with the Auto Retry and Callback Scheduling toggle cards](/screenshots/voice-retry-callback.png)
 
 ### Auto Retry
 
 | Setting | Default | When to change |
-|---------|---------|----------------|
+| --- | --- | --- |
 | **Auto Retry** | Off | Turn on for outbound campaigns — a busy signal shouldn't be the end of the story. When on, a new call attempt is scheduled after the wait. It fires on exactly three triggers: the line is busy, the call failed to connect, or the recipient didn't answer. |
-| **Retry After (minutes)** | 5 (1–1440) | How long to wait before the retry. 5 minutes suits "line was busy" cases; for no-answers, longer waits (60+ minutes, or hours) give the person a realistic chance of being available the second time. |
+| **Retry After (minutes)** | 5 (1–1440) | How long to wait before the retry. 5 minutes suits "line was busy" cases; for no-answers, longer waits (60\+ minutes, or hours) give the person a realistic chance of being available the second time. |
 
 ### Callback Scheduling
 
 | Setting | Default | When to change |
-|---------|---------|----------------|
+| --- | --- | --- |
 | **Callback Scheduling** | Off | Turn on to let customers request a callback during the call ("can you call me back this afternoon?") and have it scheduled automatically. |
 | **Callback Prompt** | See below | The instructions the AI uses to decide, per call, whether a callback was requested — it evaluates to true/false against your criteria. |
 
 The default prompt:
 
-```
+```text
 Only True if user explicitly ask for a callback for follow later via call. If only the agent mentions a future callback and user did not explicit agree to it, set this to false. If user scheduled appointments or demos, set this to False. When the call goes to voicemail, set this to false
 ```
 
@@ -81,10 +69,10 @@ The **Webhook Configuration** card sends real-time updates from your voice agent
 ![Webhook Configuration card with the Webhook URL field](/screenshots/voice-webhook.png)
 
 | Setting | Default | When to change |
-|---------|---------|----------------|
+| --- | --- | --- |
 | **Webhook URL** | Empty | The URL where webhook events are sent (`https://your-domain.com/webhook`). Must be a valid URL; leave it empty if you don't consume events. Set it when your CRM or backend needs to react to call activity without polling. |
 
-There's no per-event selection or signing-secret field — one URL receives the agent's events. If you only need to trigger actions *inside* Revve (tags, assignments, follow-ups), use [automation rules](/automations/automation-rules-overview) instead of standing up an endpoint.
+There's no per-event selection or signing-secret field — one URL receives the agent's events. If you only need to trigger actions _inside_ Revve (tags, assignments, follow-ups), use [automation rules](/automations/automation-rules-overview) instead of standing up an endpoint.
 
 ## Analysis & Summary
 
@@ -95,7 +83,7 @@ Controls what Revve extracts from each finished call: the model that does the an
 ### Analysis Model
 
 | Setting | Default | When to change |
-|---------|---------|----------------|
+| --- | --- | --- |
 | **Provider / Model** | openai / o4-mini | The model that runs summaries and field extraction — it works from the transcript after the call, so its speed never affects the live conversation. Move up a tier if summaries miss nuance or extracted fields come back wrong. See [Choosing an LLM Model](/general-configuration/choosing-an-llm-model). |
 | **Reasoning Effort** | — | Shown only for models that support it. |
 
@@ -110,7 +98,7 @@ Defines the structured data extracted from every call. Extracted values appear i
 Click **Add** to define a field:
 
 | Field | Required | What it does |
-|-------|----------|--------------|
+| --- | --- | --- |
 | **Name** | Yes | The key the value is stored under (e.g. `callbackScheduled`, `appointmentScheduled`). |
 | **Type** | Yes | Text, Number, Boolean, or **Address** — Address adds a **Country** select for address parsing. |
 | **Description** | Yes | Tells the model what to extract. Be specific — this is the extraction prompt for the field. |
@@ -122,14 +110,14 @@ Click **Add** to define a field:
 The **Security Settings** card holds one toggle:
 
 | Setting | Default | When to change |
-|---------|---------|----------------|
+| --- | --- | --- |
 | **Opt Out of Sensitive Data Storage** | Off | Prevents storage of sensitive conversation data. Turn on when your compliance posture requires it — collections, healthcare, financial services. The trade-off: what isn't stored can't be reviewed later, so weigh it against your QA and dispute-resolution needs. |
 
 ## Notification
 
 The **Notifications** card alerts your team when specific conditions are met in conversations — a caller asks for a manager, a payment promise is made, a call escalates. You describe the trigger in plain language ("When to trigger notification"), and the AI decides per conversation whether to fire it.
 
-Configuration is the same as the chat agent's Notification panel — trigger description, **Channel** (**Email** or **Slack** — Slack requires the Slack app, and an inline Install Slack card appears if it's not installed), a required **Subject/Title**, then recipients (email addresses) or a Slack Integration + Channel ID. See [Chat Agent Advanced Settings](/general-configuration/chat-agent-advanced-settings) for the field-by-field walkthrough.
+Configuration is the same as the chat agent's Notification panel — trigger description, **Channel** (**Email** or **Slack** — Slack requires the Slack app, and an inline Install Slack card appears if it's not installed), a required **Subject/Title**, then recipients (email addresses) or a Slack Integration \+ Channel ID. See [Chat Agent Advanced Settings](/general-configuration/chat-agent-advanced-settings) for the field-by-field walkthrough.
 
 One detail worth knowing for voice: email recipients accept template variables like `{{lead_owner_email}}` (validated as chips as you type), so an alert can route to the specific owner of the contact who was on the call rather than a shared inbox.
 
