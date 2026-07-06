@@ -1,0 +1,102 @@
+---
+
+title: "Connecting HubSpot CRM"
+description: "For workspace admins: install HubSpot CRM via OAuth, choose what syncs automatically, and map Revve fields to HubSpot properties."
+---
+
+HubSpot CRM connects your team's HubSpot portal to Revve using OAuth 2.0 — there's exactly one configuration per team, not a set of profiles like Calendly's. Once connected, you choose which of three data flows run automatically (call results, chat results, and new leads), map Revve contact fields onto HubSpot properties, and set a default meeting link that voice and chat agents use for availability checks and bookings.
+
+You need the **Manage Settings** permission to install apps. For how the Apps page works in general, see the [integrations overview](/integrations/integrations-overview).
+
+## Step 1: Install HubSpot CRM
+
+Go to **Settings → Apps** and open the **HubSpot CRM** card. Unlike Calendly, there's no separate preview page describing what you'll get — the **Status** card's **Install** button takes you straight into HubSpot's own OAuth consent screen.
+
+Click **Install**, log in to HubSpot, and approve the requested permissions. HubSpot redirects you back to the same management page — there's no separate success screen, just the **Status** card now showing a purple **Installed** badge and the rest of the configuration cards appearing below it.
+
+If you ever need to reconnect (for example, after revoking access in HubSpot, or if syncing silently stops), use the same button — it now reads **Reinstall**. There's no separate disconnect or uninstall control on this page.
+
+<Tip>
+If HubSpot syncing appears to stop working, click **Reinstall** to re-authorize. A HubSpot refresh-token failure doesn't raise an in-app error on this page — reinstalling is the fastest way to rule out an expired connection.
+</Tip>
+
+Installing seeds four default field mappings (covered in [Field Mapping](#field-mapping) below) but leaves all three sync toggles off and no meeting link configured — you set those up next.
+
+## Sync Settings
+
+The **Sync Settings** card controls which data flows to HubSpot automatically. All three toggles are off by default:
+
+| Setting | Description shown in the app | Default |
+|---|---|---|
+| **Sync Call Results** | Automatically save call analysis results to HubSpot | Off |
+| **Sync Chat Results** | Automatically save chat analysis results to HubSpot | Off |
+| **Sync Leads** | Automatically create HubSpot contacts from new leads | Off |
+
+Click **Save Settings** after changing any toggle — the button only appears once something has changed.
+
+<Note>
+Call and chat sync work by matching an existing HubSpot contact by email. If a caller or chat contact doesn't already have a matching HubSpot contact, that sync has nothing to attach the result to. Turn on **Sync Leads** first (or make sure your leads already reach HubSpot some other way) so contacts exist before you turn on call or chat syncing.
+</Note>
+
+Sync Leads only ever creates new HubSpot contacts — it doesn't update a contact that already has a matching email. If HubSpot already has a contact with that email, Revve treats the create as handled and moves on without touching the existing record.
+
+## Meeting Configuration
+
+The **Meeting Configuration** card sets the default HubSpot scheduling link your agents book against — this is what backs the **Check Availability** and **Book Appointment** tools, the same role Calendly's Event Type and Length play. HubSpot only supports one slug-and-duration pair per team; there's no multi-profile concept here.
+
+| Field | Default | What to set |
+|---|---|---|
+| **Slug** | None | Dropdown of your HubSpot meeting types, loaded live from HubSpot. Pick the meeting link you want agents to book by default. |
+| **Duration** | None | Appears once you've picked a Slug. Dropdown of the durations that meeting type supports, in minutes. |
+
+Click **Save** once both fields are set. Until you configure this, agents have no default HubSpot meeting link to fall back on.
+
+## Field Mapping
+
+The **Field Mapping** card maps Revve contact fields to HubSpot contact properties. It's visually tied to **Sync Leads** — the card dims when that toggle is off, since field mapping only matters once leads are actually being created as HubSpot contacts.
+
+Installing seeds four default mappings:
+
+| Revve Field | HubSpot Field |
+|---|---|
+| `firstName` | `firstname` |
+| `lastName` | `lastname` |
+| `email` | `email` |
+| `phone` | `phone` |
+
+**Revve Field** options include the standard supported fields (name, email, phone, company, and so on), computed fields like total calls or last call sentiment, and any custom contact fields your team has defined. **HubSpot Field** options are your live HubSpot contact properties. Use **Add Mapping** to add a row and the trash icon to remove one; **Save** stays disabled until every row has both sides filled in.
+
+<Tip>
+If you only map the fields you actually collect, Revve sends just those to HubSpot. If you clear every mapping, Revve falls back to sending all lead fields as-is — useful early on, but mapping explicitly gives you control over what lands in HubSpot and under which property name.
+</Tip>
+
+## Data Sync Preferences
+
+The **Data Sync Preferences** card decides what kind of HubSpot record call and chat syncing create. It dims when both **Sync Call Results** and **Sync Chat Results** are off, since neither preference has anything to act on until one of those is enabled.
+
+| Setting | Options | Default |
+|---|---|---|
+| **Save Chat Transcripts as** | Task / Note | Task |
+| **Save Call Logs as** | Call / Note | Call |
+
+- **Task** creates a HubSpot task with the conversation summary and resolution status; **Note** logs the same content as a note on the contact.
+- **Call** creates a HubSpot call engagement with direction, recording URL, and transcript; **Note** logs the same content as a note.
+
+Use **Note** if your team's HubSpot workflows or reporting are already built around notes rather than tasks and call engagements. Click **Save Preferences** to apply changes, or **Discard Changes** to revert.
+
+## How this surfaces elsewhere
+
+Turning on **Sync Call Results**, **Sync Chat Results**, or **Sync Leads** creates a matching action in your team's automation rules — **Save Call Result**, **Save Chat Result**, or **Save Lead**. These show up with a purple **managed** badge in the [Automations rule builder](/automations/automation-rules-overview): you can see them, but you edit them from this HubSpot page, not from the rule builder.
+
+Separately, HubSpot CRM also works in the other direction. A customer can add a **custom workflow action** to their own HubSpot workflows that enrolls a contact into a Revve campaign — passing a phone number, campaign, and optional contact details — directly from HubSpot, without needing a session in Revve. It's a signature-verified action scoped to your connected HubSpot portal, so it only works against your own installation.
+
+## What's Next
+
+<CardGroup cols={2}>
+  <Card title="Automation Rules Overview" href="/automations/automation-rules-overview">
+    See where HubSpot's managed sync actions show up alongside your other automation rules.
+  </Card>
+  <Card title="Apps & Integrations Overview" href="/integrations/integrations-overview">
+    Compare HubSpot CRM to the other scheduling and CRM apps you can connect.
+  </Card>
+</CardGroup>

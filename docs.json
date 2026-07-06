@@ -152,7 +152,9 @@
             "pages": [
               "integrations/integrations-overview",
               "integrations/connecting-calendly",
-              "integrations/scheduling-and-booking"
+              "integrations/scheduling-and-booking",
+              "integrations/connecting-salesforce",
+              "integrations/connecting-hubspot-crm"
             ]
           },
           {
