@@ -1,10 +1,10 @@
 ---
 
 title: "Exporting Conversations"
-description: "Download your chat history as CSV files for offline analysis and reporting."
+description: "Download your chat history or call history as CSV files for offline analysis and reporting."
 ---
 
-Revve AI lets you export your chat history data as CSV files so you can analyze conversations in spreadsheets, import them into BI tools, or share reports with your team.
+Revve AI lets you export your conversation data as CSV files so you can analyze conversations in spreadsheets, import them into BI tools, or share reports with your team. There are two separate export flows: **Chat History** export (below) and **Call History** export (for voice calls, see [Exporting Call History](#exporting-call-history)).
 
 ## How to Export
 
@@ -62,3 +62,64 @@ Here are some practical ways to use your exported data:
 - The **Export All Data** option is ideal for monthly or quarterly reports where you want a comprehensive dataset.
 - The **Export Current Page** option is useful for quick spot-checks or when you only need a small sample.
 - If you regularly need the same type of export, bookmark the Chat History page with your filters applied -- the filter settings are preserved in the URL.
+
+## Exporting Call History
+
+Call History (voice calls) has its own export flow, separate from Chat History. It lives on a separate page and uses a field picker instead of a current-page/all-data choice.
+
+### How to Export Call History
+
+1. Navigate to **History > Call History** in the left sidebar.
+2. Apply any filters you need (date range, agent, campaign, status, direction, sentiment, etc.). Like Chat History, the export respects your current filters.
+3. Click the **Export** button (with a download icon) above the table. This opens the **Export Call History** dialog: "Select the fields to include in the export. You will receive an email with a download link."
+4. Choose which fields to include, grouped into two sections:
+
+| Group | What It Contains |
+|-------|-------------------|
+| **Base Fields** | The standard call fields listed below. A select-all checkbox and a running count (e.g. "12/23") sit above the list. |
+| **Analysis Fields** | Custom analyze fields your team has configured for call evaluation, each with its own checkbox and a select-all control. Only shown if your team has analyze fields configured. |
+
+By default, the dialog pre-selects whatever base columns are currently visible in the Call History table, plus every analysis field.
+
+5. Click **Export (N fields)** to queue the export.
+
+### Export Processing
+
+Call History export uses the same background/email pattern as Chat History:
+
+1. You will see a confirmation message: **"Export queued! You will receive an email when ready."**
+2. Revve prepares the CSV in the background and emails a download link to the address associated with your account.
+3. You do not need to keep the page open while the export runs.
+
+### Available Base Fields
+
+| Field | Notes |
+|-------|-------|
+| **Agent** | The Call Agent that handled the call. |
+| **Campaign** | The campaign the call belongs to, if any. |
+| **Phone Number** | The customer's phone number. |
+| **Status** | The call's status. |
+| **Direction** | Inbound or outbound. |
+| **Type** | The call type. |
+| **Successful** | Whether the call was marked successful. |
+| **Duration** | Call duration. |
+| **Disconnection Reason** | Why the call ended. |
+| **Sentiment** | The AI-detected user sentiment. |
+| **Evaluation** | The AI evaluation result. |
+| **Created At** | When the call record was created. |
+| **Started At** | When the call started. |
+| **Recording URL** | Link to the call recording. |
+| **Summary** | The AI-generated call summary. |
+| **Transcript** | New field. The spoken-only agent/user dialogue text (`AI agent: ...` / `User: ...` lines), not a raw diarized transcript with timestamps. |
+| **Enrollment URL** | The campaign enrollment link, if applicable. |
+| **Contact ID** | The internal contact identifier. |
+| **Agent Phone Number** | The phone number the agent called from or answered on. |
+| **Provider Call ID** | The telephony provider's call identifier. |
+| **Human Evaluation** | Whether a human reviewer marked the call as passing evaluation. |
+| **Human Evaluation Category** | The category a human reviewer assigned. |
+| **Human Evaluation Notes** | Free-text notes from a human reviewer. |
+| **Human Evaluated By** | The team member who performed the human evaluation. |
+
+<Note>
+The **Transcript** field builds its text from the same source used for AI analysis: it prioritizes the provider transcript, falling back to the call's chat history if needed, and merges consecutive same-role turns into single lines. It does not include tool calls or timestamps -- for a call-by-call view of tool calls and timing, use the call detail view instead.
+</Note>
