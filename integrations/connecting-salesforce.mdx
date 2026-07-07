@@ -1,0 +1,131 @@
+---
+
+title: "Connecting Salesforce"
+description: "For workspace admins: install the Revve AI managed package in Salesforce, authorize access, and configure what syncs between Revve and your Salesforce org."
+---
+
+Salesforce is Revve's most involved CRM integration: instead of a single OAuth click, you install a managed package in your Salesforce org first, then authorize Revve to access it. Once connected, you control four independent sync directions from tabs on the Salesforce management page — call results, chat results, contact fields, and campaign membership — each backed by its own toggle and field mappings. This guide walks through both install steps and every tab you'll configure afterward.
+
+You need the **Manage Settings** permission to install apps. For how the Apps page works in general, see the [integrations overview](/integrations/integrations-overview).
+
+## Step 1: Install the managed package
+
+Go to **Settings → Apps**, find the **Salesforce** card, and click **Install** (or **Reinstall** if you're reconnecting). You land on the **Salesforce Integration Setup** page ("Complete the setup to connect Revve AI with your Salesforce org"), a two-step wizard. Step 1, **Install Revve AI Package**, previews what the package unlocks under **What you'll get:**
+
+- **Enroll leads in Revve campaigns** — "Seamlessly add leads to Revve campaigns from Salesforce with pre-built flows and actions."
+- **Automatic Activity Logging** — "Log calls and chats automatically to Salesforce."
+
+Before clicking through, check the **Sandbox** toggle (off by default). Leave it off to install into your production Salesforce org; turn it on if you're installing into a Salesforce sandbox org instead. The toggle changes which Salesforce login domain the installer and later OAuth step point at, so set it correctly before you start — you can still go back and flip it before authorizing in Step 2.
+
+Then follow the numbered steps:
+
+1. Click **Open Salesforce Package Installer** — it opens Salesforce's package installer in a new tab.
+2. Log in to your Salesforce org.
+3. Choose **Install for All Users**.
+4. Complete the installation.
+5. Return here and click **I have installed the app**.
+
+<Note>
+Revve doesn't verify the package actually installed — clicking **I have installed the app** is a self-reported confirmation that just advances the wizard. If you skip the Salesforce installer and click through anyway, Step 2's authorization will still run, but syncs will fail until the package is really installed.
+</Note>
+
+## Step 2: Authorize access
+
+Step 2, **Authorize Salesforce Access** ("Grant Revve AI permission to access your Salesforce data"), lists the permissions Revve is requesting:
+
+- **Read & Write Activities** — create tasks, log calls, and update activities.
+- **Access Custom Objects** — manage Revve campaigns and custom fields.
+
+<Note>
+**Secure OAuth 2.0 Connection.** Your credentials are never stored. You can revoke access anytime from Salesforce settings.
+</Note>
+
+Click **Authorize Salesforce Access**. You're redirected to Salesforce to log in and approve the permissions, then returned to Revve automatically — the integration is active immediately, landing you on the Salesforce management page.
+
+<Tip>
+Reinstalling (or re-authorizing the same Salesforce org) updates your existing connection instead of creating a duplicate, so it's safe to run this flow again if you need to refresh permissions or switch which org you're pointed at.
+</Tip>
+
+## Connection tab
+
+The management page opens on **Connection**, the first of six tabs (**Connection**, **Call Sync**, **Chat Sync**, **Contact Fields**, **Enrollment Sync**, **Campaign Mappings**). All tabs except Connection stay disabled until the app is installed.
+
+The **Status** card shows an **Installed** badge once connected, with a **Reinstall** button if you ever need to redo the OAuth handshake. If your team is missing the `Salesforce Who ID` or `Salesforce What ID` contact fields — the two hidden fields Revve normally creates automatically during authorization — you'll see a banner explaining that logged tasks can't be linked to Salesforce records without them, with a **Create Contact Fields** button to create them on demand.
+
+## Call Sync tab
+
+Call Sync maps Revve call-analysis data onto Salesforce **Task** fields. Turn on **Sync Call Results** ("Automatically save call analysis results to Salesforce") to start creating a Task for every analyzed call.
+
+Each mapping row has a **Revve Value Template** (a text field that supports `{{variable}}` autocomplete — type `{{` to see the options) and a **Salesforce Task Field** picker. That picker is a live, searchable dropdown populated directly from Salesforce's own field metadata for the Task object, not a fixed list — so it always reflects the Task fields your org actually has, including custom ones.
+
+When there's no saved mapping yet, four rows are pre-populated:
+
+| Default Revve Template | Captures |
+|---|---|
+| `{{disposition}}` | Call outcome derived from the analysis result. |
+| `{{call_recording_url}}` | Recording URL stored for the completed call. |
+| `{{transcript}}` | Full call transcript. |
+| `{{sentiment}}` | Detected call sentiment. |
+
+Add more rows with **Add Mapping**, or remove one with its trash icon (the last remaining row can't be deleted). **Save** stays disabled until you have unsaved changes and, if the toggle is on, every row has both a template and a target field filled in.
+
+## Chat Sync tab
+
+Chat Sync works the same way, targeting Task fields on your Salesforce org too. Turn on **Sync Chat Results** ("Automatically save chat analysis results to Salesforce") to log a Task for every analyzed chat conversation.
+
+Default rows:
+
+| Default Revve Template | Captures |
+|---|---|
+| `{{summary}}` | AI-generated summary for the conversation. |
+| `{{transcript}}` | Full chat transcript. |
+| `{{disposition}}` | Contacted vs. not contacted, derived from the transcript. |
+
+## Contact Fields tab
+
+Contact Fields keeps Salesforce Lead and Contact records current with Revve contact data. Turn on **Sync Contact Fields** ("Automatically update Salesforce Lead/Contact fields with Revve contact data"), then map **Revve Value Template** (built from Revve contact fields — Full Name, First Name, Last Name, Email, Phone Number, Company Name, Do Not Call, plus your team's custom contact fields) to a **Salesforce Field**, picked from a live dropdown grouped into **Common Fields**, **Lead Fields**, and **Contact Fields**.
+
+Routing between Lead and Contact isn't something you configure — it's automatic, and it matters for how you read your mappings:
+
+> The target object is determined by the Who ID stored on each contact: Lead IDs (starting with `00Q`) update the Lead record, Contact IDs (starting with `003`) update the Contact record. Fields mapped to the wrong object type are skipped automatically.
+
+In practice: if a contact's Salesforce Who ID is a Lead ID, only your **Lead Fields** (and **Common Fields**) mappings apply to it; your **Contact Fields** mappings are silently skipped for that contact, and vice versa. Map to **Common Fields** when you want a value to land regardless of which object type the contact resolves to.
+
+## Enrollment Sync tab
+
+Enrollment Sync updates the Salesforce **CampaignMember** object when a Revve campaign enrollment completes. It only works for campaigns you've already linked on the **Campaign Mappings** tab — without a linked Salesforce campaign, there's no CampaignMember record for Revve to update.
+
+Turn on **Sync Campaign Members** ("Automatically update Salesforce CampaignMember fields when a Revve enrollment completes"), then map rows using enrollment and contact variables (for example `{{enrollment.status}}`, `{{enrollment.exit_reason}}`, `{{contact.email}}` — type `{{` to see the full list) against a **Salesforce CampaignMember Field**, again a live dropdown from Salesforce's describe API.
+
+This is the one tab with a fourth column: when the Salesforce field you've selected is a **picklist** type, a value-map editor appears between the template and field columns. Use it to map specific Revve values (like enrollment statuses) to the exact picklist values Salesforce expects, instead of relying on the raw Revve value to match.
+
+There are no default rows here — you start from an empty state and add mappings as you need them.
+
+## Campaign Mappings tab
+
+Campaign Mappings is what Enrollment Sync depends on, and it behaves differently from every other tab: **it's a live table, not a form** — there's no Save button.
+
+Each row is one of your Revve campaigns, with a dropdown of your **active** Salesforce campaigns (fetched live from your org) to link it to. Changing the dropdown saves immediately — you'll see a "Mapping saved" toast — and picking **— Clear mapping —** unlinks it just as instantly. Once a Revve campaign is mapped here, its enrollments become eligible for the Enrollment Sync tab's CampaignMember updates.
+
+<Tip>
+Map a campaign here before turning on Enrollment Sync for it — otherwise its enrollments complete with nothing to update on the Salesforce side.
+</Tip>
+
+## How this surfaces in Automations
+
+Each of the four sync toggles (Call Sync, Chat Sync, Contact Fields, Enrollment Sync) creates a corresponding rule in [Automations](/automations/automation-rules-overview) behind the scenes. You'll see them there as **read-only** action cards — labeled things like "Salesforce · Save Call Result" — attached to their triggering event.
+
+<Note>
+These sync rules are managed entirely by the toggles on this page, not by the Automations Rule Builder. Turn a sync on or off here rather than trying to edit or recreate the rule directly in Automations.
+</Note>
+
+## What's Next
+
+<CardGroup cols={2}>
+  <Card title="Apps & Integrations Overview" href="/integrations/integrations-overview">
+    See where Salesforce fits among Revve's other CRM and scheduling apps.
+  </Card>
+  <Card title="Automation Rules — Overview" href="/automations/automation-rules-overview">
+    Understand the managed action cards your Salesforce sync toggles create.
+  </Card>
+</CardGroup>

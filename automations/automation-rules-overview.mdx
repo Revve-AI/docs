@@ -51,7 +51,7 @@ Five action types are available from the action menu:
 | **Create Ticket** | Creates a ticket of a chosen type and auto-assigns it via routing rules. |
 | **Enroll in Campaign** | Enrolls the event's contact into an active campaign. |
 
-You may also see **managed** actions on some rules — Salesforce/HubSpot sync actions like **Save Call Result**, **Save Chat Result**, **Save Lead**, and **Save Campaign Member**. These appear read-only with a "managed" badge: they're provisioned by the CRM app's settings, not addable from the action menu.
+You may also see **managed** actions on some rules — [Salesforce](/integrations/connecting-salesforce)/[HubSpot](/integrations/connecting-hubspot-crm) sync actions like **Save Call Result**, **Save Chat Result**, **Save Lead**, and **Save Campaign Member**. These appear read-only with a "managed" badge: they're provisioned by the CRM app's settings, not addable from the action menu.
 
 Because actions run sequentially and can reference earlier results, you can chain them — for example, an **API Call** that looks up an account in your backend, followed by an **Update Contact Field** that writes the response onto the contact. Configuration details for each action are in [Creating Automation Rules](/automations/creating-automation-rules).
 
