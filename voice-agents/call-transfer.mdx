@@ -15,7 +15,7 @@ This is the voice equivalent of [Human Takeover](/inbox/human-takeover) in the c
 3. It generates a call summary (guided by your **Summary Prompt**) for the human who picks up.
 4. It routes the call according to **Transfer To**: ringing an available agent in the Revve app, or dialing out to a SIP address or phone number.
 
-For **SIP Address** and **Phone Number** transfers using the default **Bridge Transfer** type, there's an extra step between 3 and 4: the caller is put on hold with music while the agent privately briefs the human — see [Bridge or cold transfer](#bridge-or-cold-transfer) below.
+For **SIP Address** and **Phone Number** transfers using the default **Bridge Transfer** type, there's an extra step between 3 and 4: the caller is put on hold with music while the agent privately briefs the human — see [Bridge or cold transfer](#bridge-or-cold-transfer) below. **Revve User** transfers put the caller on hold with music too, while waiting for a teammate to accept — see Step 3.
 
 ## Step 1: Configure Call Transfer on the agent
 
@@ -61,11 +61,13 @@ The Transfer Message buys the summary time to generate and the human time to pic
 
 For **Revve User** transfers, a teammate only receives calls while they're accepting them. Open the account menu (bottom-left, your email) — it has three availability toggles: **Accept Conversations**, **Accept Tickets**, and **Accept Calls**, each showing **Accepting** or **Paused** with a green or red dot.
 
-Turn **Accept Calls** on. Anyone with it paused is skipped when a transfer comes in — if your whole team shows **Paused**, every transfer goes straight to the fallback number (or fails, if you didn't set one).
+Turn **Accept Calls** on. Anyone with it paused is skipped when a transfer comes in — if your whole team shows **Paused**, every transfer goes straight to the fallback number (or fails, if you didn't set one). Flipping the toggle on also prompts the browser for Notification permission — allow it, since the off-tab alerts in Step 3 depend on it.
 
 ## Step 3: Answer the transfer
 
-When the agent initiates an in-app transfer, available teammates see an **Incoming call transfer** card appear anywhere in the app. It shows "A caller is waiting to be connected." and an "Expires in `{n}`s" countdown.
+When the agent initiates an in-app transfer, available teammates see an **Incoming call transfer** card appear anywhere in the app. It shows "A caller is waiting to be connected." and an "Expires in `{n}`s" countdown. The caller hears hold music for the wait, capped at roughly that same countdown — so if nobody answers, they don't sit through extra dead air beyond what the countdown already implies.
+
+If your Revve tab is backgrounded when a transfer comes in, the card doesn't rely on you noticing it: you get an OS-level notification (clicking it focuses the tab), the tab title flashes "📞 Incoming call…", and a ringtone plays — all of which stop automatically once you accept, decline, or the request expires.
 
 - **Accept** — you're connected to the caller in the browser, and you get the AI-generated call summary so you're not walking in blind.
 - **Decline** — you pass; other available agents can still pick it up.
@@ -74,4 +76,5 @@ When the agent initiates an in-app transfer, available teammates see an **Incomi
 ## What's Next
 
 - [Voice Agent Settings](/voice-agents/voice-agent-settings) — the rest of the Advanced Settings, including the tuning workflow.
+- [Live Calls](/voice-agents/live-calls-board) — watch calls in progress and take over mid-call using this same handoff mechanism, without waiting for the AI to initiate a transfer.
 - [Human Takeover](/inbox/human-takeover) — the chat-side equivalent: claiming conversations from the Inbox and handing them back to the AI.
