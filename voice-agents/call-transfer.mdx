@@ -15,7 +15,7 @@ This is the voice equivalent of [Human Takeover](/inbox/human-takeover) in the c
 3. It generates a call summary (guided by your **Summary Prompt**) for the human who picks up.
 4. It routes the call according to **Transfer To**: ringing an available agent in the Revve app, or dialing out to a SIP address or phone number.
 
-For **SIP Address** and **Phone Number** transfers using the default **Bridge Transfer** type, there's an extra step between 3 and 4: the caller is put on hold with music while the agent privately briefs the human — see [Bridge or cold transfer](#bridge-or-cold-transfer) below.
+For **SIP Address** and **Phone Number** transfers using the default **Bridge Transfer** type, there's an extra step between 3 and 4: the caller is put on hold with music while the agent privately briefs the human — see [Bridge or cold transfer](#bridge-or-cold-transfer) below. **Revve User** transfers play hold music too, for as long as a teammate has to accept the incoming-call card — see [Step 3](#step-3-answer-the-transfer).
 
 ## Step 1: Configure Call Transfer on the agent
 
@@ -63,6 +63,8 @@ For **Revve User** transfers, a teammate only receives calls while they're accep
 
 Turn **Accept Calls** on. Anyone with it paused is skipped when a transfer comes in — if your whole team shows **Paused**, every transfer goes straight to the fallback number (or fails, if you didn't set one).
 
+The first time you turn it on, your browser asks for notification permission — accept it. With permission granted, an incoming transfer card that arrives while you're on another tab triggers a desktop notification, a flashing tab title, and a ringtone, so you don't miss it.
+
 ## Step 3: Answer the transfer
 
 When the agent initiates an in-app transfer, available teammates see an **Incoming call transfer** card appear anywhere in the app. It shows "A caller is waiting to be connected." and an "Expires in `{n}`s" countdown.
@@ -70,6 +72,8 @@ When the agent initiates an in-app transfer, available teammates see an **Incomi
 - **Accept** — you're connected to the caller in the browser, and you get the AI-generated call summary so you're not walking in blind.
 - **Decline** — you pass; other available agents can still pick it up.
 - Nobody accepts before the countdown ends — the call falls back to the **Fallback Phone Number**, if configured.
+
+The caller hears hold music the whole time the card is open — the hold time follows the card's own countdown, not a fixed wait. If nobody accepts, the flow tries once more with a fresh card, skipping the teammate who just missed or declined it, before falling back.
 
 ## What's Next
 
