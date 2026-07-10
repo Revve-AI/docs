@@ -107,11 +107,16 @@ Click **Add** to define a field:
 
 ## Security
 
-The **Security Settings** card holds one toggle:
+The **Security Settings** card holds two toggles:
 
 | Setting | Default | When to change |
 | --- | --- | --- |
 | **Opt Out of Sensitive Data Storage** | Off | Prevents storage of sensitive conversation data. Turn on when your compliance posture requires it — collections, healthcare, financial services. The trade-off: what isn't stored can't be reviewed later, so weigh it against your QA and dispute-resolution needs. |
+| **Live Observability** | Off | Allow team members to watch, listen to, and take over this agent's calls from the Live Calls board. Turn on so this agent's calls appear on the board and a supervisor can use **Listen In** — most teams leave it on, since it's what makes coaching, QA, and rescuing a tricky call possible. Turn off only when even silent internal listening is a compliance concern you want to rule out entirely for this agent's call types. Note this toggle doesn't gate **Take Over** or **End Call** — a team member with board access can still forcibly end or take over one of this agent's calls regardless of this setting. |
+
+<Note>
+  See [Live Calls Monitoring](/voice-agents/live-calls-monitoring) for how the Live Calls board and detail view work, and exactly what Listen In, Take Over, and End Call each do.
+</Note>
 
 ## Notification
 

@@ -1,0 +1,95 @@
+---
+
+title: "Monitoring Live Calls"
+description: "Watch, listen to, and step into any AI voice call in progress — for team leads and supervisors who need to catch a call going sideways before it ends."
+---
+
+Live Calls gives your team a real-time view into every AI voice call happening right now. Open the board to see what's in progress across the team, open any call to watch its transcript update live, silently listen to the audio, or step in — taking over as a human participant or ending the call outright. By the end of this page you'll know how to turn it on per agent, read the board, and use the controls once you're inside a call.
+
+## Step 1: Turn on Live Observability for the agent
+
+Live Calls only shows a call if the agent handling it allows it. Open the voice agent, go to **Advanced Settings** → **Security**, and turn on **Live Observability** on the Security Settings card — the same card that holds **Opt Out of Sensitive Data Storage** (see [Voice Agent Advanced Capabilities](/voice-agents/voice-agent-advanced-capabilities) for that toggle). Its field description: "Allow team members to watch, listen to, and take over this agent's calls from the Live Calls board." Default: off.
+
+The name undersells what this toggle actually controls, so it's worth stating plainly:
+
+- Off — a call from this agent never appears on the Live Calls board at all. Nobody can even glance at it.
+- On — the call appears on the board, and a supervisor can silently **Listen In**.
+
+It does **not** gate intervention. **Take Over** and **End Call** are available to any team member with access to the Live Calls board, on any call that's on the board, regardless of this setting. In other words: Live Observability decides whether a call is visible and listenable — not who's allowed to step into it once it's visible.
+
+<Note>
+Warm-transfer humans — teammates who accept a [Call Transfer](/voice-agents/call-transfer) — join the call regardless of this toggle. They're authorized by the transfer itself, not by Live Observability.
+</Note>
+
+## Step 2: Open the Live Calls board
+
+Team members with the same permission tier that governs Call History access see **Live Calls** in the sidebar — a radio-wave icon carrying a live badge with the current count of in-progress calls.
+
+The board's subtitle sets expectations plainly: "Every AI voice call in progress for this team, updated in real time." A stat line above the table summarizes what's happening right now — for example "3 calls live now · 2 inbound · 1 outbound" (singular "1 call live now" for one call) — with a pulsing green dot whenever at least one call is live.
+
+The table has six columns:
+
+| Column | Shows |
+|--------|-------|
+| **Caller** | The caller's name if known, otherwise just their number. |
+| **Agent** | The agent's name and hotline number. |
+| **Type** | The call type. |
+| **Direction** | Inbound or outbound. |
+| **Duration** | How long the call has been running. |
+| **Status** | One of the badges below. |
+
+| Status | Color | Meaning |
+|--------|-------|---------|
+| **Live** | Green, pulsing | The call is actively in progress. |
+| **Taken Over** | Amber | A team member has taken over as a live participant. |
+| **Stale** | Gray | No update for about 60 seconds — a safeguard in case the call's end-of-call signal was missed, not necessarily a dead call. |
+| **Ended** | Gray | The call has finished. |
+
+<Note>
+A stale call isn't necessarily gone — it's just quiet. If nothing reconciles it sooner, it drops off the board entirely (treated as ended) after about 2 minutes.
+</Note>
+
+Live and taken-over calls sort to the top (newest first), followed by stale calls. When nothing is in progress, the board reads "No calls in progress." Click any row to open that call's detail view in a new tab.
+
+## Step 3: Use the Live Call detail view
+
+The detail view is a three-column layout: a Call Info panel on the left, the live transcript with floating controls in the center, and a live-updating AI summary panel on the right (desktop only).
+
+The header shows the caller's name or number, direction and status badges, and a subtitle with the agent name and call duration. A **View full call** link opens the regular Call History detail page for this call in a new tab.
+
+The **Call Info** panel lists **Type**, **Direction**, **Agent**, **Hotline** (if one's set), and **Started** as a relative time (e.g. "4 min ago"). Below it, **Contact** shows the caller's **Name** (or "Unknown caller") and **Phone**.
+
+### Observer mode
+
+Before anyone takes over, a floating control bar gives you three options:
+
+- **Listen In** — turns on audio for you, with no confirmation dialog. Once active it toggles to **Listening**, with a pulsing icon.
+- **Take Over** — opens a confirm dialog: "Take over this call?" / "You'll join as a live participant with your microphone on, replacing the assistant for the rest of the call. The caller will hear you." **Cancel** or **Take Over**.
+- **End Call** (destructive styling) — opens a confirm dialog: "End this call?" / "This disconnects everyone on the call immediately. This can't be undone." **Cancel** or **End Call**.
+
+<Tip>
+There's no audio cue or indicator played to the caller when someone listens in — the caller has no way of knowing. Whether that's acceptable for a given call is a question of your own compliance posture, not something Revve enforces automatically. Factor it into how you use **Listen In**, especially in regulated conversations.
+</Tip>
+
+### Live mode
+
+After **Take Over** — or after accepting a Call Transfer into this same view — a banner reads "You're live — the caller can hear you." The controls become **Mute** / **Unmute** and **Hang Up** (destructive). Hanging up returns you to the Live Calls board.
+
+### Ended state
+
+Once the call ends, a banner states the disconnect reason in plain words, and the transcript is marked final. The Summary panel freezes on its last content.
+
+### Reading the transcript and summary
+
+In the transcript, the caller's side is always labeled **Caller**. The agent's side is labeled **Assistant** normally, and switches to **Human Agent** once a person — via takeover or an accepted transfer — has spoken.
+
+The right-rail panel, titled **Summary**, refreshes automatically roughly every 30 seconds once there's new conversation to summarize. If the call arrived via an accepted Call Transfer, it starts by showing the handoff summary the AI already generated for that transfer, labeled as such, before the first automatic refresh. Before any content exists, it reads "Summary appears once the call gets going."
+
+## Live Calls and Call Transfer
+
+Accepting an in-app [Call Transfer](/voice-agents/call-transfer) opens this same Live Call detail view — it's the human's connection point into the call. A teammate who accepts a transfer lands directly in Live mode, with the same live transcript, mute/hang-up controls, and Summary panel described above.
+
+## What's Next
+
+- [Transferring Calls to a Human](/voice-agents/call-transfer) — how a call reaches a human in the first place, and how accepting one connects to this same live view.
+- [Voice Agent Advanced Capabilities](/voice-agents/voice-agent-advanced-capabilities) — the Security section, for the Live Observability toggle and its sibling, Opt Out of Sensitive Data Storage.
