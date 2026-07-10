@@ -51,7 +51,7 @@ For **SIP Address** and **Phone Number** transfers, choose a **Transfer Type**:
 | Setting | What it does | Guidance |
 |---------|--------------|----------|
 | **Transfer Message (optional)** | Text the AI speaks to the customer before initiating the transfer. | Always set one — a silent transfer feels like being hung up on. Something like "Let me connect you with a specialist — one moment." |
-| **Summary Prompt (optional)** | Guides the AI when summarizing the call for the agent receiving the transfer. | Tell it what the human needs at a glance: "Summarize who's calling, what they want, and any account details collected so far." |
+| **Summary Prompt (optional)** | Guides the AI when summarizing the call for the agent receiving the transfer. | Tell it what the human needs at a glance: "Summarize who's calling, what they want, and any account details collected so far." The summary always generates in the agent's configured language, even when the call itself ran in a different one. |
 
 <Tip>
 The Transfer Message buys the summary time to generate and the human time to pick up. A one-liner covers a fast bridge; if your team takes a few rings to answer, mention the short wait ("this may take a moment") so the caller doesn't hang up mid-transfer.
@@ -63,13 +63,19 @@ For **Revve User** transfers, a teammate only receives calls while they're accep
 
 Turn **Accept Calls** on. Anyone with it paused is skipped when a transfer comes in — if your whole team shows **Paused**, every transfer goes straight to the fallback number (or fails, if you didn't set one).
 
+The moment you turn **Accept Calls** on, your browser asks for notification permission — accept it so you're alerted even when Revve isn't your active tab. Revve only asks at that moment: it won't re-prompt on every page load, or nag you again once you've decided.
+
 ## Step 3: Answer the transfer
 
-When the agent initiates an in-app transfer, available teammates see an **Incoming call transfer** card appear anywhere in the app. It shows "A caller is waiting to be connected." and an "Expires in `{n}`s" countdown.
+When the agent initiates an in-app transfer, available teammates see an **Incoming call transfer** card appear anywhere in the app. It shows "A caller is waiting to be connected." and an "Expires in `{n}`s" countdown. While the caller waits, they hear hold music instead of silence — the same treatment [Bridge Transfer](#bridge-or-cold-transfer) already gives SIP and phone-number transfers.
 
-- **Accept** — you're connected to the caller in the browser, and you get the AI-generated call summary so you're not walking in blind.
+If you're on a different tab or window when the card appears, Revve makes sure you don't miss it: a browser notification titled "Incoming call" (showing the caller and the agent or team name), a tab title that flashes between its normal title and "📞 Incoming call…", and a two-tone ringtone. All three stop the instant the transfer is accepted, declined, or expires.
+
+- **Accept** — the call opens in the same Live Call detail view used by [Live Calls Monitoring](/voice-agents/live-calls-monitoring): live transcript, mute and hang-up controls, and the AI-generated call summary panel, so you're not walking in blind.
 - **Decline** — you pass; other available agents can still pick it up.
-- Nobody accepts before the countdown ends — the call falls back to the **Fallback Phone Number**, if configured.
+- Nobody accepts before the countdown ends — Revve tries another available teammate rather than ringing you again, and only falls back to the **Fallback Phone Number** (or reports no agent available) once everyone's been asked. The wait always matches the countdown you see on the card, so there's no hidden delay or early cutoff.
+
+If there's no **Fallback Phone Number** set and nobody picks up, the caller hears one apology from the agent — not two — and the AI carries on assisting them itself.
 
 ## What's Next
 
