@@ -63,15 +63,20 @@ For **Revve User** transfers, a teammate only receives calls while they're accep
 
 Turn **Accept Calls** on. Anyone with it paused is skipped when a transfer comes in — if your whole team shows **Paused**, every transfer goes straight to the fallback number (or fails, if you didn't set one).
 
+Turning **Accept Calls** on also prompts the browser for notification permission — allow it, since it's what powers the off-tab alerts described in Step 3.
+
 ## Step 3: Answer the transfer
 
-When the agent initiates an in-app transfer, available teammates see an **Incoming call transfer** card appear anywhere in the app. It shows "A caller is waiting to be connected." and an "Expires in `{n}`s" countdown.
+When the agent initiates an in-app transfer, available teammates see an **Incoming call transfer** card appear anywhere in the app. It shows "A caller is waiting to be connected." and an "Expires in `{n}`s" countdown. The caller hears hold music for the duration of that countdown, not silence — the same experience already documented for Bridge Transfer above.
+
+If a teammate isn't currently looking at that browser tab, the card is also backed by an off-tab alert: a browser notification (clicking it focuses the tab), a flashing tab title, and an audible ringtone. All three clear themselves automatically once the transfer is accepted, declined, or expires.
 
 - **Accept** — you're connected to the caller in the browser, and you get the AI-generated call summary so you're not walking in blind.
-- **Decline** — you pass; other available agents can still pick it up.
-- Nobody accepts before the countdown ends — the call falls back to the **Fallback Phone Number**, if configured.
+- **Decline** — you pass; the call is automatically re-offered to another available teammate rather than back to you.
+- Nobody accepts before the countdown ends — same as a decline, the call moves on to the next available teammate; if you're the only one on the team (or nobody's left to try), it falls back to the **Fallback Phone Number**, if configured.
 
 ## What's Next
 
 - [Voice Agent Settings](/voice-agents/voice-agent-settings) — the rest of the Advanced Settings, including the tuning workflow.
 - [Human Takeover](/inbox/human-takeover) — the chat-side equivalent: claiming conversations from the Inbox and handing them back to the AI.
+- [Live Calls Board](/inbox/live-calls-board) — see in-progress calls, including transfers like this one, across your team.
