@@ -134,6 +134,7 @@
               "inbox/filtering-and-searching",
               "inbox/conversation-analysis-panel",
               "inbox/human-takeover",
+              "inbox/live-calls-board",
               "tickets/working-with-tickets",
               "contacts/managing-contacts"
             ]
