@@ -29,7 +29,7 @@ Open your voice agent, go to **Advanced Settings** → **Call Transfer**, and fl
 
 | Option | What it does | When to use it |
 |--------|--------------|----------------|
-| **Revve User (in-app agent)** | Routes the call to an available human agent in the Revve app — no phone system needed. | Your team works in Revve anyway. This is the simplest setup: teammates toggle **Accept Calls** on and answer in the browser (see Step 2). |
+| **Revve User (in-app agent)** | Routes the call to an available human agent in the Revve app — no phone system needed. The caller hears hold music while waiting for a teammate to accept, the same treatment Bridge Transfer uses for SIP/phone handoffs. | Your team works in Revve anyway. This is the simplest setup: teammates toggle **Accept Calls** on and answer in the browser (see Step 2). |
 | **SIP Address** | Transfers the call to a SIP endpoint (full URI, e.g., `sip:agent@domain` — it must start with `sip:`). | You run a call center or PBX with SIP addressing. |
 | **Phone Number** | Transfers the call to an external phone number. Set the **Destination Phone Number** in E.164 format (e.g., `+84775352590`). | The human side is just a phone — a hotline, a queue, someone's mobile. |
 
@@ -65,11 +65,17 @@ Turn **Accept Calls** on. Anyone with it paused is skipped when a transfer comes
 
 ## Step 3: Answer the transfer
 
-When the agent initiates an in-app transfer, available teammates see an **Incoming call transfer** card appear anywhere in the app. It shows "A caller is waiting to be connected." and an "Expires in `{n}`s" countdown.
+When the agent initiates an in-app transfer, available teammates see an **Incoming Call** card appear anywhere in the app: a pulsing green dot, a bare countdown like "12s" (no longer phrased as "Expires in `{n}`s"), and a drain bar underneath that turns amber in the final 10 seconds. The caller's name or number is the card's title — with an avatar if you have one for them, or a phone icon for an unknown caller — followed by a subtitle reading "via `{callBotName}` · `{teamName}`".
 
-- **Accept** — you're connected to the caller in the browser, and you get the AI-generated call summary so you're not walking in blind.
+"A caller is waiting to be connected." is just the placeholder shown while the AI call summary is still generating — once it's ready, the card swaps in that summary instead, so you usually walk in already knowing who's calling and why.
+
+- **Accept** — the button shows "Connecting" while the call is set up, then opens the call in a new tab as the [Live Call Detail](/voice-agents/live-calls-board) page — the same live-call screen used by the Live Calls board. If your browser blocks the popup, the call falls back to the in-page softphone corner widget instead.
 - **Decline** — you pass; other available agents can still pick it up.
-- Nobody accepts before the countdown ends — the call falls back to the **Fallback Phone Number**, if configured.
+- Nobody accepts before the countdown (about 30 seconds) plus a short grace period ends — the call falls back to the **Fallback Phone Number**, if configured, and the caller hears a single apology from the AI before the handoff.
+
+If you have the same account open in multiple tabs, accepting, declining, or letting the card expire in one tab dismisses it in all the others — you won't get rung in a second tab for a call you already handled. And if a call goes unanswered, the retry rings a *different* available teammate rather than showing the same person an identical second card — so on a single-agent team, a missed card goes straight to the fallback number instead of ringing you again.
+
+While a call is ringing and your tab isn't focused, Revve gets your attention with an OS notification (click it to jump to the tab), a flashing tab title, a ringtone, and a favicon that swaps to a green phone icon. The first time you turn on **Accept Calls**, your browser will ask for notification permission — allow it so you don't miss calls in a background tab.
 
 ## What's Next
 
