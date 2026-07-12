@@ -1,0 +1,71 @@
+---
+title: "Live Calls Board"
+description: "For team leads and QA supervisors: watch every AI voice call in progress, listen in, and take over from the agent in real time."
+---
+
+The Live Calls Board is a real-time view of every AI voice call your team currently has in progress. From the board you can open any call, watch its transcript update live, listen to the audio, and — if something needs a human — take the call over from the AI without the caller ever noticing a break. It's the tool for QA spot-checks, coaching a difficult call, or catching an agent mistake while it's still happening, not after the fact.
+
+## How it works
+
+1. Open **Live Calls** from the nav. The nav item shows a live call-count badge, and the board itself lists every in-progress call for the team, updated in real time.
+2. Click a row to open that call's detail page in a new browser tab — the board keeps running behind it.
+3. The detail page joins you to the call as a hidden **observer**: you're subscribed to the room's audio and transcript, but the caller and agent can't see or hear you. From here you can watch the live transcript and AI-generated summary, and optionally turn on audio with **Listen In**.
+4. If the call needs a person, **Take Over** converts you from observer to live participant — the AI goes silent and the caller is now talking to you, mic open.
+
+### The detail page
+
+The detail page is built around two live panels and a floating control bar.
+
+- **Transcript** — updates in real time as the call continues. When you open the page, you get a snapshot of the last 200 turns so you're not starting from a blank screen; new turns then stream in live. If the call was previously handed to a human via [Call Transfer](/voice-agents/call-transfer), that person's turns are labeled **Human Agent** rather than **Assistant**.
+- **Call summary** — an AI-generated summary panel, in Markdown, on the right side of the screen. It refreshes roughly every 30 seconds, and each refresh feeds the previous summary back in rather than starting over, so it gets more accurate as the call goes on.
+
+<Note>
+Your observer session is silent and read-only until you take over — the caller and agent have no indication you're watching. Under the hood it's a scoped LiveKit access token (10 minutes, silently re-minted every 8 minutes so a long observation session doesn't get cut off).
+</Note>
+
+## What you can do
+
+The floating control bar sits bottom-center on the detail page. Before you take over, it shows three actions; after you take over, it switches to live-call controls.
+
+| Action | What it does | When to use it |
+|--------|--------------|-----------------|
+| **Listen In** | Turns on live call audio. The button changes to **Listening**, with an amber pressed state and a pulsing ear icon, while active. | You want to hear tone, hesitation, or an angry caller — things a transcript alone doesn't convey — without committing to taking over. |
+| **Take Over** | Opens a confirmation dialog ("Take over this call?" — "You'll join as a live participant with your microphone on, replacing the assistant for the rest of the call. The caller will hear you."). Confirming replaces the AI with you, live, mic on. | The AI is stuck, the caller is escalating, or you're coaching and need to step in yourself. This is a deliberate, supervisor-initiated handoff — the caller hears the change immediately. |
+| **End Call** | Destructive. Opens a confirmation dialog ("End this call?" — "This disconnects everyone on the call immediately. This can't be undone."). Confirming disconnects everyone on the call. | The call should stop entirely — nothing to hand off, nobody to talk to. |
+
+Once you've taken over, the control bar switches to a **Mute / Unmute** toggle and a destructive **Hang Up** button, same as any live call you're on.
+
+## Reading the board
+
+The board's table lists **Caller, Agent, Type, Direction, Duration, Status**, one row per in-progress call. When nothing is running, it shows **No calls in progress**.
+
+Status is shown as a badge:
+
+| Status | Icon / color | Meaning |
+|--------|---------------|---------|
+| **Live** | Radio icon, green, pulsing | Call in progress, no one watching or taken over. |
+| **Taken Over** | Headset icon, amber | A human has taken the call from the AI. |
+| **Stale** | WifiOff icon, gray | Connection or data was lost for this call. |
+| **Ended** | PhoneOff icon, gray | The call has finished. |
+
+## Enabling it
+
+Live Calls only shows calls from agents that opt in. Open the agent's **Advanced Settings** → **Security** tab and turn on **Live Observability** ("Allow team members to watch, listen to, and take over this agent's calls from the Live Calls board"). It's off by default — see [Security](/voice-agents/voice-agent-advanced-capabilities#security).
+
+<Tip>
+If an agent isn't showing up on the board at all, this is the first thing to check — with Live Observability off, its calls are invisible to the board with no way to observe them.
+</Tip>
+
+## Taking over vs. Call Transfer
+
+Taking over from Live Calls and accepting a [call transfer](/voice-agents/call-transfer) both hand the call to a human through the same mechanism — the AI goes silent so it doesn't talk over the human. The difference is who initiates it:
+
+- **Transfer** is the AI escalating mid-call to an available teammate — the AI decides.
+- **Take Over** is a supervisor watching a call and stepping in unprompted — for QA, coaching, or catching a mistake in real time. Nothing about the call required it; you chose to.
+
+Once a human is on the line, both paths land on the same screen: accepting an incoming transfer now opens the same Live Call Detail page, in a new tab, that the board uses for a proactively-observed call.
+
+## What's Next
+
+- [Transferring Calls to a Human](/voice-agents/call-transfer) — the AI-initiated path to a human, and how accepted transfers land on the same detail page.
+- [Human Takeover](/inbox/human-takeover) — the chat-side equivalent: claiming conversations from the Inbox and handing them back to the AI.

@@ -59,7 +59,6 @@ Revve('boot', {
     companyName: 'Analytical Engines',
     metadata: { region: 'EMEA' }
   },
-  token: '<server-signed JWT>',       // recommended: secure identification
   forceNewThread: false               // true = start a fresh conversation
 });
 ```
@@ -69,8 +68,7 @@ Behavior to know:
 - Calling `boot` again while already booted logs a console error and the call is ignored — unless you pass `forceNewThread: true`, which starts a fresh conversation thread (useful for a "new ticket" button). To switch users within the same page session, call `shutdown` first (or use `forceNewThread: true`).
 - If a persisted identity from a previous session differs from the new `userId`, the SDK shuts down first automatically before booting the new user.
 - `contact` requires `name` plus at least one of `email` or `phoneNumber`, and both are format-validated — an invalid `contact` aborts the entire boot with only a console error, so check the console if identification seems to have no effect.
-- `contact` is display-level data for the dashboard contact record — identification, not authentication.
-- `token` is a server-signed JWT and the recommended way to identify users securely. Verification happens server-side; when both contact info and a token are provided, the token takes precedence. See [Visitor identity](#visitor-identity) below.
+- `contact` is display-level data for the dashboard contact record — identification, not authentication. See [Visitor identity](#visitor-identity) below.
 
 ### shutdown
 
@@ -182,11 +180,12 @@ Event registration is append-only: there is no way to unregister a callback, and
 
 ## Visitor identity
 
-The widget has three identity tiers:
+The widget SDK supports two identity tiers:
 
 1. **Anonymous** (default). Every visitor gets a UUID stored in `localStorage['revve_anonymous_id']`. Conversations work fully; `getVisitorId()` returns this UUID.
-2. **Identified** — `boot` with `userId`/`email`/`contact`. Convenience-level identification: the dashboard shows a real name and contact record, and `getVisitorId()` returns your `userId`. Nothing stops a visitor from claiming someone else's ID from the browser console, so don't gate sensitive data on it.
-3. **Verified (JWT)** — `boot` with a `token`: a JWT your server signs with **RS256** (upload the public key in the dashboard). The widget sends it for server-side verification, and it takes precedence over any plain contact info in the same `boot` call. This is the recommended path whenever the conversation can expose account-specific information. The same key setup backs the Bridge JWT configuration described in [Chat Agent Advanced Settings](/general-configuration/chat-agent-advanced-settings).
+2. **Identified** — `boot` with `userId`/`email`/`contact`. Convenience-level identification: the dashboard shows a real name and contact record, and `getVisitorId()` returns your `userId`. This is display-level identification, not cryptographic verification — nothing stops a visitor from claiming someone else's ID from the browser console, so don't gate sensitive data on it.
+
+There is no signed-token or server-verified identity option in this SDK — `boot` does not accept anything like a `token` field. If you need cryptographically verified identity, that only exists for the separate Bridge integration (embedding the widget inside a native mobile app over postMessage, with optional RS256 JWT verification) — see [Bridge Configuration](/general-configuration/chat-agent-advanced-settings#bridge-configuration). The Bridge is a different mechanism from the `window.Revve` SDK documented on this page, not an extension of it.
 
 Transitions: `boot` moves a visitor from anonymous to identified (their anonymous history is associated with the identity); `shutdown` drops back to a *fresh* anonymous ID.
 
@@ -207,13 +206,11 @@ The lowercase `window.revve` v1 API is deprecated and planned for removal in v3.
 ### Identify on login, shut down on logout
 
 ```js
-// After your auth flow succeeds — mint the JWT server-side
+// After your auth flow succeeds
 async function onLogin(user) {
-  const token = await fetch('/api/revve-token').then((r) => r.text());
   Revve('boot', {
     chatbotId: 'your-chatbot-id',
     userId: user.id,
-    token,
     contact: { name: user.name, email: user.email }
   });
 }
@@ -252,4 +249,4 @@ Pair with `hideBubbleMessage: true` in `RevveConfig` so dashboard-configured tea
 ## What's Next
 
 - [Website Installation](/channel-setup/website-installation) — the embed snippet and `RevveConfig` placement this page builds on.
-- [Chat Agent Advanced Settings](/general-configuration/chat-agent-advanced-settings) — uploading the JWT public key and Bridge configuration.
+- [Chat Agent Advanced Settings](/general-configuration/chat-agent-advanced-settings) — the separate Bridge integration for embedding the widget in a native mobile app, including its own RS256 JWT verification.
