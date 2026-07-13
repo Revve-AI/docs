@@ -1,0 +1,60 @@
+---
+
+title: "Live Calls Monitoring"
+description: "How an owner or ops lead watches every voice call in progress, listens in silently, and takes over any live call — whether or not the agent tried to transfer it."
+---
+
+The **Live Calls Board** lists every AI voice call currently in progress for your team, updating in real time. It's built for an owner or ops lead who wants to keep an eye on calls *while they're happening* — not to review what already happened (that's Call History), but to watch, listen in on, and if needed step into a call before it ends.
+
+This is a different mechanic from [Call Transfer](/voice-agents/call-transfer): a transfer is the agent choosing to hand a call off, following rules you configured. Live Calls is you, the supervisor, reaching into a call on your own initiative — on any in-progress call, transferred or not. Think of it as an oversight and safety net that sits alongside transfer, not a replacement for it.
+
+## How it works
+
+1. **The board lists every in-progress call for the team**, refreshed live: the agent, campaign/direction, call type, a status badge (**in progress** / **taken over** / **ended**), and duration.
+2. **Click a row to open the Live Call Detail page** in a new tab — this is where you actually watch and act on the call.
+3. **Listen in** — join the call as a silent, hidden observer. You hear the live audio; neither the caller nor the agent knows you're there.
+4. **Follow the live transcript** — it updates continuously, combining everything said so far with what's happening right now.
+5. **Watch the live AI summary** — a running, AI-generated summary in a side panel, refreshed roughly every 30 seconds, using the same summarization logic as post-call summaries.
+6. **Take Over, if the call needs a human** — a confirmation-gated button. The moment you confirm, the AI goes silent immediately. You keep talking to the caller, and your side of the conversation keeps recording and appearing in the transcript, now labeled as the human agent's turns instead of the AI's.
+7. **End Call, if the call should stop outright** — a separate, confirmation-gated button, independent of Take Over.
+8. **The call ends the normal way**: whenever either side disconnects, whether that's after a takeover or not.
+
+Calls opened via a [Call Transfer](/voice-agents/call-transfer) handoff open directly into this same Live Call Detail view for the teammate receiving the transfer — it's the same detail page either way, just reached from a different starting point.
+
+## What you can do
+
+| Capability | What it means in practice |
+| --- | --- |
+| **Real-time board** | Every in-progress call for the team in one live-updating list: agent, campaign/direction, call type, status, and duration. |
+| **Listen in** | Join any live call as a silent, hidden observer — the caller and agent aren't notified. |
+| **Live transcript** | A continuously updating transcript combining what's already been said with what's happening now. |
+| **Live AI summary** | A running AI-generated summary in a side panel, refreshed roughly every 30 seconds, using the same engine as post-call summaries. |
+| **Take Over** | Confirmation-gated. The AI goes silent immediately; your turns are recorded and labeled as the human agent's in the transcript. |
+| **End Call** | Confirmation-gated. Ends the call outright, separate from Take Over. |
+| **Works on any live call** | Doesn't depend on the agent triggering a transfer — you can take over any in-progress call, transferred or not. |
+
+## Key concepts
+
+**Live Calls vs. Call Transfer.** [Call Transfer](/voice-agents/call-transfer) is the agent-initiated handoff you configure in advance — the AI decides, based on your instructions, when to hand a caller to a human. Live Calls is the opposite direction: it's supervisor-initiated, works on any live call regardless of whether the agent ever tried to transfer it, and exists as an oversight capability rather than a transfer-completion mechanic. The two are related — a transfer lands the receiving teammate in the same Live Call Detail page — but they're triggered by different actors for different reasons.
+
+**Live Calls vs. Human Takeover.** [Human Takeover](/inbox/human-takeover) is the equivalent idea on the chat side of the Inbox: a human claims an AI conversation and the AI stops responding. Live Calls is the voice version of that same instinct — step in when the AI shouldn't keep handling something — but built around listening to live audio and a live transcript instead of a chat thread.
+
+**The Live observability toggle.** Whether an agent's calls show up on the Live Calls Board at all is controlled per agent by a **Live observability** toggle, under the **Security** section of Advanced Settings. It's on by default for every agent — calls only stop appearing on the board if someone explicitly turns it off for that agent. See [Voice Agent Settings](/voice-agents/voice-agent-settings) for where to find and change it.
+
+**Calls drop off the board when they're no longer live.** A call disappears from the Live Calls Board once it ends, or if it goes stale — no update from the call for a couple of minutes. The board is deliberately a live/recent view only; for anything that's already finished, go to Call History instead.
+
+## When to use it
+
+| Scenario | Why Live Calls fits |
+| --- | --- |
+| **Spot-checking agent quality** | Drop into a handful of live calls to hear how the agent actually sounds and responds, without waiting for the recording. |
+| **A call is going wrong in real time** | Listen in first to confirm, then Take Over — no need to wait for the agent to attempt a transfer. |
+| **Compliance or escalation risk** | Step into a sensitive call directly, even if your transfer rules didn't anticipate this exact situation. |
+| **Backing up an agent-initiated transfer** | Open the same Live Call Detail page the receiving teammate lands in, to observe or assist. |
+| **New agent or new campaign launch** | Keep the board open during the first hours live, ready to take over anything that looks off. |
+
+## What's Next
+
+- [Call Transfer](/voice-agents/call-transfer) — the agent-initiated handoff that Live Calls complements.
+- [Human Takeover](/inbox/human-takeover) — the same idea, applied to chat conversations in the Inbox.
+- [Voice Agent Settings](/voice-agents/voice-agent-settings) — find the **Live observability** toggle under Advanced Settings → Security.
