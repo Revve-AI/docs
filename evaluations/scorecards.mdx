@@ -1,23 +1,23 @@
 ---
 
 title: "Scorecards"
-description: "Reusable weighted-metrics policies for batch-grading uploaded recordings of real calls — for the QA lead auditing compliance, sampling agent quality, or scoring calls made outside Revve."
+description: "Reusable weighted-metrics grading policies — attach one to a Voice Agent for automatic live-call scoring, or run it against an uploaded batch of recordings for retrospective QA."
 ---
 
-A **Scorecard** (**Evaluations → Scorecards** in the left dashboard nav, visible with the **Manage Agents** permission) is a reusable scoring policy for **real call recordings you upload** — a named bundle of metrics from the shared [Metrics library](/evaluations/evaluation-metrics), each with a weight, plus a minimum passing score per side of the conversation. Upload a batch of recordings, and every call in the batch gets graded against the scorecard the same way, so "did this call pass?" means the same thing across a hundred recordings and across months of audits.
+A **Scorecard** (**Evaluations → Scorecards** in the left dashboard nav, visible with the **Manage Agents** permission) is a reusable scoring policy: a named bundle of metrics from the shared [Metrics library](/evaluations/evaluation-metrics), each with a weight, a single speaker scope (Agent or Caller), and a minimum passing score. The same scorecard grades calls in two different ways depending on how you use it — attach it to a Voice Agent's **Evaluation** tab and it grades every live call that agent completes, automatically; or upload a batch of recordings here and it grades every call in that batch. Same policy, same metrics, two different triggers — you don't build the grading logic twice.
 
-This is the one part of Evaluations that faces backward instead of forward. [Evaluators and Runs](/evaluations/creating-an-evaluator) grade *simulated* conversations before you ship a change; a Scorecard grades calls that *already happened* — a QA sample of last month's collections calls, recordings exported from a legacy dialer before you migrate, or any call made outside Revve entirely. If what you want is automatic grading of every live call one agent completes, that's the per-agent [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) tab, not a scorecard.
+[Evaluators and Runs](/evaluations/creating-an-evaluator) grade *simulated* conversations before you ship a change — pre-ship regression testing against a persona or fixed script. A Scorecard grades conversations that already happened, in one of two ways: automatically, right after a live call completes, for every Voice Agent it's attached to; or in a batch, for recordings you upload after the fact — a QA sample of last month's collections calls, recordings exported from a legacy dialer before you migrate, or any call made outside Revve entirely.
 
 ## Where Scorecards fits
 
-Four things in Revve grade conversations, and they all draw metrics from the same library:
+Everything that grades a conversation in Revve draws its metrics from the same library:
 
 | System | Grades | When |
 |--------|--------|------|
 | [Metrics library](/evaluations/evaluation-metrics) | Nothing itself — it's the shared library of judging criteria the other three attach. | — |
-| Voice Agent [Evaluation tab](/voice-agents/voice-agent-evaluation) | Every live production call, for one agent. | Automatically, after each call completes. |
+| **Scorecards**, attached to a Voice Agent | Every live production call, for that agent — via the [Evaluation tab](/voice-agents/voice-agent-evaluation), which is just where you pick which of your team's scorecards apply to this agent. | Automatically, after each call completes. |
+| **Scorecards**, run as an Upload Batch | Uploaded recordings of real calls, in batches. | Whenever you upload a batch — QA sampling, compliance audits, historical or external calls. |
 | [Evaluators / Runs](/evaluations/creating-an-evaluator) | Simulated or scripted test conversations. | Before you publish a change — pre-ship regression testing. |
-| **Scorecards** | Uploaded recordings of real calls, in batches. | Whenever you upload a batch — QA sampling, compliance audits, historical or external calls. |
 
 Because a scorecard is just a policy over shared metrics, editing a metric's definition in the library changes how every scorecard that uses it grades — the scorecard only owns the metric's weight within its policy.
 
@@ -43,15 +43,21 @@ Click **New scorecard** (top right) to open a sheet from the right — "Pick met
 |-------|-------|
 | **Name** | Required. Placeholder: "e.g. Compliance scorecard". Name it after the *question the audit answers* (Compliance, Greeting quality, Collections script adherence), not after the batch you're about to upload — the whole point is reusing it across batches. |
 | **Description** | Placeholder: "What does this scorecard measure?". Worth filling in — it's what tells a teammate whether to reuse your scorecard or create another. |
-| Weighted metrics | The policy itself — see below. |
-
-The policy editor is the **same weighted-metrics editor as the Voice Agent Evaluation tab**: pick metrics from the shared [Metrics library](/evaluations/evaluation-metrics), give each a weight, and set a minimum passing score (1–5) per tab. It has separate **Caller** and **Agent** tabs, each with its own minimum pass score — so a scorecard can hold the agent side to a strict compliance bar while scoring the caller side leniently (or not at all). If you already know that editor from an agent's Evaluation tab, there's nothing new to learn here; the scoring mechanics are documented in [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation).
+| **What do you want to evaluate?** | Required, radio: **Agent** ("Score how the AI agent handled the call") or **Caller** ("Score the caller's side of the conversation"). Locks the scorecard to one speaker for its lifetime, with helper text below confirming it — for example, `Only Agent metrics can be added below` — and the metric picker only offers metrics built for that scope. If you need both sides graded, build two scorecards, one of each scope, and attach both wherever you need live grading. |
+| **Judge Model** | Which LLM grades this scorecard's LLM Judge metrics — provider, model, and reasoning effort. Defaults to **openai** / **o4-mini**. Change it when a metric needs a stronger (or cheaper) judge than the default; every LLM Judge metric on this scorecard shares the same judge model, so split judgment-heavy and cheap-check-heavy metrics across separate scorecards if you want different judges for each. |
+| Weighted metrics | The policy itself: pick metrics from the shared [Metrics library](/evaluations/evaluation-metrics) (filtered to the scope you chose above), give each a weight, and set a minimum passing score (1–5). See [Voice Agent Evaluation — Scoring math](/voice-agents/voice-agent-evaluation#scoring-math) for how weights and the minimum passing score combine into a pass/fail call. |
 
 Submit with **Create scorecard** (new) or **Save changes** (editing).
 
 <Tip>
 Weight by what a failure costs you, not by how easy the metric is to check. In a compliance scorecard, "read the required disclosure" should be able to sink the score on its own — give it a dominant weight — while style metrics like tone share the remainder. A flat equal-weights policy lets three polite pleasantries outvote one missed disclosure.
 </Tip>
+
+## Using a scorecard for live grading
+
+A scorecard on its own doesn't grade anything — it's a policy waiting to be pointed at calls. To grade a Voice Agent's live calls automatically, attach the scorecard from that agent's **Evaluation** tab; every call the agent completes from then on is scored against it. See [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) for the attach/detach UI and how the attached scorecards' scores show up in Call History.
+
+The rest of this page — Upload Batches, below — covers the other trigger: grading recordings you upload after the fact, rather than live calls as they complete.
 
 ## Upload Batches
 
@@ -82,4 +88,4 @@ A `partial` or `failed` status means some files never got scored — check the *
 ## What's Next
 
 - [Evaluation Metrics](/evaluations/evaluation-metrics) — build the deterministic and LLM-judged metrics your scorecards attach.
-- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — the same weighted-metrics editor, applied automatically to every live call one agent completes.
+- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — attach a scorecard to a Voice Agent for automatic live-call grading, and see how scores show up in Call History.

@@ -1,0 +1,98 @@
+---
+
+title: "Live Calls Board"
+description: "Watch in-progress AI voice calls in real time, listen in, take over, or end a call — for supervisors and operators monitoring a team's live call traffic, not agent builders."
+---
+
+The Live Calls Board is a real-time view of every AI voice call your team currently has in progress. From the board, you can open a call in detail to listen to live audio, take over as a human participant, or end the call outright. It's the tool for a supervisor watching call volume in the moment — not for building or configuring agents.
+
+## How it works
+
+1. Turn on **Live Observability** on each Voice Agent whose calls should be watchable (see [Turn on Live Observability](#turn-on-live-observability) below). Agents with this off never appear on the board.
+2. Open **Live Calls** in the left nav. The board lists every in-progress call across the team, updated in real time.
+3. Click a row to open the call detail page in a new tab.
+4. From the detail page, **Listen In** to hear live audio, **Take Over** to join as a human participant, or **End Call** to disconnect everyone.
+
+### Turn on Live Observability
+
+Live Observability lives on a Voice Agent's **Security Settings** tab, off by default. In the app it's described as: "Allow team members to watch, listen to, and take over this agent's calls from the Live Calls board."
+
+If it's off for an agent, that agent's calls are skipped from the board entirely — not just hidden, but never added. Since this is the entry point for the whole feature, turn it on per agent before expecting to see anything: it isn't a team-wide switch.
+
+<Note>
+Live Observability only gates **Listen In** (hearing live audio). **Take Over** and **End Call** are not gated by this setting — see [Listen In vs. Take Over vs. End Call](#listen-in-vs-take-over-vs-end-call) below.
+</Note>
+
+## The board
+
+**Live Calls** sits in the left nav between Tickets and Campaigns, marked with a radio icon and a live badge count of calls currently in progress. It's visible to any team member with the `MANAGE_HISTORY` permission.
+
+The board header reads "Every AI voice call in progress for this team, updated in real time," followed by a summary line — "N calls live now" (singular "1 call live now"), then a breakdown like "3 inbound · 2 outbound." A pulsing green dot appears next to the summary while calls are live. When there's nothing in progress, the board shows "No calls in progress."
+
+The table columns, in order:
+
+| Column | What it shows |
+|--------|----------------|
+| **Caller** | The caller's identity (name or number). |
+| **Agent** | Which Voice Agent is handling the call. |
+| **Type** | The call type. |
+| **Direction** | Inbound or outbound. |
+| **Duration** | Elapsed call time, live-updating. |
+| **Status** | One of the four states below. |
+
+Status values:
+
+| Status | Meaning |
+|--------|---------|
+| **Live** (green, pulsing) | The AI is handling the call; no human is involved. |
+| **Taken Over** (amber) | A human is now on the line. |
+| **Stale** (gray) | No recent update from the call — usually a webhook delay, not necessarily a dead call. |
+| **Ended** (gray) | The call has finished. |
+
+Clicking a row opens the call's detail page in a new browser tab.
+
+<Note>
+A row is marked **Stale** 60 seconds after its last webhook event, and dropped from the board entirely 120 seconds after its last event if no `room_finished` webhook ever arrives. A server-side reconciliation job also cleans these up as a backstop, so a row shouldn't get permanently stuck — if a call vanishes from the board, this staleness rule is almost always why, not a bug.
+</Note>
+
+## The call detail page
+
+Opening a call joins you to its LiveKit room as a hidden, subscribe-only observer: you get the live transcript and can act on the call, but the caller and agent can't hear or see you unless you explicitly take over.
+
+A floating control bar gives you three controls while observing:
+
+| Control | What it does |
+|---------|---------------|
+| **Listen In** | A toggle. Once active, it's shown pressed and amber-tinted, and its label changes to "Listening" — you hear the live call audio. Requires Live Observability on for that agent. |
+| **Take Over** | Opens a confirm dialog: "Take over this call?" / "You'll join as a live participant with your microphone on, replacing the assistant for the rest of the call. The caller will hear you." Confirm with **Take Over**. |
+| **End Call** | Opens a confirm dialog: "End this call?" / "This disconnects everyone on the call immediately. This can't be undone." Confirm with **End Call**. |
+
+Once you take over, the control bar switches to standard live-participant controls: **Mute**/**Unmute** and **Hang Up**.
+
+The transcript panel shows the live conversation as it happens — what the AI said and heard, and once you take over, your turns are labeled **Human Agent** to distinguish them from **Assistant** turns. A right-hand panel shows an AI-generated summary of the call so far, refreshed roughly every 30 seconds, so you can get oriented on a call you're jumping into mid-conversation without reading the full transcript.
+
+### Listen In vs. Take Over vs. End Call
+
+**Listen In** is gated on the agent's **Live Observability** setting — if it's off, you can't listen. **Take Over** and **End Call** are not gated on that setting at all. Any team member with the `MANAGE_HISTORY` permission (i.e. anyone who can see the board) can take over or end any live call for the team, regardless of whether that specific agent has Live Observability enabled.
+
+This is deliberate: taking over or ending a call is a team-supervision right, separate from whether audio monitoring is allowed for that agent. In practice this means a team member can end a call for an agent they aren't permitted to listen in on.
+
+## Live Calls vs. Human Takeover vs. Call Transfer
+
+Revve has three mechanisms with related names — worth telling apart:
+
+- **Live Calls Board** (this page) — a supervisor observing or intervening in a voice call from the outside, via a LiveKit room join. Governed by `MANAGE_HISTORY` and per-agent Live Observability.
+- **[Human Takeover](/inbox/human-takeover)** — the chat/text equivalent: an operator claims a conversation thread in the Inbox. Different transport (chat thread, not a call room) and a different permission model.
+- **[Call Transfer](/voice-agents/call-transfer)** — the AI agent proactively hands the call to a human *during the call flow itself*, because the caller needs one. The caller is being routed, not observed. Live Calls Board is the opposite direction: a supervisor reaching in from outside, not the agent reaching out.
+
+## When to Take Over vs. End Call
+
+Both are available to any supervisor watching the board, but they're for different situations:
+
+- **Take Over** when the caller needs a human to actually resolve something and you have the bandwidth to stay on the line for the rest of the call. You're replacing the assistant, not just pausing it — plan to see the call through.
+- **End Call** when the call has gone wrong — a stuck loop, a distressed or abusive caller, a compliance problem — and there's no path to a good outcome, or no one available to take over. It's a hard stop with no undo, so use it when continuing the call (AI or human) is worse than ending it.
+
+## What's Next
+
+- [Voice Agent Settings](/voice-agents/voice-agent-settings) — the Security Settings tab and the rest of the per-agent configuration surface.
+- [Call Transfer](/voice-agents/call-transfer) — the agent-initiated handoff flow, distinct from supervisor takeover.

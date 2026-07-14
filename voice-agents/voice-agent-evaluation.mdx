@@ -1,13 +1,11 @@
 ---
 title: "Voice Agent Evaluation"
-description: "Automatically score every completed call against a weighted set of metrics — deterministic checks and LLM-judged criteria — so you know an agent is performing before you find out from a customer complaint."
+description: "Attach one or more Scorecards to a Voice Agent so every completed call is automatically scored against deterministic checks and LLM-judged criteria — before you find out an agent's failing from a customer complaint."
 ---
 
-The **Evaluation** tab (labeled **Call Evaluation** in the app, subtitled "Score completed calls against a weighted set of metrics") defines a grading policy for one Voice Agent. Once you enable it, every call the agent completes is graded automatically against the metrics you configure — no one has to sit down and listen to calls to know whether the agent is doing its job.
+The **Evaluation** tab (labeled **Call Evaluation** in the app) is where a Voice Agent attaches one or more **Scorecards** — the same reusable grading policies you build under **Evaluations → Scorecards** — so that every call the agent completes gets graded automatically. Each attached scorecard grades one speaker only, Agent or Caller, and produces its own score per call.
 
 This is separate from the **General** / **Model Settings** / **Advanced Settings** tabs covered in [Voice Agent Settings](/voice-agents/voice-agent-settings). It's its own tab because it isn't a call-behavior setting — it's a policy that runs _after_ the call, against the finished transcript and tool logs.
-
-![The Evaluation tab in a Voice Agent, showing the Call Evaluation header and the Enable toggle in its default off state](/screenshots/voice-evaluation-tab.png)
 
 <Note>
   Don't confuse this with the **Human Feedback** widget you'll see on an individual call in Call History, which lets a reviewer manually mark that one call as failed and pick an error category. That's a person making an ad-hoc judgment call about a single call. The Evaluation tab is the opposite: an automatic, policy-driven grading system that scores every call the same way, without a human involved.
@@ -15,14 +13,28 @@ This is separate from the **General** / **Model Settings** / **Advanced Settings
 
 ## How it works
 
-1. **Turn it on.** The whole feature is gated behind a single **Enable** switch, off by default. No metric runs, and nothing appears in Call History, until you flip it on.
-2. **Configure two independent groups: Caller and Agent.** Each has its own set of metrics, its own weights, and its own minimum pass score — grading how well the _caller_ engaged is a different question from grading how well the _agent_ performed, so they're scored separately rather than blended into one number.
-3. **Add metrics from your team's library, or create one inline.** Metrics belong to your team, not to a single agent — you can reuse the same metric across multiple Voice Agents. Adding a metric to a group lets you set its **weight** (default 1); the pass bar itself is the group's **minimum passing score**, not a per-metric threshold. See [Evaluation Metrics](/evaluations/evaluation-metrics) for the standalone library page — the same metrics are also usable by [Evaluators](/evaluations/creating-an-evaluator) and Scorecards.
-4. **A call finishes, evaluation runs, results land in Call History.** No manual step — every completed call for an enabled agent gets scored against both groups automatically.
+1. **Attach one or more Scorecards.** A scorecard is a named bundle of weighted metrics with a minimum passing score, built on the [Scorecards](/evaluations/scorecards) page. There's nothing to configure from scratch on this tab — you pick from the scorecards your team has already built (or go build one first).
+2. **Each attached scorecard grades one speaker.** A scorecard is scoped to either **Agent** or **Caller** when it's created, not both. If you want this agent graded on both sides of the conversation, attach two scorecards — one of each scope.
+3. **Attached scorecards run independently.** Nothing blends their scores into a single number; each shows its own result.
+4. **A call finishes, every attached scorecard scores it automatically.** No manual step — every completed call gets graded against every scorecard attached to that agent, against the finished transcript and tool logs.
 
-Once enabled, the tab switches to separate **Caller** / **Agent** tabs, a **Minimum passing score**, and a table of the group's metrics:
+<Note>
+  If your team was using the old Enable-toggle policy before scorecards shipped, it wasn't lost: each bot's Caller and Agent groups were automatically split into two scorecards (one Caller-scope, one Agent-scope) and attached to the bot, so grading kept running without anyone reconfiguring it. Opening an old published version that predates scorecards shows a banner — "This version has no scorecards attached. Its legacy evaluation policy is shown below." — followed by that version's original policy, read-only.
+</Note>
 
-![The Evaluation tab in a Voice Agent with Call Evaluation enabled, showing the Caller/Agent tabs, a Minimum passing score field set to 4 out of 5, and a Caller metric named "Greeting Delivered" with Binary scoring, weight 1, and 100% contribution](/screenshots/voice-evaluation-tab-enabled.png)
+## Attaching a Scorecard
+
+The tab lists the scorecards currently attached to this Voice Agent in a table: **Name**, **Description**, **Metrics** (shown as "N metric" / "N metrics"), and an **Action** column to detach.
+
+Before you've attached anything, the table shows an empty state — "No scorecards attached" — with an **Attach Scorecard** button. Once at least one scorecard is attached, the same button sits at the top right of the table.
+
+Click **Attach Scorecard** to open the **Attach Scorecards** dialog: a checkbox list of every scorecard your team has created. Check as many as apply, then submit with the footer button, labeled **Attach (N)** where N is however many you've checked. If your team hasn't created any scorecards yet, the dialog reads "No available scorecards. Create one in the Scorecards section first."
+
+To remove a scorecard from this agent, use the row's detach action. It asks you to confirm — `Detach "<scorecard name>"?` / "This voice agent will no longer be evaluated against this scorecard." Detaching doesn't touch the scorecard itself: it's still available to attach here again, to other agents, or to grade an uploaded batch.
+
+<Tip>
+  Metrics, weights, minimum passing score, scope, and which LLM judges a scorecard are all configured on the [Scorecards](/evaluations/scorecards) page, not here — this tab only decides which of your team's scorecards apply to this agent.
+</Tip>
 
 ## Metric types
 
@@ -32,6 +44,8 @@ Every metric is one of two types, chosen when it's created:
 | --- | --- | --- |
 | **Deterministic** | Binary — pass/fail only, never a numeric score. A rule checked mechanically against the call. | Facts you can verify from logs: did a tool get called, does a message contain a phrase. No ambiguity, no judgment call. |
 | **LLM Judge** | **Binary** (pass/fail) or **Scale 1-5** — a free-text prompt sent to an LLM along with the transcript. | Anything that requires judgment: tone, adherence to a policy, whether the agent handled an objection well. |
+
+Any metric, deterministic or LLM Judge, can also be marked **soft**. A soft metric still runs and still shows its own result, but it's excluded from the overall score wherever it's used — mark a metric soft when you want visibility on it without letting it single-handedly sink a call's pass/fail result. See [Evaluation Metrics](/evaluations/evaluation-metrics) for the full field list.
 
 ### Deterministic checks
 
@@ -54,29 +68,29 @@ These are pass/fail because they're facts, not opinions — no LLM call is neede
 An LLM Judge metric is a grading prompt you write, sent to an LLM alongside the call transcript. Two settings shape how it's judged:
 
 - **Scoring** — **Binary** for a straight pass/fail, or **Scale 1-5** when you want gradations. For Scale 1-5, you write a **Score Rubric**: a description of what earns each of score\_1 through score\_5, specific to that metric. There's no generic 1-bad/5-good scale — you have to tell the judge what a "3" means for _this_ metric, or the score is meaningless.
-- **Speaker scope** — whether the judge should focus on the **Agent**'s lines or the **Caller**'s lines when scoring (the other speaker's lines stay in the transcript as context, but shouldn't drive the score). Defaults to **Agent**.
+- **Speaker scope** — whether the judge should focus on the **Agent**'s lines or the **Caller**'s lines when scoring (the other speaker's lines stay in the transcript as context, but shouldn't drive the score). Defaults to **Agent**. A metric's scope has to match the scorecard it's added to — see [Scorecards](/evaluations/scorecards) for how scope is chosen at the scorecard level.
 
 ## Scoring math
 
-Understanding how a group's final score is calculated matters, because it isn't a simple average of everything:
+Each attached scorecard scores a call independently — its math isn't a simple average of everything on it:
 
 - **Binary metrics** (all deterministic metrics, plus any LLM Judge metric scored Binary) contribute pass/fail only — no numeric score.
 - **Scale 1-5 metrics** contribute a `score` and a `weighted_score` (score × weight).
-- A group's **pass rate** counts every metric that passed, binary and scale alike.
-- A group's **final score** only averages the scale metrics — binary metrics don't factor into the numeric score, only into the pass rate.
-- The group passes overall when its final score clears that group's **minimum pass score**, which defaults to **4** (out of 5) and is set independently for Caller and Agent.
+- A scorecard's **pass rate** counts every metric that passed, binary and scale alike.
+- A scorecard's **final score** only averages the scale metrics — binary metrics don't factor into the numeric score, only into the pass rate.
+- The scorecard passes overall when its final score clears its **minimum passing score**, which defaults to **4** (out of 5) and is set when the scorecard is created or edited on the [Scorecards](/evaluations/scorecards) page — not on the Voice Agent.
 
-If a group has only binary metrics, its final score has nothing to average and the pass/fail call comes from the pass rate against binary checks alone — which is why mixing in at least one Scale 1-5 metric is worth doing for a group you want a real numeric trend on, not just a pass/fail.
+If a scorecard has only binary metrics, its final score has nothing to average and the pass/fail call comes from the pass rate against binary checks alone — which is why mixing in at least one Scale 1-5 metric is worth doing for a scorecard you want a real numeric trend on, not just a pass/fail.
 
 ## Where results show up
 
-Call History shows a compact badge on every graded call: separate **Caller** and **Agent** score chips (person icon and bot icon), each colored independently — green for passed, red for failed, gray while evaluation is still running, was skipped, or hit an error (hover for the error detail). Older calls that predate the Caller/Agent split show a single combined badge instead.
+Call History shows a vertical list on every graded call, one row per attached scorecard, formatted `"<scorecard name>: <score>"`. Each row shows **Evaluating…** while it's still running, **Skipped** if it didn't run for that call, **Error** if grading failed, or the formatted score once it completes. Calls from before your team's scorecards existed show a legacy label instead, since there's no attached-scorecard history to list for them.
 
-Open a call's detail view for the full breakdown: each group's final score out of 5, its pass threshold, and the result of every individual metric that ran.
+Call History also has a grouped multi-select **Evaluation** filter: pick one or more scorecards by name, then filter by **Result** (passed / failed / not-evaluated) and a **Score** range (1–5, as a chip selector) for each. Selecting more than one scorecard ANDs the filters together — a call has to match every scorecard filter you've set, not just one.
 
 ## An example: validating identity before discussing account details
 
-Evaluation metrics are generic — nothing here is banking-specific — but they're the kind of building block a bank would use to enforce a hard rule mechanically instead of hoping the agent's prompt is followed. For example, an **Agent**-group metric using the **Tool Called** check, verifying that the **Built-in Validate** tool (see [Voice Agent Tools](/voice-agents/voice-agent-tools)) ran before the call moved on to discuss account specifics. Because it's a deterministic check, this catches a real process violation on every single call — no LLM judgment involved, no chance of the check itself being fooled by a plausible-sounding transcript.
+Evaluation metrics are generic — nothing here is banking-specific — but they're the kind of building block a bank would use to enforce a hard rule mechanically instead of hoping the agent's prompt is followed. For example, a **Tool Called** check in an Agent-scope scorecard, verifying that the **Built-in Validate** tool (see [Voice Agent Tools](/voice-agents/voice-agent-tools)) ran before the call moved on to discuss account specifics. Because it's a deterministic check, this catches a real process violation on every single call — no LLM judgment involved, no chance of the check itself being fooled by a plausible-sounding transcript.
 
 This is a different mechanism from [Phone Verification](/voice-agents/voice-agent-settings), which confirms a caller's identity by matching a spoken phone number against the one on file for that contact, at call time. Built-in Validate is a general-purpose tool for validating a spoken field — an account number, an ID — against a regex, and using it as an Evaluation metric is one way to confirm the agent actually invoked it, after the fact.
 
@@ -84,11 +98,13 @@ This is a different mechanism from [Phone Verification](/voice-agents/voice-agen
   This is one example configuration built from generic metric types, not a claim that Revve ships a banking-specific evaluation feature. Any team can define the same kind of check for whatever field or tool call matters to their process.
 </Note>
 
-## The trap: enabled with no metrics
+## The trap: no scorecard attached, or only one side covered
 
-Turning on **Enable** without adding any metrics to a group produces an empty, meaningless result for that group — there's nothing to grade against. Add at least one metric to each group you care about (Caller, Agent, or both) before you rely on the scores in Call History. A single well-chosen deterministic check is more useful than an enabled toggle with nothing behind it.
+Skip attaching a scorecard and a Voice Agent's calls are never graded — the Evaluation tab shows the empty "No scorecards attached" state, and Call History has nothing to show for that agent's calls.
+
+The other easy miss: attaching only an Agent-scope scorecard when you actually cared about the caller's side too (or vice versa). A scorecard grades one speaker, not both, so half your coverage doesn't announce itself as missing — the attached scorecard just keeps producing valid-looking scores for the side it does cover. Attach one scorecard of each scope if you want both sides graded.
 
 ## What's Next
 
+- [Scorecards](/evaluations/scorecards) — build and configure the scorecards this tab attaches: metrics, weights, minimum passing score, scope, and Judge Model.
 - [Voice Agent Tools](/voice-agents/voice-agent-tools) — set up the Built-in Validate tool used in the example above.
-- [Voice Agent Settings](/voice-agents/voice-agent-settings) — the rest of the Voice Agent configuration, including Phone Verification.
