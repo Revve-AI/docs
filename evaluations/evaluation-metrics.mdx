@@ -1,19 +1,18 @@
 ---
 
 title: "Evaluation Metrics"
-description: "The team-wide library of reusable scoring criteria — deterministic checks and LLM-judged rubrics — shared by Evaluators, Scorecards, and the per-Voice-Agent Evaluation tab."
+description: "The team-wide library of reusable scoring criteria — deterministic checks and LLM-judged rubrics — shared by Evaluators and Scorecards, including a Scorecard a voice agent uses for live-call grading."
 ---
 
-**Metrics** (**Evaluations → Metrics** in the left dashboard nav) is a standalone library where a team defines reusable scoring criteria once and attaches them wherever calls or conversations get graded. It's the same system already introduced in [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation): metrics belong to your team, not to a single agent, so a metric you build here is the same metric you can add to a Voice Agent's **Evaluation** tab, an Evaluator, or a Scorecard. This page covers the library UI itself — where you create, edit, and delete metrics. For how a metric is scored (Deterministic vs. LLM Judge, the seven deterministic checks, Binary vs. Scale 1-5, speaker scope, score rubrics), see [Voice Agent Evaluation — Metric types](/voice-agents/voice-agent-evaluation#metric-types); that mechanics doesn't change based on where the metric is used.
+**Metrics** (**Evaluations → Metrics** in the left dashboard nav) is a standalone library where a team defines reusable scoring criteria once and attaches them wherever calls or conversations get graded. It's the same system already introduced in [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation): metrics belong to your team, not to a single agent, so a metric you build here is the same metric you can add to an Evaluator or a Scorecard. This page covers the library UI itself — where you create, edit, and delete metrics. For how a metric is scored (Deterministic vs. LLM Judge, the seven deterministic checks, Binary vs. Scale 1-5, speaker scope, score rubrics), see [Voice Agent Evaluation — Metric types](/voice-agents/voice-agent-evaluation#metric-types); that mechanics doesn't change based on where the metric is used.
 
 ![The Metrics library page, showing the metrics table with Name, Type, Description, and Created columns, and the New Metric button](/screenshots/evaluations-metrics-list.png)
 
 <Note>
 One team-wide library, several consumers. A metric created here can be attached to:
 
-- The per-Voice-Agent **Evaluation** tab — see [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation).
 - An **Evaluator**, in the top-level Evaluations product — see [Creating an Evaluator](/evaluations/creating-an-evaluator).
-- A **Scorecard**, for grading uploaded call recordings — see [Evaluations Overview](/evaluations/evaluations-overview).
+- A **Scorecard** — for a voice agent's live-call grading (attached on the agent's [Evaluation tab](/voice-agents/voice-agent-evaluation)) or for grading uploaded call recordings — see [Scorecards](/evaluations/scorecards).
 
 Editing a metric here changes it everywhere it's attached — there's no per-consumer override of a metric's own definition, only of its weight and threshold within each policy.
 </Note>
@@ -27,6 +26,7 @@ Click **New Metric** (top right, also shown in the empty state) to open a side p
 | **Name** | Required. Placeholder example: "e.g. Verified Identity". Keep it specific enough to recognize in a weighted-metrics table on an agent or Scorecard, where you won't see the full description. |
 | **Description** | Optional. Placeholder: "What this metric checks...". Worth filling in — it's the only context a teammate attaching your metric to their own agent sees before they add it. |
 | **Type** | Required. **Deterministic** or **LLM Judge**. See [Metric types](/voice-agents/voice-agent-evaluation#metric-types) for the difference. |
+| **Informational only** | Checkbox, off by default. "Judge and show this metric, but don't include it in the overall score." A soft metric still runs and still shows in the breakdown wherever it's attached — it just doesn't count toward the pass rate or final score of whatever policy uses it. Independent of Type: works the same for a Deterministic check or an LLM Judge metric. |
 
 **When Type is Deterministic:**
 
@@ -53,9 +53,8 @@ Use the **Type** filter above the table (**All types** / **Deterministic** / **L
 
 | Consumer | What it's for | Docs |
 |----------|----------------|------|
-| Voice Agent **Evaluation** tab | Automatic post-call grading of every completed call for one agent, split into Caller/Agent groups with weights and a minimum pass score. | [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) |
 | **Evaluators** | Pre-ship regression testing — grade a simulated or scripted test conversation before you publish an agent change. | [Creating an Evaluator](/evaluations/creating-an-evaluator) |
-| **Scorecards** | Grade batches of already-recorded calls uploaded from Call History, using the same weighted-metrics UI as the Voice Agent Evaluation tab. | [Evaluations Overview](/evaluations/evaluations-overview) |
+| **Scorecards** | A reusable weighted-metrics policy, scoped to Agent or Caller. Attach one to a voice agent for automatic grading of its live calls (see the agent's [Evaluation tab](/voice-agents/voice-agent-evaluation)), or use it to grade batches of already-recorded calls uploaded from Call History. | [Scorecards](/evaluations/scorecards) |
 
 ## Deleting a metric
 
@@ -63,7 +62,7 @@ The row-level delete action opens an **AlertDialog** titled **Delete metric**:
 
 > This metric will be removed from all evaluators that use it. This action cannot be undone.
 
-Read that literally and it undersells the blast radius: the confirmation copy only mentions evaluators, but the same metric may also be attached to a Voice Agent's Evaluation policy or a Scorecard. Deletion isn't scoped to one consumer — if you're not certain a metric is unused, check its usage on Voice Agents and Scorecards before deleting it, not just in the Evaluators list. There's no undo.
+Read that literally and it undersells the blast radius: the confirmation copy only mentions evaluators, but the same metric may also be attached to a Scorecard — including one a Voice Agent is using for live-call grading. Deletion isn't scoped to one consumer — if you're not certain a metric is unused, check its usage on Scorecards before deleting it, not just in the Evaluators list. There's no undo.
 
 ## What's Next
 
