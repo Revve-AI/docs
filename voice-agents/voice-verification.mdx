@@ -1,0 +1,48 @@
+---
+title: "Voice Verification"
+description: "Route callers using enrolled voiceprints, configurable decision thresholds, and fallback verification."
+---
+
+A **Verify Voice** node checks the caller's recent speech against an enrolled voiceprint. Use it in a conversational flow before self-service operations that require an identity check.
+
+## Prerequisites
+
+Your deployment needs a configured voice-biometrics service and a voiceprint enrolled under the customer identifier used by the flow. Enrollment is a separate process: a Verify Voice node does not create a voiceprint. Arrange enrollment and its consent requirements with your deployment administrator.
+
+Enrollment evaluates multiple speech samples for usable speech and consistency. If the enrollment model changes, the customer may need to enroll again. Keep an alternative verification path available for callers without a usable voiceprint.
+
+## Add verification to a flow
+
+1. Open the agent's **Conversational Flow**.
+2. Add a conversation node that asks the caller to speak. The verification node uses speech already captured, so place it after this conversation.
+3. Add a **Verify Voice** node and connect the conversation to it.
+4. Set **Customer ID (optional)** to the variable containing the enrollment identifier. Leave it empty to use the caller's phone number on inbound calls or the dialed number on outbound calls.
+5. Set **Audio Window (s)** to the trailing audio interval to score, between 3 and 60 seconds.
+6. Connect every result path, including **Else**.
+
+## Result paths
+
+| Result | Suggested next step |
+| --- | --- |
+| `ACCEPT` | Continue to the operation permitted by your verification policy. |
+| `REJECT` | Use another verification method or transfer to a specialist. |
+| `INCONCLUSIVE` | Ask another question, collect more speech, and retry within a defined limit. |
+| **Else** | Handle an unenrolled caller, insufficient audio, or a service error through a fallback path. |
+
+The node also writes `verification_result` and `verification_score` for subsequent flow conditions. Reference the score as `{{verification_score}}` in a supported variable field.
+
+## Adjust decision thresholds
+
+The node's **Advanced** settings allow Accept and Reject threshold overrides on a scale from 0 to 1. Empty fields inherit the service's thresholds; the displayed placeholders show the service values when available. Clear an override to return to inheritance.
+
+The Reject threshold must not exceed the Accept threshold. A score between the two thresholds is inconclusive. Calibrate the thresholds with representative genuine callers and impostor samples using the same audio conditions as your deployment. Choose the operating point based on the false-accept and false-reject targets for the service.
+
+## Combine verification methods
+
+For an inconclusive result, a high-risk operation, or a caller without enrollment, use a [custom API tool](/voice-agents/custom-api-tools) to request another challenge from your identity service. Route on that service's confirmed result before revealing protected data or executing an action.
+
+Voice similarity is one input to the verification policy. Liveness and anti-spoof checks depend on the biometrics deployment configuration; do not treat a similarity score alone as proof of liveness.
+
+## Test before publishing
+
+Exercise all four paths with test identities. Include short speech, noisy audio, no enrollment, a service outage, a rejected match, and a successful match. Bound retries with a counter or a Logic Split condition, then publish the tested version using the normal [voice-agent versioning](/voice-agents/voice-agent-versioning) workflow.

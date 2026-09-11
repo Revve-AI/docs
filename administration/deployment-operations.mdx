@@ -1,0 +1,59 @@
+---
+title: "Deployment Operations"
+description: "Plan deployment responsibilities for scaling, secrets, logs, monitoring, and integration handover."
+---
+
+Revve separates the web application, background jobs, voice runtime, and supporting data services. Customer-managed deployments configure these services together with the organization's network, identity, storage, and monitoring systems.
+
+This reference describes the available deployment building blocks and the information to include in an operational handover. Exact topology, recovery targets, and support terms belong in the deployment plan for your environment.
+
+## Service capacity and availability
+
+Web and background workloads run as containers, with Kubernetes deployment configuration available for customer-managed environments. Size and scale each workload according to its role. Voice concurrency also depends on telephony capacity and the speech and language-model services used for each call.
+
+Define acceptance targets for response time, concurrent calls, transaction throughput, and recovery. Run representative load tests, adjust replicas, resource limits, queues, and provider capacity, and repeat the tests against the target environment. Application configuration alone is not a benchmark result.
+
+For a private deployment, include every dependency in the plan: telephony, speech recognition, speech synthesis, model inference, databases, object storage, and identity. Choose private or local endpoints where the environment requires them.
+
+## Private model endpoints
+
+The voice runtime supports configured model endpoints with a base URL, model identifier, and authentication settings. A deployment administrator can point a compatible endpoint at an organization-hosted model or an approved provider route. The service must support the streaming and tool-calling behavior used by the agent.
+
+Configure the endpoint's required bearer token, API-key header, or subscription-key authentication and test a complete conversation, including tool calls and failures. Selecting a private language-model endpoint does not also relocate speech recognition, speech synthesis, or telephony; configure those dependencies separately.
+
+## Release pipelines
+
+Revve's deployment workflow builds container images, runs automated integration checks, and updates deployment workloads. Establish release gates for the target environment, including code coverage, vulnerability scanning, and any organization-required analysis tools. Additional scanners can be integrated into the CI/CD pipeline; their presence in a project plan does not mean that a particular scanner has already run against a release.
+
+Record the image and configuration versions for each release. Include rollback and database-change handling in the runbook, and keep application deployment separate from publishing an agent's conversational draft.
+
+## Secrets and encryption
+
+Customer-cloud configurations support external secret stores, including AWS Secrets Manager and Google Secret Manager, synchronized into Kubernetes secrets by External Secrets. Workloads reference the configured secrets rather than placing secret values in the operational documentation.
+
+Set a refresh policy and a rollout procedure for rotated credentials. Updating a Kubernetes secret does not automatically refresh an environment variable in an already-running process; restart or roll out the affected workload when required.
+
+The AWS installation prerequisites include a customer-controlled KMS key with rotation and an encrypted, versioned state bucket. That protection applies to deployment state. Configure encryption for application databases, recordings, and other storage independently in the deployment's storage services.
+
+Use TLS on external endpoints and document certificate ownership and renewal. Requirements for a particular hardware security module, per-user signing key, or cryptographic compliance profile need an explicit integration design.
+
+## Logs and monitoring
+
+The application emits timestamped structured logs. Customer-cloud monitoring configurations include Loki for centralized logs and Grafana for dashboards. Collect container output, preserve timestamps and service identifiers, and correlate integration requests with call and request identifiers.
+
+To connect an enterprise SIEM, configure your log collector or centralized logging layer to forward the required records to the SIEM's supported ingestion endpoint. Agree on fields, retention, access, and alert routing with the security team. Loki and Grafana are existing monitoring components; a named SIEM destination still needs its collector configuration and connectivity test.
+
+Combine application audit records with identity-provider sign-in logs and infrastructure logs for operational review. Define the event coverage required by your organization rather than assuming that one source records every action.
+
+## Recovery and handover
+
+Include the following in the environment's runbook:
+
+- Service ownership, escalation contacts, and the support channel.
+- Deployment and rollback steps, including configuration and database changes.
+- Backup schedules, retention, restore procedures, and a tested recovery exercise.
+- Health checks, capacity dashboards, alert thresholds, and common failure responses.
+- Integration endpoints, authentication, expected responses, retry behavior, and reconciliation identifiers.
+- Certificate renewal, secret rotation, and access-review procedures.
+
+Use [roles and permissions](/governance-access/roles-and-permissions) to define operational access, [agent versioning](/voice-agents/voice-agent-versioning) for conversational releases, and [custom API tools](/voice-agents/custom-api-tools) for integration setup. Agree on training, support hours, warranty, and recovery commitments in the project handover plan.

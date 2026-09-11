@@ -1,0 +1,39 @@
+---
+title: "Sensitive Data in Voice Flows"
+description: "Protect caller speech, captured variables, and recording intervals at sensitive steps in a voice conversation."
+---
+
+Use a conversation node's **Privacy** settings when the caller needs to speak a secret, such as a one-time code. Protection is scoped to the time spent in that node, with a short tail after the flow leaves it.
+
+The agent still processes the caller's speech so it can complete the verification step. These controls govern how protected content is retained and displayed; they do not prevent the speech-recognition or verification service from processing it.
+
+## Configure the protected step
+
+1. Put the sensitive question in its own conversation node.
+2. Select that node and open **Advanced**, then **Privacy**.
+3. Enable **Hide what the customer says** to mask the caller's turns in the saved transcript, exported call data, captured logs, and subsequent conversation memory.
+4. Enable **Mark the recording as sensitive** to flag the same audio interval for clearing after the call.
+5. Under **Also hide these captured values**, select every variable holding the secret. Hiding spoken turns alone does not hide separately captured values.
+6. Set **Replacement text**, or leave it empty to use `[REDACTED]`.
+
+The transcript and recording controls are independent. Enable both when both forms of retention need protection.
+
+## Understand recording behavior
+
+The recording setting marks a protected interval and displays it as redacted on the call timeline. Clearing the audio happens after the call. The cleared interval becomes silence, preserving its duration so the transcript and recording stay aligned.
+
+Validate the recording-processing configuration for your deployment before distributing recordings. A timeline marker by itself is not confirmation that every original or temporary audio copy has been removed.
+
+## Keep the flow within the protected boundary
+
+Ask the caller for the secret only after entering the protected node. Keep retries for that question inside a protected node as well. Avoid repeating the secret in the agent's response: the transcript option masks the customer's speech, and the agent should confirm the outcome rather than read the secret back.
+
+Use the identity service's verification result to continue the flow. Store a verification status and request reference for reconciliation instead of copying the secret into general contact fields, summaries, or notifications.
+
+For an exact disclosure or confirmation line, choose **Exact words** and configure **Allow Interruption** as described in [Voice Conversational Flow](/voice-agents/voice-conversational-flow).
+
+## Verify the saved outputs
+
+Make a test call using synthetic data. Inspect the saved transcript, captured fields, call timeline, final recording, and exported data. Confirm that the replacement text appears and that audio outside the protected window remains audible.
+
+Review external API payloads, speech-provider retention, and downstream logs separately. Node privacy does not configure the retention policies of connected services. Use [custom API tools](/voice-agents/custom-api-tools) to pass only the fields the receiving service requires.

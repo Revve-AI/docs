@@ -1,0 +1,58 @@
+---
+title: "Custom API Tools"
+description: "Connect voice conversations to your own services using HTTP requests, dynamic fields, and result mapping."
+---
+
+Custom API tools let a voice agent read or update data in an external system during a call. Use them for account lookups, identity checks, payment commitments, case creation, or a service your organization exposes through an API.
+
+The endpoint supplies the business behavior. Revve configures when to call it, sends the required fields, and makes its response available to the conversation. An integration does not require a dedicated connector for every business operation.
+
+## Configure a tool
+
+Open the voice agent's **Advanced Settings**, go to **Tools**, and choose **Add** to create a custom API call.
+
+1. Give the tool a unique name and a description explaining when the agent should use it.
+2. Set the destination URL and HTTP method.
+3. Add the headers required by the service. Keep credentials in the request configuration, outside the spoken instructions.
+4. Define request fields. Use **AI Generated** for information the agent collects from the caller, and **Fixed Value** for configured values or supported variable templates.
+5. Configure **Result Mapping** when the response needs to be translated into a simpler value the agent can use.
+6. Set a **Tool Call Message** if the caller should hear a short acknowledgment while the request runs.
+7. Save the tool and test it with the agent's draft before publishing.
+
+For GET requests, request fields become query parameters. Other supported methods send the configured body fields. Match field names and value formats to the receiving service's contract.
+
+## Use custom business fields
+
+Combine [contact fields](/contacts/managing-contacts), [conversation fields](/administration/conversation-fields), and [call analysis](/voice-agents/voice-agent-advanced-capabilities) to represent your organization's data. For example, a collection workflow can store a customer reference, days past due, asset description, promised payment date, and case status.
+
+Use the field types offered by each editor. Structured domain data can be represented with multiple fields or a serialized value according to the integration contract. The API remains the source of truth for balances, permissions, and transaction status.
+
+## Map results and route the conversation
+
+**Result Mapping** reads a **Response Path**, applies configured mappings, and supplies a **Default Value** when appropriate. For more involved handling, use [flow logic and Code nodes](/voice-agents/voice-conversational-flow).
+
+A typical account-service flow is:
+
+1. Collect the customer reference.
+2. Call the identity service and inspect its result.
+3. Retrieve the permitted account information.
+4. Read back the requested action and obtain confirmation.
+5. Call the action endpoint and explain its returned outcome.
+
+Connect explicit failure paths for missing fields, rejected verification, unavailable services, and ambiguous results. Return partial-success details per item when an operation can succeed for some accounts and fail for others.
+
+## Integrate through an existing gateway
+
+The tool calls HTTP endpoints. A GraphQL service can be called through its HTTP interface using the query and variables required by that service. For SOAP, gRPC, private networks, or specialized authentication, expose a compatible HTTP interface through your integration gateway and keep protocol conversion there. This is an integration pattern; it does not turn Revve's own API into a native gRPC service.
+
+The same approach connects core banking, CRM, messaging, identity providers, fraud engines, and enterprise notification services. Configure proxy access when the destination requires it.
+
+## Design retries and reconciliation
+
+For an operation that changes data, send a stable request identifier and have the receiving service enforce idempotency. A timeout does not prove that the operation failed: query its status before repeating it. Carry the same correlation identifier into the external record so operators can reconcile the call with the transaction.
+
+Use [automation API actions](/automations/creating-automation-rules) for post-call synchronization, notifications, and retry policies. For example, a **Call Analyzed** event can send the summary and extracted fields to a CRM. This event runs after analysis, so it should not be used as an acknowledgment for a transaction that the caller needs confirmed during the call.
+
+## Validate the integration
+
+Test success, rejected authorization, missing data, timeout, duplicate submission, and partial failure. [Voice evaluations](/voice-agents/voice-agent-evaluation) can check that the expected tool was called and that the agent responded appropriately. Publish the tested agent version through your workspace's [approval workflow](/governance-access/publish-approval-workflow).
