@@ -53,6 +53,7 @@
               "voice-agents/voice-agent-evaluation",
               "voice-agents/voice-agent-tools",
               "voice-agents/call-transfer",
+              "voice-agents/agent-assist-copilot",
               "voice-agents/do-not-call-list",
               "voice-agents/voice-agent-versioning"
             ]

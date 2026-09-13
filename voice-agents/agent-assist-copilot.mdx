@@ -1,0 +1,175 @@
+---
+title: "Agent Assist Copilot"
+description: "Configure a Copilot Agent and use live guidance, knowledge, tools, and notes while you handle a voice call."
+---
+
+Agent Assist Copilot helps human agents handle calls in Revve. It follows the transcript, shows guidance, and answers the agent's questions.
+
+The human agent speaks to the caller. Copilot provides suggestions in the workspace; it does not speak those suggestions to the caller.
+
+## Before you start
+
+- Your account must belong to the workspace that contains the voice agent and call.
+- The voice agent must have a Copilot Agent attached, with a published version.
+- For in-app transfers, enable **Accept Calls** in your account menu and allow browser microphone access.
+- For observation and takeover from **Live Calls**, enable **Live Observability** in the voice agent's call settings.
+- Knowledge answers need configured knowledge sources. API actions need configured tools and access to the target system.
+
+See [Call Transfer](/voice-agents/call-transfer) for transfer destinations and agent availability.
+
+## Configure a Copilot Agent
+
+1. Open **AI Agents > Copilot Agents** and select **New Copilot Agent**.
+2. Enter a name and description, then create the agent.
+3. Select **Start Editing** when you need to change an existing configuration.
+4. In **Overview**, write **Instructions for the copilot** and choose the available models.
+5. Configure the relevant tabs below.
+6. Test the draft, then have a team administrator select **Publish**.
+7. Open the voice agent's call settings and select it under **AI Assist for Human Agents**.
+8. Save and publish the voice agent's configuration through its normal publish workflow.
+
+![Copilot Agent Overview in the Revve demo workspace, with instructions, model choices, and the live summary setting](/screenshots/voice-copilot-overview.jpg)
+
+The screenshot shows an unpublished demo configuration. It is not attached to a voice agent.
+
+| Tab | What to configure |
+|-----|-------------------|
+| **Overview** | Instructions, models, and the optional live summary column, refresh period, and summary prompt. |
+| **Knowledge** | Knowledge bases, retrieval mode, and whether to suggest a search or show an answer automatically. |
+| **Monitors** | Conditions that raise warnings, with severity, guidance, and repeat limits. |
+| **Skills** | Procedures with steps, activation conditions, instructions, and optional tool actions. |
+| **Tools** | API or code tools available to Copilot and skill steps. A team administrator must add or change tools. |
+| **Policy** | Limits on warning frequency, warnings per call, and classifier calls. |
+| **Versions** | Published versions and configuration history. |
+| **Attached to** | Voice agents that use this Copilot Agent. |
+
+Draft changes save automatically while you hold the edit lock. Publish the draft to make its configuration available for new sessions.
+
+An active session keeps the Copilot version selected when it started. Publishing a new version does not replace that session's configuration.
+
+### Test before a live call
+
+Open **Test with a past call**. Paste a transcript with one turn per line, then select **Run**:
+
+```text
+caller: I need help with an unresolved support request.
+agent: I can help you check the next step.
+caller: I would like to speak to a supervisor.
+agent: I understand your concern. Let me check the escalation process.
+```
+
+You can also search for a past call and select it. The results show triggered or suppressed monitors, skills, completed steps, and knowledge queries.
+
+![A synthetic transcript test in the Revve demo workspace, with a supervisor-request monitor triggered on the third turn](/screenshots/voice-copilot-transcript-test.jpg)
+
+This demo uses a monitor for the caller phrase "supervisor". The results show it triggered on the third turn.
+
+This test checks the draft's transcript classification. It does not place a call, execute the full live Copilot workflow, or display guidance to live agents.
+
+Use a controlled test call to check audio, transfer, knowledge answers, and tool confirmations before operational use.
+
+## Open Copilot during a call
+
+For an in-app transfer, select **Accept** on the incoming transfer card. Revve opens the live-call workspace in a new tab.
+
+Allow the tab and microphone permissions when prompted. If the browser blocks the tab, Revve can show a compact phone instead.
+
+For a call on the **Live Calls** board, open the call and select **Take Over** when you need to speak to the caller.
+
+The assigned human agent controls the Copilot session. Other authorized team members can observe it; their status shows **Viewing**.
+
+### Read the workspace
+
+| Area | How to use it |
+|------|---------------|
+| **Transcript** | Follow the conversation and speaker labels. Use linked timestamps to inspect related evidence or guidance. |
+| **Warnings and guide** | Review active warnings and the current procedure before you continue. |
+| **Copilot thread** | Read answers, knowledge results, action results, and notes. |
+| **Composer** | Ask a question, use a preset request, or enter a slash command. |
+| **Summary** | Review the transfer summary when available and the ongoing call summary when enabled. |
+
+The header shows the Copilot name, version, and status. **Listening** means it is ready; **Thinking** means it is processing work.
+
+On a narrow screen, open the **Copilot** panel from the call header. On a wide screen, you can collapse the summary column.
+
+## Ask for help and search knowledge
+
+Type a question in the composer, or select **Draft my next line**, **Summarize so far**, or **Search knowledge**.
+
+For example, ask: "What information must I collect before I escalate this request?"
+
+Press **Enter** to send. Press **Shift+Enter** for a new line. Type `/` to show available skills and commands.
+
+| Command | Result |
+|---------|--------|
+| `/search card replacement` | Searches the configured knowledge for the supplied query. |
+| `/summarize` | Requests a summary of the conversation so far. |
+| `/note Customer requests a callback tomorrow` | Saves a note in this Copilot session. |
+
+If Copilot suggests a knowledge search, run or dismiss the suggestion. Automatic answers depend on the **Knowledge** configuration.
+
+When an answer includes source chips, select a source to inspect its content. **Open original** opens its original URL when available.
+
+Check the source and the caller's context before you use a suggested response. Knowledge quality depends on the selected, available documents.
+
+## Follow warnings and guides
+
+Monitors can show warnings with a reason, suggested wording, and transcript evidence. Review the warning and select **Dismiss** when appropriate.
+
+A skill guides you through a configured procedure. It can start from a configured condition, a suggestion you accept, or the slash-command menu.
+
+The guide shows completed, skipped, and pending steps. Completion depends on the configured conditions and available conversation evidence.
+
+Select **End skill** when you need to leave the current procedure. A completed guide is not proof that an external record changed.
+
+### Review tool actions
+
+When a step or Copilot request needs your input, the panel shows **Needs you** or a pending action.
+
+1. Check the tool name and proposed values.
+2. Select **Edit values** if you need to correct them.
+3. For a read-only action awaiting approval, select **Run**.
+4. For a write action, select **Confirm and run**, then **Click again to run**.
+5. Select **Skip** if the action should not run.
+6. Check the result before you tell the caller that the action succeeded.
+
+Configured read-only tools can also run automatically. Write tools require human confirmation.
+
+API tools require a working integration. Attaching Copilot does not automatically connect SAP, Cisco, or another external system.
+
+## Review the session after the call
+
+Open the call in call history and select **Copilot**.
+
+- **Agent view** replays the saved Copilot experience alongside the transcript.
+- **Debug log** shows recorded events for detailed review, including actions, notes, and errors.
+- If the call has multiple Copilot sessions, use the session selector.
+
+Replay uses the saved events and version. It does not run tools again. Calls without a captured Copilot session have no Copilot history.
+
+A Copilot note belongs to the session. A summary, note, or completed guide does not automatically update an external CRM.
+
+Use a configured tool or a separate backend integration for those updates. See [Automation Rules](/automations/automation-rules-overview) for post-call API actions.
+
+## Access and troubleshooting
+
+| Symptom | What to check |
+|---------|---------------|
+| Copilot is missing | Check the attached Copilot Agent, its published version, and whether the human call session has started. |
+| Controls show **Viewing only** | You are an observer. The assigned session owner can send requests and perform actions. |
+| Status shows **Paused** | Select **Retry** to reload session events. If it persists, ask your administrator to check the session and service status. |
+| Knowledge is missing or incomplete | Check enabled knowledge bases, source content, and retrieval settings. |
+| A tool fails | Check its configuration, proposed values, permissions, and target API availability. |
+| Guidance stops updating | Check the transcript connection and configured policy limits. The classifier cap can stop automatic analysis. |
+| Only a compact phone appears | Check browser popup permissions and reopen the full live-call workspace. |
+
+Live assistance requires Revve to receive the conversation after transfer. A cold SIP transfer leaves that media path and does not capture the human conversation.
+
+An external phone system needs an explicit media and session integration for continued assistance. An embedded phone widget alone does not provide it.
+
+## Related guides
+
+- [Call Transfer](/voice-agents/call-transfer)
+- [Knowledge Base Overview](/knowledge-base/knowledge-base-overview)
+- [Custom API Tools](/voice-agents/custom-api-tools)
+- [Roles and Permissions](/governance-access/roles-and-permissions)
