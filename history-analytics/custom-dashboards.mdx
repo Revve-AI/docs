@@ -1,9 +1,9 @@
 ---
 title: "Custom Dashboards"
-description: "Create call dashboards with configurable charts, metrics, filters, layouts, and a controlled publish workflow."
+description: "For team leads: build and publish call reports with charts, metric calculations, and filters."
 ---
 
-Use **Analytics > Dashboards** to create reports from your team's call data. Choose metrics, apply filters, and arrange charts for your team.
+Use **Analytics > Dashboards** to create reports from your team's call data. Start with a call-volume report, then add the outcomes and quality measures your team needs.
 
 Revve also provides [built-in Analytics dashboards](/history-analytics/analytics-dashboard) for operational, chat, AI, and human-agent performance.
 
@@ -47,15 +47,17 @@ Chart changes and layout changes appear in the draft and save automatically. Pub
 
 ## Configure charts
 
-| Setting | Options |
+A new chart starts with **Line**, no metric selected, no filters or breakdown, and the dashboard's date range. Select a metric before saving.
+
+| Setting | Options and when to use them |
 |---------|---------|
-| **Graph Type** | Line, Column, Bar, Donut, or Number. |
+| **Graph Type** | Use Line for trends, Column or Bar to compare volumes, Donut for proportions, and Number for one headline value. |
 | **Metric** | One metric from the workspace's available catalog. |
-| **Aggregation** | Count, sum, average, rate, or 95th percentile, where supported by the metric. |
+| **Aggregation** | Count records, sum amounts, or use a rate for a proportion. Average describes typical values; 95th percentile highlights the upper tail. Availability depends on the metric. |
 | **Filters** | Conditions on supported fields. All configured conditions must match. |
 | **Breakdown** | Split the metric by a supported dimension, such as agent, call type, sentiment, or scorecard. |
-| **Date range** | Inherit the dashboard range, select a preset, or set a custom range for this chart. |
-| **Time interval** | Automatic, hour, day, week, or month for Line, Column, and Bar charts. |
+| **Date range** | Inherit the dashboard range to compare charts over the same period. Override it only when a chart intentionally needs a different period. |
+| **Time interval** | Start with Automatic. Use hour or day to inspect short-term changes; week or month makes longer trends easier to read. Available for Line, Column, and Bar charts. |
 
 **Number** charts show one value and do not support a breakdown. **Column** charts with a breakdown can use **Stack the series**.
 

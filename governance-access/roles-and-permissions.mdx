@@ -13,7 +13,7 @@ This page covers permissions and role management. The separate approve/decline f
 ## How it works
 
 1. Every new team gets two protected default roles automatically: **admin** and **member**.
-2. Each role holds a subset of 13 permissions — anyone with the **Manage Settings** permission can create additional custom roles with any name and any combination of permissions.
+2. Each role holds a subset of the permission catalog — anyone with the **Manage Settings** permission can create additional custom roles with any name and any combination of permissions.
 3. Members are added to the team by email invite or, on teams with direct-add enabled, immediately by email lookup — each is assigned exactly one role.
 4. Permission checks run server-side, on the specific action being taken, not just as UI visibility rules.
 5. Members can also be assigned to **Groups**, a separate mechanism used only for routing conversations — groups carry no permissions.
@@ -24,10 +24,10 @@ Every team is provisioned with two roles it cannot delete or rename away:
 
 | Role | Permissions |
 |------|-------------|
-| **admin** | All 13 permissions in the catalog. |
-| **member** | **Manage Dashboard**, **Manage Inbox**, **Manage Tickets**, **Manage Campaigns**, **Manage Agents**, **Manage Contacts**, **Manage History** — 7 of the 13 permissions. |
+| **admin** | All permissions in the catalog. |
+| **member** | **Manage Dashboard**, **Manage Inbox**, **Manage Tickets**, **Manage Campaigns**, **Manage Agents**, **Manage Contacts**, **Manage History**, **Manage Automations**, and **Manage Analytics**. |
 
-In practice, **member** covers day-to-day work across the dashboard, inbox, tickets, campaigns, agents, contacts, and history — but a member can't manage automations, view analytics, change team settings, see unmasked PII, or publish an agent or campaign draft directly (**Manage Automations**, **Manage Analytics**, **Manage Settings**, **View PII**, **Publish Agents**, and **Publish Campaigns** are all admin-only by default). Getting those requires the **admin** role or a custom role that grants the relevant permission.
+These are the current defaults for newly provisioned teams. Existing teams can have different grants; check **Settings → Roles** for your workspace. The default **member** role includes analytics and automations, but excludes **Manage Settings**, **View PII**, **Publish Agents**, **Publish Campaigns**, **Publish Dashboards**, **View Own Calls**, **Review Call Quality**, and **Manage Call Quality**. An administrator can grant additional permissions through a custom role.
 
 The **admin** and **member** rows in the roles table have their delete action disabled — the server also rejects the request with `"Cannot delete admin or member roles."` if it's attempted directly.
 
@@ -35,7 +35,7 @@ The **admin** and **member** rows in the roles table have their delete action di
 
 ## The permission catalog
 
-There are 13 permissions. Every role — default or custom — is defined as some subset of this list.
+Every role — default or custom — is defined as some subset of this catalog.
 
 | Permission | Unlocks |
 |------------|---------|
@@ -52,6 +52,10 @@ There are 13 permissions. Every role — default or custom — is defined as som
 | **View PII** | Viewing unmasked PII data (elsewhere in the dashboard, PII is masked by default). |
 | **Publish Agents** | Publishing agent drafts (voice or chat) directly, without going through the approval flow. |
 | **Publish Campaigns** | Publishing campaign drafts directly, without going through the approval flow. |
+| **Publish Dashboards** | Publishing custom dashboard drafts and reviewing publication requests. |
+| **View Own Calls** | Access to the agent's own calls in Call Quality. |
+| **Review Call Quality** | Reviewing and scoring calls in Call Quality. |
+| **Manage Call Quality** | Assigning quality reviews, reopening submitted reviews, and reading QA reports. |
 
 <Note>
 Members who hold **Manage Campaigns** or **Manage Agents** but not **Publish Campaigns** / **Publish Agents** can still build and edit drafts — they just can't make the draft live themselves. Their only path to production is submitting the draft for review, per [Publish Approval Workflow](/governance-access/publish-approval-workflow). This is the mechanic behind the review step in [Campaign Overview](/campaigns/campaign-overview): "Team members without publish permission submit drafts for review; a reviewer approves or declines." The draft/publish mechanics themselves — independent of who's allowed to press the button — follow the same pattern across all three resource types but are implemented and documented separately: [Publishing & Versioning](/getting-started/publishing-and-versioning) for chat agents, [Campaign Versioning](/campaigns/campaign-versioning) for campaigns, and [Voice Agent Versioning](/voice-agents/voice-agent-versioning) for voice agents.
@@ -59,7 +63,7 @@ Members who hold **Manage Campaigns** or **Manage Agents** but not **Publish Cam
 
 ## Custom roles
 
-Any member holding **Manage Settings** can create a role with an arbitrary name, description, and any combination of the 13 permissions above.
+Any member holding **Manage Settings** can create a role with an arbitrary name, description, and any combination of the permissions above.
 
 To create one, go to **Settings → Roles** and click **New**. This opens the **Add Role** dialog:
 

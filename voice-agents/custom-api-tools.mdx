@@ -15,11 +15,11 @@ Open the voice agent's **Advanced Settings**, go to **Tools**, and choose **Add*
 2. Set the destination URL and HTTP method.
 3. Add the headers required by the service. Keep credentials in the request configuration, outside the spoken instructions.
 4. Define request fields. Use **AI Generated** for information the agent collects from the caller, and **Fixed Value** for configured values or supported variable templates.
-5. Configure **Result Mapping** when the response needs to be translated into a simpler value the agent can use.
+5. Have the endpoint return a compact response with an explicit outcome and the fields the agent needs. Normalize complex responses in your API or integration gateway.
 6. Set a **Tool Call Message** if the caller should hear a short acknowledgment while the request runs.
 7. Save the tool and test it with the agent's draft before publishing.
 
-For GET requests, request fields become query parameters. Other supported methods send the configured body fields. Match field names and value formats to the receiving service's contract.
+Configured request fields form the request body; they are not automatically converted into GET query parameters. If a service requires query parameters, include them in the URL using supported variable templates, or expose a compatible POST endpoint through your gateway. Test the received URL and body against the service's contract.
 
 ## Use custom business fields
 
@@ -29,7 +29,7 @@ Use the field types offered by each editor. Structured domain data can be repres
 
 ## Map results and route the conversation
 
-**Result Mapping** reads a **Response Path**, applies configured mappings, and supplies a **Default Value** when appropriate. For more involved handling, use [flow logic and Code nodes](/voice-agents/voice-conversational-flow).
+Return a clear status such as `verified`, `rejected`, or `unavailable`, together with the values the conversation needs. The shared tool editor exposes **Result Mapping**, but the Revve voice runtime does not apply it. Normalize responses in the receiving API or gateway; use [flow logic and Code nodes](/voice-agents/voice-conversational-flow) for additional deterministic handling.
 
 A typical account-service flow is:
 

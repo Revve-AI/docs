@@ -1,9 +1,9 @@
 ---
 title: "Agent Assist Copilot"
-description: "Configure a Copilot Agent and use live guidance, knowledge, tools, and notes while you handle a voice call."
+description: "For team administrators and call agents: configure, test, and use Copilot guidance during human-handled calls."
 ---
 
-Agent Assist Copilot helps human agents handle calls in Revve. It follows the transcript, shows guidance, and answers the agent's questions.
+Set up Agent Assist Copilot to warn a human agent when a caller asks for a supervisor, then test the warning before attaching Copilot to a voice agent. During calls, Copilot follows the transcript, offers guidance, and answers the human agent's questions.
 
 The human agent speaks to the caller. Copilot provides suggestions in the workspace; it does not speak those suggestions to the caller.
 
@@ -22,7 +22,7 @@ See [Call Transfer](/voice-agents/call-transfer) for transfer destinations and a
 1. Open **AI Agents > Copilot Agents** and select **New Copilot Agent**.
 2. Enter a name and description, then create the agent.
 3. Select **Start Editing** when you need to change an existing configuration.
-4. In **Overview**, write **Instructions for the copilot** and choose the available models.
+4. In **Overview**, write **Instructions for the copilot**. Start with the example below and keep the default models for your first test.
 5. Configure the relevant tabs below.
 6. Test the draft, then have a team administrator select **Publish**.
 7. Open the voice agent's call settings and select it under **AI Assist for Human Agents**.
@@ -30,7 +30,15 @@ See [Call Transfer](/voice-agents/call-transfer) for transfer destinations and a
 
 ![Copilot Agent Overview in the Revve demo workspace, with instructions, model choices, and the live summary setting](/screenshots/voice-copilot-overview.jpg)
 
-The screenshot shows an unpublished demo configuration. It is not attached to a voice agent.
+The screenshot shows an unpublished demo configuration. It is not attached to a voice agent. Its instructions are:
+
+```text
+Help the human agent resolve support requests. Use approved knowledge for policy answers. Suggest a clear next step. Never invent account details or promise an outcome.
+```
+
+**Fast lane model** classifies transcript turns; **Copilot model** answers questions and runs guides. Both default to GPT-4.1 mini. Change a model when representative tests show missed triggers or poor answers, then compare response time as well as accuracy.
+
+**Show the summary column** is on by default, with **Refresh** set to **Every 30 seconds**. Use a shorter interval when agents need a more current summary; use a longer interval to reduce repeated summarization work.
 
 | Tab | What to configure |
 |-----|-------------------|
@@ -47,9 +55,22 @@ Draft changes save automatically while you hold the edit lock. Publish the draft
 
 An active session keeps the Copilot version selected when it started. Publishing a new version does not replace that session's configuration.
 
+Tool definitions are an exception: edits to shared tools can affect active sessions without publishing a new Copilot version. Coordinate endpoint, credential, and behavior changes with operators before changing a tool used by live calls.
+
+### Add a supervisor-request warning
+
+1. In **Monitors**, select **New monitor**.
+2. Set **Name** to `Supervisor request` and **Message** to `Acknowledge the concern and follow the supervisor escalation process.`
+3. Keep **Severity** at **Warning** and **On** enabled.
+4. Set **Say instead (optional)** to `I understand your concern. Let me check the next step for involving a supervisor.`
+5. Under **Trigger**, select **Exact phrases** and enter `supervisor` in **Phrases**.
+6. Keep **Watches** set to **Caller** and **Cooldown (s)** at its default of `120`, then select **Save monitor**.
+
+Use **Exact phrases** for a known term you can test predictably. Use **Copilot decides from the description** for requests that can be phrased many ways, and test representative wording. Increase the cooldown if repeated warnings distract agents; shorten it if a repeated request needs attention sooner.
+
 ### Test before a live call
 
-Open **Test with a past call**. Paste a transcript with one turn per line, then select **Run**:
+With the monitor saved in your draft, open **Test with a past call**. Paste a transcript with one turn per line, then select **Run**:
 
 ```text
 caller: I need help with an unresolved support request.
@@ -62,7 +83,7 @@ You can also search for a past call and select it. The results show triggered or
 
 ![A synthetic transcript test in the Revve demo workspace, with a supervisor-request monitor triggered on the third turn](/screenshots/voice-copilot-transcript-test.jpg)
 
-This demo uses a monitor for the caller phrase "supervisor". The results show it triggered on the third turn.
+The expected result is your monitor's ID in **Fired** on turn 3, matching the screenshot. If it is absent, check that the monitor is enabled, **Phrases** contains `supervisor`, and **Watches** is **Caller**.
 
 This test checks the draft's transcript classification. It does not place a call, execute the full live Copilot workflow, or display guidance to live agents.
 
@@ -167,7 +188,7 @@ Live assistance requires Revve to receive the conversation after transfer. A col
 
 An external phone system needs an explicit media and session integration for continued assistance. An embedded phone widget alone does not provide it.
 
-## Related guides
+## What's Next
 
 - [Call Transfer](/voice-agents/call-transfer)
 - [Knowledge Base Overview](/knowledge-base/knowledge-base-overview)

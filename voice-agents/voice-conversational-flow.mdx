@@ -1,13 +1,16 @@
 ---
 title: "Voice Conversational Flow"
-description: "Build staged voice conversations with explicit transitions, logic, code, reusable components, and verification."
+description: "For voice agent builders: create staged calls with explicit transitions, reusable steps, and verification."
 ---
 
 The **Conversational Flow** engine represents a call as connected stages. Each conversation node supplies the instructions for that stage, while transitions and action nodes determine what happens next. Use a flow when a call needs an explicit sequence, such as verification, account lookup, confirmation, and execution.
 
 ## Open the editor
 
-Create a voice agent with the **Conversational flow** engine, then open its **Conversational Flow** tab. Create the flow if the agent does not have one yet.
+1. Start [creating a voice agent](/voice-agents/creating-your-first-voice-agent) and choose the **Blank** template. This template exposes the **Engine** choice.
+2. Select **Conversational flow** and complete creation.
+3. Open the agent's **Conversational Flow** tab and select **Start Editing** to edit the draft.
+4. If the page shows **No Conversation Flow**, select **Create Conversation Flow**. Revve adds an **Initial Greeting** node for you to customize.
 
 Use **Add Node** to add stages, connect them on the canvas, and select a node to edit its configuration. The toolbar also provides JSON import and export, automatic arrangement, and search. Edit a draft, test it, and publish through the agent's [versioning workflow](/voice-agents/voice-agent-versioning).
 
@@ -82,3 +85,9 @@ Use [Voice Verification](/voice-agents/voice-verification) to route on enrolled 
 ## Test and publish
 
 Keep general rules in the agent's **Instructions** and stage-specific behavior in the individual nodes. Test the start path, interruptions, retries, missing data, external-service errors, and every fallback before publishing. [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) can check the conversation outcome and required tool calls.
+
+
+## What's Next
+
+- [Custom API Tools](/voice-agents/custom-api-tools) — connect a stage to an external service.
+- [Call Transfer](/voice-agents/call-transfer) — configure the handoff to a human.

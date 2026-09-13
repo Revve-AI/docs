@@ -28,8 +28,8 @@ Enrollment evaluates multiple speech samples for usable speech and consistency. 
 | --- | --- |
 | `ACCEPT` | Continue to the operation permitted by your verification policy. |
 | `REJECT` | Use another verification method or transfer to a specialist. |
-| `INCONCLUSIVE` | Ask another question, collect more speech, and retry within a defined limit. |
-| **Else** | Handle an unenrolled caller, insufficient audio, or a service error through a fallback path. |
+| `INCONCLUSIVE` | The score is uncertain or there is insufficient speech, including no buffered audio. Ask another question, collect more speech, and retry within a defined limit. |
+| **Else** | Handle an unenrolled caller or a service error through a fallback path. |
 
 The node also writes `verification_result` and `verification_score` for subsequent flow conditions. Reference the score as `{{verification_score}}` in a supported variable field.
 

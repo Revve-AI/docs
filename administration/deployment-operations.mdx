@@ -9,7 +9,7 @@ This reference describes the available deployment building blocks and the inform
 
 ## Service capacity and availability
 
-Web and background workloads run as containers, with Kubernetes deployment configuration available for customer-managed environments. Size and scale each workload according to its role. Voice concurrency also depends on telephony capacity and the speech and language-model services used for each call.
+Web and background workloads run as containers. For a customer-managed Kubernetes environment, agree on the deployment manifests and service dependencies before installation. Size and scale each workload according to its role. Voice concurrency also depends on telephony capacity and the speech and language-model services used for each call.
 
 Define acceptance targets for response time, concurrent calls, transaction throughput, and recovery. Run representative load tests, adjust replicas, resource limits, queues, and provider capacity, and repeat the tests against the target environment. Application configuration alone is not a benchmark result.
 
@@ -29,19 +29,19 @@ Record the image and configuration versions for each release. Include rollback a
 
 ## Secrets and encryption
 
-Customer-cloud configurations support external secret stores, including AWS Secrets Manager and Google Secret Manager, synchronized into Kubernetes secrets by External Secrets. Workloads reference the configured secrets rather than placing secret values in the operational documentation.
+Choose the secret store for your environment, such as AWS Secrets Manager or Google Secret Manager. If you use External Secrets to synchronize values into Kubernetes, configure and test that integration as part of deployment. Workloads should reference the configured secrets; keep secret values out of operational documentation.
 
 Set a refresh policy and a rollout procedure for rotated credentials. Updating a Kubernetes secret does not automatically refresh an environment variable in an already-running process; restart or roll out the affected workload when required.
 
-The AWS installation prerequisites include a customer-controlled KMS key with rotation and an encrypted, versioned state bucket. That protection applies to deployment state. Configure encryption for application databases, recordings, and other storage independently in the deployment's storage services.
+If your infrastructure tooling stores deployment state in an AWS bucket, configure encryption, versioning, and the required KMS key and rotation policy. State protection does not cover application databases or recordings; configure those storage services independently.
 
 Use TLS on external endpoints and document certificate ownership and renewal. Requirements for a particular hardware security module, per-user signing key, or cryptographic compliance profile need an explicit integration design.
 
 ## Logs and monitoring
 
-The application emits timestamped structured logs. Customer-cloud monitoring configurations include Loki for centralized logs and Grafana for dashboards. Collect container output, preserve timestamps and service identifiers, and correlate integration requests with call and request identifiers.
+Collect application and container logs in your organization's logging system. Loki and Grafana are possible log and dashboard components; confirm the selected stack and its configuration in the deployment plan. Preserve timestamps and service identifiers, and correlate integration requests with call and request identifiers.
 
-To connect an enterprise SIEM, configure your log collector or centralized logging layer to forward the required records to the SIEM's supported ingestion endpoint. Agree on fields, retention, access, and alert routing with the security team. Loki and Grafana are existing monitoring components; a named SIEM destination still needs its collector configuration and connectivity test.
+To connect an enterprise SIEM, configure your log collector or centralized logging layer to forward the required records to the SIEM's supported ingestion endpoint. Agree on fields, retention, access, and alert routing with the security team. Test collector connectivity and confirm that a sample event reaches the SIEM with the expected fields.
 
 Combine application audit records with identity-provider sign-in logs and infrastructure logs for operational review. Define the event coverage required by your organization rather than assuming that one source records every action.
 
