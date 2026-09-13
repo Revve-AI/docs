@@ -148,6 +148,7 @@
               "history-analytics/chat-history",
               "history-analytics/exporting-conversations",
               "history-analytics/analytics-dashboard",
+              "history-analytics/custom-dashboards",
               "history-analytics/daily-reports"
             ]
           },
