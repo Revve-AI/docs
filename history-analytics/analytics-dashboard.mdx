@@ -4,7 +4,7 @@ title: "Analytics Dashboard"
 description: "Four dashboards for operators and team leads: an auto-refreshing Overview, Chat Agents website engagement, AI Agents containment and quality, and Human Agents team performance."
 ---
 
-The **Analytics** section in the left sidebar contains four dashboards. Each answers a different question:
+The **Analytics** section in the left sidebar contains four built-in dashboards. Each answers a different question:
 
 | Page | Question it answers |
 |------|---------------------|
@@ -13,11 +13,13 @@ The **Analytics** section in the left sidebar contains four dashboards. Each ans
 | **AI Agents** | How much work is AI resolving on its own, and is the quality holding up? |
 | **Human Agents** | How fast and how well is my human team responding? |
 
-Access requires the **Manage Analytics** permission, which only admins have by default. See [Roles and Permissions](/governance-access/roles-and-permissions) if the section is missing from your sidebar.
+The same section also contains **Dashboards**, where you can create call reports with configurable charts, metrics, filters, and layouts. See [Custom Dashboards](/history-analytics/custom-dashboards).
+
+The Analytics sidebar requires **Manage Analytics**. Current default admin and member roles include it; your workspace may use different grants. See [Roles and Permissions](/governance-access/roles-and-permissions) if the section is missing from your sidebar.
 
 ## Overview
 
-The Overview page (titled **Agent Productivity**) gives you a live snapshot of your operations. It is the only dashboard that auto-refreshes — the **Operations Overview** section carries an "Auto-refreshes every 5m" pill — and you can click **Refresh** for the latest data at any time.
+The Overview page (titled **Agent Productivity**) gives you a snapshot of your operations. It refreshes automatically every five minutes. You can also click **Refresh** for the latest data. AI Agents and Human Agents use the same fixed refresh interval.
 
 ![Analytics overview dashboard](/screenshots/analytics-overview.png)
 
@@ -103,7 +105,7 @@ Two CSVs are available: a daily report (Date, Page Views, Chats, Leads, Meetings
 
 ## AI Agents
 
-The **AI Agents** page (titled **AI Agent Performance**) monitors AI effectiveness, response performance, and escalation patterns. Use the **date range selector** to choose a period (defaults to the last 7 days). Refresh is manual; there is no export.
+The **AI Agents** page (titled **AI Agent Performance**) monitors AI effectiveness, response performance, and escalation patterns. Use the **date range selector** to choose a period (defaults to the last 7 days). Data refreshes automatically every five minutes. A manual **Refresh** control is also available; there is no export.
 
 ![The AI Agent Performance dashboard with the Containment Rate and AI Fail Rate KPI cards, the Performance comparison section, and the response time and messages-per-conversation charts](/screenshots/analytics-ai-agents.png)
 
@@ -148,7 +150,7 @@ If containment starts falling, check the **escalation heatmap** first: escalatio
 
 ## Human Agents
 
-The **Human Agents** page (titled **Human Agent Performance**) tracks team productivity, workload distribution, and response times. Use the **date range selector** to choose a period (defaults to the last 7 days). Refresh is manual; there is no export.
+The **Human Agents** page (titled **Human Agent Performance**) tracks team productivity, workload distribution, and response times. Use the **date range selector** to choose a period (defaults to the last 7 days). Data refreshes automatically every five minutes. A manual **Refresh** control is also available; there is no export.
 
 ![The Human Agent Performance dashboard with the FRT, AHT, TTR, Resolution Rate, and CSAT summary cards above the Agent Leaderboard and workload charts](/screenshots/analytics-human-agents.png)
 

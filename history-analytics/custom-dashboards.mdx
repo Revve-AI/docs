@@ -1,0 +1,141 @@
+---
+title: "Custom Dashboards"
+description: "For team leads: build and publish call reports with charts, metric calculations, and filters."
+---
+
+Use **Analytics > Dashboards** to create reports from your team's call data. Start with a call-volume report, then add the outcomes and quality measures your team needs.
+
+Revve also provides [built-in Analytics dashboards](/history-analytics/analytics-dashboard) for operational, chat, AI, and human-agent performance.
+
+## Before you start
+
+- Your account must belong to the workspace that contains the data.
+- The **Manage Analytics** permission makes the Analytics section visible in the sidebar.
+- The **Publish Dashboards** permission allows direct publication. Other editors use **Request review**.
+- Metrics need source data. Custom fields need configured call analysis; evaluation and review metrics need completed results.
+
+See [Roles and Permissions](/governance-access/roles-and-permissions) to check your role. Contact your administrator if Dashboards is unavailable.
+
+## Start with Call Overview
+
+The **Call Overview** dashboard provides six charts:
+
+- Total calls.
+- Success rate.
+- Average call duration.
+- Call volume by agent.
+- Calls by disconnection reason.
+- Average duration over time.
+
+Use the date selector to change the period. The default overview uses the last 30 days.
+
+To use an existing dashboard as a starting point, open its menu and select **Duplicate**. Give the copy a clear name.
+
+## Create a dashboard
+
+1. Open **Analytics > Dashboards**.
+2. Select **New dashboard**.
+3. Enter a name and an optional description, then select **Create**.
+4. Select **Add chart**.
+5. Choose a **Graph Type** and **Metric**.
+6. Select the available aggregation, filters, and breakdown for that metric.
+7. Check the preview, edit the chart name if needed, and select **Save**.
+8. Add more charts and arrange them on the dashboard.
+9. Select **Publish** or **Request review** when the draft is ready.
+
+Chart changes and layout changes appear in the draft and save automatically. Publication creates a version of the dashboard configuration.
+
+## Configure charts
+
+A new chart starts with **Line**, no metric selected, no filters or breakdown, and the dashboard's date range. Select a metric before saving.
+
+| Setting | Options and when to use them |
+|---------|---------|
+| **Graph Type** | Use Line for trends, Column or Bar to compare volumes, Donut for proportions, and Number for one headline value. |
+| **Metric** | One metric from the workspace's available catalog. |
+| **Aggregation** | Count records, sum amounts, or use a rate for a proportion. Average describes typical values; 95th percentile highlights the upper tail. Availability depends on the metric. |
+| **Filters** | Conditions on supported fields. All configured conditions must match. |
+| **Breakdown** | Split the metric by a supported dimension, such as agent, call type, sentiment, or scorecard. |
+| **Date range** | Inherit the dashboard range to compare charts over the same period. Override it only when a chart intentionally needs a different period. |
+| **Time interval** | Start with Automatic. Use hour or day to inspect short-term changes; week or month makes longer trends easier to read. Available for Line, Column, and Bar charts. |
+
+**Number** charts show one value and do not support a breakdown. **Column** charts with a breakdown can use **Stack the series**.
+
+If a breakdown includes records without a value, **Hide unclassified** removes that series from the display.
+
+### Available data
+
+| Metric group | Examples |
+|--------------|----------|
+| Call metrics | Call count, call duration, and successful calls. |
+| System fields | Sentiment, callback scheduled, appointment booked, and requires human follow-up. |
+| Custom analysis fields | Values extracted from calls using your team's configured analysis fields. |
+| Evaluation results | Evaluated calls, evaluation pass rate, normalized score, and knockout rate. |
+| Human review results | Reviewed calls, review score, and review pass rate. |
+| Evaluation criteria | Criterion points, occurrences, and number of criteria judged. |
+
+Evaluation metrics and human review metrics measure different sources. Use the relevant scorecard and agent filters when comparing results.
+
+See [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) for evaluation setup and [Analysis & Summary](/voice-agents/voice-agent-advanced-capabilities#analysis-summary) for extracted fields.
+
+### Custom field behavior
+
+The field's type determines its available operations:
+
+| Field type | Metric operations | Filters and breakdowns |
+|------------|-------------------|------------------------|
+| Number | Sum, average, or 95th percentile. | Numeric comparisons; no numeric breakdown. |
+| Boolean | Count of true values or rate among known true/false values. | True/false filters and breakdowns. |
+| String | Count of populated values. | Value filters and breakdowns. |
+| Address | Count or rate of present values. | No address filters or breakdowns. |
+
+Selector fields are not included in the custom dashboard catalog. If a configured field is removed, edit affected charts and select a replacement.
+
+<Note>
+Custom metrics aggregate call records. A sum of extracted debt amounts is not a deduplicated customer debt balance. Repeated calls can include the same amount.
+</Note>
+
+For bank totals, customer coverage, or customer segments, first confirm the source fields and counting rules. External CRM data needs a separate integration.
+
+## Arrange and manage charts
+
+On an existing dashboard, select **Start Editing**. Drag chart handles to change positions and use resize handles to change chart dimensions.
+
+Use a chart's controls to edit, duplicate, or delete it. Each dashboard supports up to 40 charts.
+
+Use the star on the dashboard list to mark a personal favorite. Dashboard definitions and call data remain scoped to the workspace.
+
+There is no separate access list for individual dashboards. Workspace access and publish permissions do not create a private per-user report.
+
+## Publish and review changes
+
+Drafts save automatically. Another team member can view a draft, so a draft is not a private report.
+
+Only one editor can hold the edit lock at a time. If another member holds the lock, the dashboard shows their name and remains read-only.
+
+To publish with the **Publish Dashboards** permission:
+
+1. Select **Publish**.
+2. Review the change summary and add an optional note.
+3. Confirm **Publish**.
+
+Without that permission, select **Request review**, choose at least one reviewer, and select **Send request**. An authorized reviewer can approve or decline the request.
+
+Use **History** or the version selector to inspect published versions. Past versions are read-only.
+
+Versions preserve chart settings and layouts. They do not freeze the underlying call data as a historical report export.
+
+**Exit** leaves the draft available. **Discard** abandons unpublished edits. Confirm the displayed version before you share a dashboard with colleagues.
+
+## Refresh, exports, and scope
+
+Custom dashboards provide configurable analysis of stored call data. Keep these limits in mind:
+
+- There is no user-configurable refresh interval in seconds or minutes. Changing a chart query updates its results; automatic cache handling is not a wallboard refresh setting.
+- Custom dashboards do not provide live queue service levels, agent login/logout history, or timers for current telephony states.
+- Calculations use the metric's supported aggregations. There is no arbitrary formula editor, calculated row/column editor, or custom series color picker.
+- The custom dashboard page does not provide Excel, PDF, or CSV export. Built-in Chat Agents analytics has separate CSV exports.
+- Dashboard charts show aggregates. Use the relevant conversation or call history to inspect individual records, transcripts, and recordings.
+- Dashboard configuration does not send results to an external CRM or DMC. Such updates require a separate API integration or automation.
+
+See [Analytics Dashboard](/history-analytics/analytics-dashboard) for built-in reports, [Exporting Conversations](/history-analytics/exporting-conversations) for chat exports, and [Automation Rules](/automations/automation-rules-overview) for API actions.
