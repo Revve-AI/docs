@@ -28,7 +28,7 @@ Use **Add Node** to add stages, connect them on the canvas, and select a node to
 | **Component** | Reuse a team-level flow component with named exits. |
 | **Verify Voice** | Compare recent caller speech with an enrolled voiceprint and route on the result. |
 
-Logic Split, Extract Variables, Code, and Verify Voice have an **Else** path for fallback handling. Connect this path as part of the flow. Components expose their configured exits, which connect back into the parent flow.
+Logic Split, Extract Variables, Code, and Verify Voice have an **Else** path for fallback handling. Connect this path as part of the flow. Components expose their configured exits, which connect back into the parent flow. There is no separate End node; every node has a built-in ability to end the call.
 
 Scheduling and contact-collection capabilities are configured through the conversation and tool controls; they are not separate voice node types in the Add Node picker.
 
