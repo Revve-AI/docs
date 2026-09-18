@@ -1,0 +1,80 @@
+---
+title: "Calling Out Yourself (Dialer)"
+description: "For call agents and their team administrators: place an outbound call from Revve, handle it in the browser, and keep Copilot alongside you for the whole call."
+---
+
+Not every outbound call should be an AI call. A customer who asked for a callback, a deal worth a person's time, a follow-up on a complaint — those want a human on the line from the first word. The **Dialer** lets you place that call from Revve instead of reaching for your phone, and it gives you the same live-call workspace you get when a call is transferred to you: the transcript, the knowledge answers, the warnings and the guides.
+
+The AI does not speak on a call you place. It listens, transcribes both sides, and feeds Copilot — nothing else.
+
+By the end of this page you will have placed a call, handled it in the browser, and found it again in call history.
+
+## Before you start
+
+- Your account must belong to the workspace, with the same permission that shows you **Live Calls**.
+- The workspace needs at least one phone number that can place outbound calls. See [Phone Numbers](/administration/phone-numbers) if the picker is empty.
+- Allow browser microphone access. Without it you will connect to the call but the other person will hear nothing.
+- For guidance during the call, the voice agent you pick must have a Copilot Agent attached, with a published version. See [Agent Assist Copilot](/voice-agents/agent-assist-copilot).
+
+## Place a call
+
+1. Open **Dialer** in the left navigator.
+2. Enter the number in **Number to call**, or select **Call again** next to a recent call. Use international format: a `+`, the country code, then the number, with no spaces — for example `+84775352590`.
+3. Check **Call from**. This is the number the other person sees. It is also the number they will call back, so pick the one your team answers.
+4. Check **Assist from**. This selects the voice agent whose knowledge, monitors and skills Copilot uses on this call. Revve suggests the agent that answers the number you are calling from.
+5. Select **Call**.
+
+Revve opens the live-call workspace and starts ringing the other person. The call connects only after your browser has joined, so nobody ever answers to silence.
+
+<Tip>
+**Assist from** is a choice of knowledge, not of voice. The agent you pick never speaks to the person you called — it decides which knowledge base Copilot searches, which warnings fire, and which guides are available. Pick the agent that handles this kind of conversation on the phone.
+</Tip>
+
+## Handle the call
+
+The workspace is the one described in [Agent Assist Copilot](/voice-agents/agent-assist-copilot), and everything on that page applies here:
+
+| Area | What you get |
+|------|--------------|
+| **Transcript** | Both sides of the call, live, with speaker labels. |
+| **Warnings and guide** | Monitors from the selected agent's Copilot, and any skill you start. |
+| **Copilot thread** | Answers, knowledge results and action results. Ask a question or use `/search`, `/summarize`, `/note`. |
+| **Controls** | Mute, and hang up. |
+
+Hang up when you are done. The screen stays open afterwards so you can finish a guide, run a last tool action, or write a note before you leave.
+
+If the other person hangs up first, the call ends the same way and the screen stays.
+
+## Read the recent calls list
+
+The **Recent calls** panel lists the calls you placed, newest first. Use it to call someone back without retyping the number.
+
+| What you see | What it means |
+|---|---|
+| A duration | The call connected, and lasted that long. |
+| **No answer** | Nobody picked up, the line was busy, or the carrier rejected the number. Nothing was recorded. |
+| The agent name | Which voice agent's Copilot rode along. |
+
+Only your own calls appear here. To see the whole team's, use call history.
+
+## Find the call afterwards
+
+A call you placed is an ordinary call. It appears in call history with its recording, its transcript and its evaluation, and it appears on the **Live Calls** board while it is running, so a supervisor can listen in.
+
+To replay what Copilot did, open the call in call history and select **Copilot**.
+
+## Troubleshooting
+
+| Symptom | What to check |
+|---------|---------------|
+| The **Call** button stays disabled | The number is not in international format. It must start with `+` and a country code. |
+| **Call from** is empty | No number on this workspace can place outbound calls yet. A team administrator must configure one. |
+| "This number is on the do-not-call list" | The number is blocked for this workspace. See [Do Not Call List](/voice-agents/do-not-call-list). |
+| The other person cannot hear you | Check that the browser tab has microphone access, and that you are not muted. |
+| The call ends before anyone answers | Your browser did not join in time, or you closed the tab while it was ringing. Place the call again and leave the workspace tab open. |
+| No Copilot panel | The selected agent has no Copilot Agent attached, or its Copilot has no published version. |
+
+## What's Next
+
+- [Agent Assist Copilot](/voice-agents/agent-assist-copilot) — configure the guidance, knowledge and tools you get during the call.
+- [Call Transfer](/voice-agents/call-transfer) — the other way a call reaches you: the AI hands one over mid-conversation.
