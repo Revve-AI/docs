@@ -33,7 +33,7 @@ Open your voice agent, go to **Advanced Settings** → **Call Transfer**, and fl
 | **SIP Address** | Transfers the call to a SIP endpoint (full URI, e.g., `sip:agent@domain` — it must start with `sip:`). | You run a call center or PBX with SIP addressing. |
 | **Phone Number** | Transfers the call to an external phone number. Set the **Destination Phone Number** in E.164 format (e.g., `+84775352590`). | The human side is just a phone — a hotline, a queue, someone's mobile. |
 
-For **Revve User**, also set the **Fallback Phone Number (optional)** — an E.164 number to fall back to if no agent is available. Without it, an unanswered transfer has nowhere to go, so set it unless your team truly staffs the app around the clock.
+For **Revve User**, you can set a **Fallback Phone Number (optional)** in E.164 format. If outbound calling is available, Revve tries this number after an in-app transfer fails. If that attempt cannot connect, or no fallback number is configured, Revve can try another available in-app agent once.
 
 ### Bridge or cold transfer
 
@@ -45,6 +45,27 @@ For **SIP Address** and **Phone Number** transfers, choose a **Transfer Type**:
 | **Cold Transfer** | SIP REFER — the call is handed off entirely. No further logging of the customer-agent conversation. | Compliance contexts where the AI must fully exit the call once a human takes over. |
 
 **Revve User** transfers don't have this choice — the call routes in-app.
+
+### Set how long to wait for a connection
+
+Set **Connection timeout (seconds)** to a whole number from **1 to 180**. It controls the wait for each transfer attempt to connect. The setting appears for **Revve User** transfers and for **Bridge Transfer** to a phone number or SIP address. It does not apply to **Cold Transfer**.
+
+| Destination | Default when no timeout is saved |
+| --- | --- |
+| **Phone Number** or **SIP Address**, using **Bridge Transfer** | 45 seconds |
+| **Revve User (in-app agent)** | 30 seconds |
+
+Older transfer nodes can retain a 30-second default. Set the field explicitly when you need a specific timeout.
+
+Use a shorter value when callers should return to the AI sooner if nobody answers. Use a longer value when your team needs more time to answer. For example, **20** gives each attempt a 20-second connection window.
+
+The value applies separately to each attempt, including a fallback phone call or a second in-app invitation. It is not a limit on the total handoff time. Setup, the private summary, and a short wait for connection updates can add time before the transfer finishes or reports failure.
+
+For a [Conversational Flow](/voice-agents/voice-conversational-flow#transfer-a-call), configure this value on the **Transfer Call** node. Connect its **Transfer Failed** transition to the next step for callers whose transfer cannot connect. Revve follows that transition after the transfer and its fallback attempts fail. Without a connected failure transition, the AI apologizes and continues helping the caller.
+
+<Note>
+This setting limits the wait for a connection. A phone system can report an answer when voicemail, a recorded greeting, or a hold queue picks up. The timeout does not distinguish those answers from a human or end a call that already answered.
+</Note>
 
 ### Write the handover
 
@@ -65,11 +86,13 @@ Turn **Accept Calls** on. Anyone with it paused is skipped when a transfer comes
 
 ## Step 3: Answer the transfer
 
-When the agent initiates an in-app transfer, available teammates see an **Incoming call transfer** card appear anywhere in the app. It shows "A caller is waiting to be connected." and an "Expires in `{n}`s" countdown.
+When the agent initiates an in-app transfer, the selected available teammate sees an **Incoming Call** card. It includes a countdown in seconds and a call summary when available.
+
+The countdown uses **Connection timeout (seconds)**, with a default of 30 seconds when no value is saved.
 
 - **Accept** — you're connected to the caller in the browser, and you get the AI-generated call summary so you're not walking in blind.
-- **Decline** — you pass; other available agents can still pick it up.
-- Nobody accepts before the countdown ends — the call falls back to the **Fallback Phone Number**, if configured.
+- **Decline** — you pass, and Revve follows the fallback sequence.
+- Nobody accepts before the countdown ends — the invitation expires, and Revve follows the same fallback sequence. The configured timeout applies to each new attempt.
 
 ## What's Next
 
