@@ -78,6 +78,17 @@ A Transfer Call node supports **Revve User**, **SIP Address**, and **Phone Numbe
 
 **Bridge Transfer** brings the transferee into the call while the AI stays silent and logging continues. **Cold Transfer** hands the call off with SIP REFER; Revve does not continue logging the subsequent customer-agent conversation. Choose the mode that fits your telephony system and recording requirements. See [Call Transfer](/voice-agents/call-transfer).
 
+To move on when a transfer cannot connect:
+
+1. Select the **Transfer Call** node in your draft.
+2. Set **Connection timeout (seconds)** to a whole number from **1 to 180**. This setting applies to in-app transfers and phone/SIP bridges.
+3. Connect **Transfer Failed** to a node that explains the failed transfer and offers the caller a next step.
+4. Test answered, unanswered, and fallback attempts before publishing the agent version.
+
+Without a saved timeout, phone/SIP bridges use **45 seconds** and in-app transfers use **30 seconds**. Older transfer nodes can retain a 30-second default. Each fallback attempt gets its own connection window, so the complete handoff can take longer. The **Transfer Failed** transition runs after all attempts fail; without a destination for it, the AI apologizes and continues helping.
+
+The timeout does not identify whether a human answered. Voicemail, recorded greetings, and queues can count as an answer. See [connection timeout behavior](/voice-agents/call-transfer#set-how-long-to-wait-for-a-connection) before using it with a phone queue.
+
 ## Protect verification steps
 
 Use [Voice Verification](/voice-agents/voice-verification) to route on enrolled voiceprint results. Use [Sensitive Data in Voice Flows](/voice-agents/sensitive-data-handling) to configure transcript masking, captured-value masking, and protected recording intervals around a sensitive question.
