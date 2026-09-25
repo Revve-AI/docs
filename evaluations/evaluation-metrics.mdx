@@ -1,19 +1,18 @@
 ---
 
 title: "Evaluation Metrics"
-description: "The team-wide library of reusable scoring criteria — deterministic checks and LLM-judged rubrics — shared by Evaluators, Scorecards, and the per-Voice-Agent Evaluation tab."
+description: "The team-wide library of reusable scoring criteria — deterministic checks and LLM-judged rubrics — shared by Evaluators and Scorecards."
 ---
 
-**Metrics** (**Evaluations → Metrics** in the left dashboard nav) is a standalone library where a team defines reusable scoring criteria once and attaches them wherever calls or conversations get graded. It's the same system already introduced in [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation): metrics belong to your team, not to a single agent, so a metric you build here is the same metric you can add to a Voice Agent's **Evaluation** tab, an Evaluator, or a Scorecard. This page covers the library UI itself — where you create, edit, and delete metrics. For how a metric is scored (Deterministic vs. LLM Judge, the seven deterministic checks, Binary vs. Scale 1-5, speaker scope, score rubrics), see [Voice Agent Evaluation — Metric types](/voice-agents/voice-agent-evaluation#metric-types); that mechanics doesn't change based on where the metric is used.
+**Metrics** (**Evaluations → Metrics** in the left dashboard nav) is a standalone library where a team defines reusable scoring criteria once and attaches them wherever calls or conversations get graded. Metrics belong to your team, not to a single agent or Scorecard — a metric you build here is the same metric you can add to an [Evaluator](/evaluations/creating-an-evaluator) or a [Scorecard](/evaluations/scorecards), which a Voice Agent then attaches for live-call grading. This page covers both the library UI (create, edit, delete) and the scoring mechanics (Deterministic vs. LLM Judge, the seven deterministic checks, Binary vs. Scale 1-5, speaker scope, score rubrics) — that mechanics doesn't change based on where the metric ends up attached.
 
 ![The Metrics library page, showing the metrics table with Name, Type, Description, and Created columns, and the New Metric button](/screenshots/evaluations-metrics-list.png)
 
 <Note>
-One team-wide library, several consumers. A metric created here can be attached to:
+One team-wide library, two direct consumers (and a third, indirectly). A metric created here can be attached to:
 
-- The per-Voice-Agent **Evaluation** tab — see [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation).
 - An **Evaluator**, in the top-level Evaluations product — see [Creating an Evaluator](/evaluations/creating-an-evaluator).
-- A **Scorecard**, for grading uploaded call recordings — see [Evaluations Overview](/evaluations/evaluations-overview).
+- A **Scorecard** — see [Scorecards](/evaluations/scorecards). A Voice Agent doesn't attach metrics directly; it attaches Scorecards, which attach metrics — see [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation).
 
 Editing a metric here changes it everywhere it's attached — there's no per-consumer override of a metric's own definition, only of its weight and threshold within each policy.
 </Note>
@@ -24,15 +23,16 @@ Click **New Metric** (top right, also shown in the empty state) to open a side p
 
 | Field | Notes |
 |-------|-------|
-| **Name** | Required. Placeholder example: "e.g. Verified Identity". Keep it specific enough to recognize in a weighted-metrics table on an agent or Scorecard, where you won't see the full description. |
-| **Description** | Optional. Placeholder: "What this metric checks...". Worth filling in — it's the only context a teammate attaching your metric to their own agent sees before they add it. |
-| **Type** | Required. **Deterministic** or **LLM Judge**. See [Metric types](/voice-agents/voice-agent-evaluation#metric-types) for the difference. |
+| **Name** | Required. Placeholder example: "e.g. Verified Identity". Keep it specific enough to recognize in a weighted-metrics table on a Scorecard or Evaluator, where you won't see the full description. |
+| **Description** | Optional. Placeholder: "What this metric checks...". Worth filling in — it's the only context a teammate attaching your metric to their own Scorecard sees before they add it. |
+| **Type** | Required. **Deterministic** or **LLM Judge** — see the two field groups below. |
+| **Informational only** | Checkbox, independent of Type. When checked, the metric is still judged and shown on every scored call, but excluded from the parent Scorecard or Evaluator's overall pass/fail score — useful for something worth watching without letting it sink a result on its own. |
 
 **When Type is Deterministic:**
 
 | Field | Notes |
 |-------|-------|
-| **Check Type** | Defaults to **Tool Called**. The same seven deterministic checks documented in [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation#deterministic-checks) — Tool Called, Tool Not Called, Tool Called With, Contains Text, Not Contains Text, Regex Match, Turn Count. |
+| **Check Type** | Defaults to **Tool Called**. Seven checks are available: **Tool Called** (tool appears in the call's tool call logs), **Tool Not Called** (tool does NOT appear), **Tool Called With** (tool was called with matching parameters), **Contains Text** (an agent message contains a substring), **Not Contains Text** (the agent never says a given substring), **Regex Match** (an agent message matches a regex pattern), **Turn Count** (the conversation completed within N turns). These are pass/fail because they're facts, not opinions — no LLM call is needed, so they're also cheap and instant. |
 
 **When Type is LLM Judge:**
 
@@ -53,9 +53,8 @@ Use the **Type** filter above the table (**All types** / **Deterministic** / **L
 
 | Consumer | What it's for | Docs |
 |----------|----------------|------|
-| Voice Agent **Evaluation** tab | Automatic post-call grading of every completed call for one agent, split into Caller/Agent groups with weights and a minimum pass score. | [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) |
+| **Scorecards** | A reusable, single-speaker (Agent or Caller) weighted policy — attach one to a Voice Agent for automatic live-call grading, or apply it to a batch of uploaded recordings. | [Scorecards](/evaluations/scorecards) |
 | **Evaluators** | Pre-ship regression testing — grade a simulated or scripted test conversation before you publish an agent change. | [Creating an Evaluator](/evaluations/creating-an-evaluator) |
-| **Scorecards** | Grade batches of already-recorded calls uploaded from Call History, using the same weighted-metrics UI as the Voice Agent Evaluation tab. | [Evaluations Overview](/evaluations/evaluations-overview) |
 
 ## Deleting a metric
 
@@ -63,10 +62,10 @@ The row-level delete action opens an **AlertDialog** titled **Delete metric**:
 
 > This metric will be removed from all evaluators that use it. This action cannot be undone.
 
-Read that literally and it undersells the blast radius: the confirmation copy only mentions evaluators, but the same metric may also be attached to a Voice Agent's Evaluation policy or a Scorecard. Deletion isn't scoped to one consumer — if you're not certain a metric is unused, check its usage on Voice Agents and Scorecards before deleting it, not just in the Evaluators list. There's no undo.
+Read that literally and it undersells the blast radius: the confirmation copy only mentions evaluators, but the same metric may also be attached to a Scorecard — including one attached to a live Voice Agent. Deletion isn't scoped to one consumer — if you're not certain a metric is unused, check its usage on Scorecards as well as Evaluators before deleting it. There's no undo.
 
 ## What's Next
 
-- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — the metric type system in full: deterministic checks, LLM Judge scoring, speaker scope, and how a group's final score is calculated.
-- [Evaluations Overview](/evaluations/evaluations-overview) — how Evaluators, Profiles, Metrics, Scorecards, and Runs fit together.
+- [Scorecards](/evaluations/scorecards) — build a weighted policy from these metrics and attach it to a Voice Agent or a batch of recordings.
+- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — attach a Scorecard to a Voice Agent for automatic live-call grading.
 - [Creating an Evaluator](/evaluations/creating-an-evaluator) — build a pre-ship test case and attach metrics from this library to it.
