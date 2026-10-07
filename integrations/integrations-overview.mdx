@@ -34,11 +34,12 @@ The catalog is maintained by Revve and grows over time. Apps available today inc
 
 Clicking **Install** starts a flow that differs by app, depending on how the provider handles authentication:
 
-- **OAuth redirect** (Calendly) — you'll be redirected to log in, approve permissions, and return to Revve automatically. See [Connecting Calendly](/integrations/connecting-calendly).
+- **OAuth redirect** (Calendly, HubSpot) — you'll be redirected to log in, approve permissions, and return to Revve automatically. See [Connecting Calendly](/integrations/connecting-calendly) and [Connecting HubSpot CRM](/integrations/connecting-hubspot-crm).
 - **API-key form** (Cal.com) — you paste an API key generated in the provider's settings.
 - **Configuration form** (ChiliPiper) — you enter account details such as tenant, subdomain, and router details.
+- **Managed package + OAuth** (Salesforce) — you install a Salesforce package first, then authorize access. See [Connecting Salesforce](/integrations/connecting-salesforce).
 
-Some apps support **multiple profiles per team**: Calendly and Cal.com let you connect several calendars side by side — for example a sales calendar and a support calendar — each with its own alias so agents can tell them apart. ChiliPiper and HubSpot are one configuration per team.
+Some apps support **multiple profiles per team**: Calendly and Cal.com let you connect several calendars side by side — for example a sales calendar and a support calendar — each with its own alias so agents can tell them apart. ChiliPiper, HubSpot, and Salesforce are one configuration per team.
 
 ## How installed apps power agents
 
@@ -47,7 +48,7 @@ Installing an app is what makes its capability appear in agent configuration. Th
 | Category | Apps | What it unlocks |
 |----------|------|-----------------|
 | **Scheduling** | Calendly, Cal.com, ChiliPiper | Agents check real availability and book meetings on your team's calendars. See [Scheduling & Booking](/integrations/scheduling-and-booking). |
-| **CRM** | HubSpot, Salesforce, Outreach, ActiveCampaign | Sync call and chat results and leads to your CRM. CRM apps also appear as read-only "managed" actions in [automation rules](/automations/automation-rules-overview). |
+| **CRM** | [HubSpot](/integrations/connecting-hubspot-crm), [Salesforce](/integrations/connecting-salesforce), Outreach, ActiveCampaign | Sync call and chat results and leads to your CRM. CRM apps also appear as read-only "managed" actions in [automation rules](/automations/automation-rules-overview). |
 | **Notifications** | Slack | Send team notifications to your Slack workspace. |
 
 <Note>
@@ -69,3 +70,5 @@ Before removing a scheduling profile, check which agents use it as their **Calen
 
 - [Connecting Calendly](/integrations/connecting-calendly) — the OAuth install flow, step by step.
 - [Scheduling & Booking](/integrations/scheduling-and-booking) — how calendar apps wire into chat and voice agents, including Cal.com and ChiliPiper.
+- [Connecting Salesforce](/integrations/connecting-salesforce) — the managed-package install, and the six sync tabs you configure afterward.
+- [Connecting HubSpot CRM](/integrations/connecting-hubspot-crm) — OAuth install, sync settings, and field mapping.
