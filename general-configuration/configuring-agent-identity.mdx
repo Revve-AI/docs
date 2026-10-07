@@ -1,64 +1,30 @@
 ---
 
 title: "Configuring Agent Identity"
-description: "Set your Chat Agent's name, description, and role to define how it presents itself to visitors."
+description: "Set a Chat Agent's Name, Description, and Role on the Basic tab — for the agent builder deciding what to call an agent and how to write its persona."
 ---
 
-Every Chat Agent has a set of identity fields that control how it introduces itself, what it knows about its purpose, and how it behaves in conversations. These fields are found on the **Basic** tab under **General Settings**.
+Every Chat Agent has three identity fields — **Name**, **Description**, and **Role** — on the **Basic** tab, under the **General Settings** sub-tab in the left sidebar. They control what the agent is called, how your team tells agents apart, and how the model behaves. **Name** and **Description** are required to save; **Role** is optional but almost always worth writing.
 
 ![Basic tab showing agent identity fields — Name, Description, and Role](/screenshots/chatbot-basic-settings.png)
 
+<Note>
+Changes here auto-save into your draft as you type. You need the draft edit lock (**Start Editing**) to change anything, and auto-saved changes only reach the live agent once you publish — see [Publishing and Versioning](/getting-started/publishing-and-versioning).
+</Note>
+
 ## Identity Fields
 
-| Field | Description | Requirements |
-|-------|-------------|--------------|
-| **Name** | The display name of your agent. This appears in the chat widget header and is how visitors identify who they are talking to. | Required. Maximum 50 characters. |
-| **Description** | A short summary of what the agent does. Used internally to help your team distinguish between agents. | Required. Maximum 500 characters. |
-| **Role** | A rich-text field where you define the agent's persona and personality. This is sent to the AI model as context for how it should behave. | Optional but recommended. |
+| Setting | Default | When to change |
+|---------|---------|----------------|
+| **Name** | Empty (required) | This is the agent's display name — it appears in the chat widget header, the browser tab/page title, and any Open Graph or Twitter Card preview if you link directly to the agent's standalone chat page. It's also available elsewhere in the product as the `{{AI agent name}}` template variable (for example, in conversation-feedback thank-you messages), so renaming an agent updates every message that references it. Maximum 50 characters. Keep it short and recognizable — "Sales Assistant" or "Booking Concierge" reads better in a narrow widget header than a full product name. |
+| **Description** | Empty (required) | Primarily a team-facing label — it's what shows up in agent-picker dropdowns and list views so you can tell agents apart once you have more than a couple. It also becomes the page meta description (and Open Graph/Twitter description) if you use the standalone full-page chat URL for this agent, so write it in plain, accurate language rather than internal shorthand if that channel is in play. Maximum 500 characters, but a one-sentence summary of what the agent does and who it's for is normally enough. |
+| **Role** | Empty (optional) | A rich-text field (bold, italic, headings, lists, links) inserted into the system prompt under its own `## Role` section — separate from, and alongside, the **Objectives** field (the agent's instructions) and the team-level Business Description and Brand Voice. Leaving it empty is fine for a narrowly-scoped agent whose Objectives already say everything needed; write one when you want a persona that holds up across many different objectives — tone, boundaries, what it should never claim to be. Think "who is this agent" (Role) vs. "what should it accomplish right now" (Objectives), and keep the two from duplicating each other. |
 
-## How to Configure
+<Tip>
+Role and Objectives are easy to blur together. If you find yourself repeating the same behavioral instruction in both, it belongs in Role — it applies everywhere the agent talks, while Objectives is where you put what's specific to this agent's job.
+</Tip>
 
-1. Navigate to **Agents > Chat Agents** in the sidebar and select your agent.
-2. Click the **Basic** tab.
-3. Click **Start Editing** if you are not already in edit mode.
-4. Fill in the **Name**, **Description**, and **Role** fields.
-5. Click **Save Changes** when done.
+## What's Next
 
-## Name
-
-The **Name** field sets the agent's display identity. Visitors will see this name in the chat widget header, so choose something recognizable and appropriate for your brand.
-
-**Examples:**
-- "Customer Support" for a general help agent
-- "Sales Assistant" for a lead-qualification agent
-- "Booking Concierge" for a scheduling-focused agent
-
-## Description
-
-The **Description** field is an internal reference that summarizes what the agent does. While visitors do not see this directly, it helps your team manage multiple agents across different use cases or channels.
-
-**Examples:**
-- "Support customers onboarding"
-- "Handles product inquiries and routes qualified leads to sales"
-- "Assists website visitors with booking appointments"
-
-## Role
-
-The **Role** field is where you define the agent's personality, tone boundaries, and behavioral guidelines. This field supports rich text formatting (bold, italic, lists) and is sent directly to the AI model as part of its system context.
-
-Think of the Role as the agent's "character sheet." A well-written role helps the AI stay consistent and on-brand.
-
-**Example:**
-> You're a digital assistant, ready to engage website visitors through personalized conversation. You are friendly, professional, and concise. Always greet visitors warmly and offer to help with their questions.
-
-## Tips
-
-- **Keep the Name short and professional.** Visitors see it prominently in the chat header.
-- **Write the Description for your team, not for visitors.** It helps when you have many agents to manage.
-- **Be specific in the Role field.** The more detail you provide, the more consistently the AI will behave. Include guardrails such as topics to avoid or escalation instructions.
-- **Use formatting in the Role field.** Bold key instructions and use bullet lists for clarity -- the AI model processes rich text well.
-
-## Related
-
-- [Choosing an LLM Model](/general-configuration/choosing-an-llm-model) -- select which AI model powers your agent.
-- [Language and Tone Settings](/general-configuration/language-and-tone-settings) -- configure the language and communication style.
+- [Choosing an LLM Model](/general-configuration/choosing-an-llm-model) — select which AI model powers your agent.
+- [Language and Tone Settings](/general-configuration/language-and-tone-settings) — configure the language and communication style that combine with Role in the system prompt.
