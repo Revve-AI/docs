@@ -1,10 +1,14 @@
 ---
 
 title: "Daily Reports"
-description: "Receive automated daily performance summaries for your Chat Agents by email."
+description: "Track daily performance metrics for your website Chat Agents and review them on the agent's Dashboard tab."
 ---
 
-Revve AI can send you an automated daily email report summarizing each Chat Agent's performance from the previous day. This is useful for staying on top of your agent's activity without needing to log in to the dashboard every morning.
+Revve AI can record an automated daily report of each Chat Agent's performance from the previous day. The reports power the charts and totals on the agent's **Dashboard** tab, so you can follow your agent's funnel from page views to conversions over time.
+
+<Note>
+Daily reports are stored and shown in the dashboard. They are not currently sent by email.
+</Note>
 
 ## What Is Included in a Daily Report
 
@@ -24,23 +28,32 @@ These metrics give you a quick funnel view -- from page visits through to conver
 
 Daily reports are configured per Chat Agent. To enable them:
 
-1. Navigate to the Chat Agent you want to configure.
+1. Navigate to the Chat Agent you want to configure and click **Start Editing**.
 2. Go to **Advanced Settings** in the agent's navigation tabs.
-3. Scroll to the **Other Settings** section.
-4. Toggle the **Daily Report** switch to the on position.
-5. Click **Save** to apply the change.
+3. Open the **Others** section.
+4. Turn on the **Daily Report** switch ("Track daily performance metrics").
 
-Once enabled, the system will automatically generate and store a daily report each day. The report covers the previous day's activity based on the timezone configured for your Chat Agent.
+The setting saves to the agent's draft automatically; publish the agent for it to take effect. Once enabled, the system will automatically generate and store a daily report each day. The report covers the previous day's activity based on the timezone configured for your Chat Agent.
 
 **Note:** Daily reports are currently available for **website** channel Chat Agents only.
 
 ## How to Disable Daily Reports
 
-Follow the same steps above and toggle the **Daily Report** switch to the off position, then save.
+Follow the same steps above, turn the **Daily Report** switch off, and publish.
 
 ## When Reports Are Generated
 
 Reports are generated automatically once per day by a scheduled process. The report covers the full previous day (midnight to midnight) in the Chat Agent's configured timezone.
+
+## Viewing the Reports
+
+Open the Chat Agent's **Dashboard** tab. It reads from the daily reports and shows:
+
+- Totals for **Total Page Views**, **Chats**, **Leads**, and **Resolution Rate**.
+- **Conversion Performance** — page loads, chat conversion, and lead conversion over the selected period.
+- **Why People Chat**, **How Chats Begin**, **Conversation Starter Distribution**, and **Top Chat URLs**.
+
+Choose **Last 7 days**, **Last 14 days**, **Last 30 days**, or a **Custom range**. Use **Export data as CSV** to download the data, and **Refresh data** to reload it. If daily reports haven't been generated yet for the period, the dashboard shows **No data available**.
 
 ## Notifications vs Daily Reports
 
@@ -51,11 +64,11 @@ It is worth noting the difference between **Notifications** and **Daily Reports*
 | **Notifications** | Alert your team (via email or Slack) when specific conditions are met during a live conversation. | Real-time, based on AI-detected conditions during a conversation. |
 | **Daily Reports** | Summarize the previous day's overall performance metrics for a Chat Agent. | Automated, runs once per day on a schedule. |
 
-You can use both features together. Notifications keep you informed in real time about important events, while daily reports give you a consistent performance summary to review each morning.
+You can use both features together. Notifications keep you informed in real time about important events, while daily reports build the performance history on the agent's Dashboard tab.
 
 ## Tips
 
 - Enable daily reports on your highest-traffic Chat Agents first to get the most value from the daily summaries.
 - Compare the "Started Conversations" percentage across days to understand how changes to your welcome message or conversation starters affect engagement.
 - If the "Appointments Made" number is consistently low relative to started conversations, consider reviewing your agent's conversation flow to ensure it guides visitors toward scheduling.
-- Use daily reports alongside the [Analytics Dashboard](/history-analytics/analytics-dashboard) for a complete picture -- the report gives you a quick daily snapshot, while the dashboard lets you explore trends over longer time periods.
+- Use the agent's Dashboard tab alongside the team-wide [Analytics Dashboard](/history-analytics/analytics-dashboard) for a complete picture.

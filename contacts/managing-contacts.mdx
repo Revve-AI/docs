@@ -23,7 +23,7 @@ Duplicates are handled by upsert on identifying fields: an incoming email or pho
 The **Contacts** page lists every contact on your team. Use the search box ("Search by email, phone, or name...") to find a specific record, then click any row to open its detail panel.
 
 - **Columns** — Name, Email, Phone, Company, and Created At (sortable). Your team's custom fields appear as additional columns, hidden by default; turn them on with the **column visibility** toggle. Column choices persist per browser and are encoded in the URL, so a filtered view can be shared as a link.
-- **Pagination** — 50 rows per page by default, adjustable from 5 to 50. The footer shows "Showing X of Y contacts".
+- **Pagination** — 20 rows per page by default, with 20, 30, or 50 to choose from. The footer shows "Showing X of Y contacts".
 - **Empty state** — a search with no matches shows "No results."
 
 <Note>
@@ -40,6 +40,7 @@ The **Basic information** card holds the identifying fields:
 
 | Field | Editable | Notes |
 |-------|----------|-------|
+| Name | Yes | |
 | Email | Yes | |
 | Phone | No | An **Original Phone** row appears if the number was normalized on the way in. |
 | Company | Yes | |
@@ -75,7 +76,8 @@ Clicking **Add Field** opens a dialog:
 | **Label*** | Display name, e.g. "Customer ID". |
 | **Field Key*** | Machine name, e.g. "customer_id" — auto-generated from the label until you edit it. Letters, digits, and underscores only; must be unique. |
 | **Description** | Optional explanation shown alongside the field. |
-| **Data Type*** | Text, Number, Boolean, or File. |
+| **Data Type*** | **Text**, **Number**, **Boolean**, **File**, **Single select**, **Date**, or **Date and time**. |
+| **Options*** | Single select fields only — the list of values to choose from. |
 | **Extract Text** | File fields only — runs OCR on uploaded PDFs and DOCX files so their text is usable downstream. |
 | **Required Field** | Marks the field as required. |
 | **Auto-fillable** | "Can be filled automatically from call or chat analysis" — lets agents populate the field from conversations. |
@@ -94,6 +96,13 @@ One field definition shows up in five places:
 - Column mapping during campaign enrollment.
 - **Update Contact Field** actions in automations.
 - Agent prompt placeholders — reference a field in an agent's prompt as `{{customer_id}}` and it resolves to that contact's value.
+
+## Contact labels and blocking
+
+Two contact-level actions live in the **Inbox** rather than on the Contacts page:
+
+- **Contact label** — a label on the person that shows on every conversation with them. Set it from the tag icon on a conversation row. See [Managing Conversations](/inbox/managing-conversations#applying-labels).
+- **Blocking** — on Messenger and Zalo OA, block a contact so their new messages are dropped. See [Managing Conversations](/inbox/managing-conversations#blocking-a-contact).
 
 ## Related concepts that live elsewhere
 

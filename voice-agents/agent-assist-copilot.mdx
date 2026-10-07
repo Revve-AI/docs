@@ -12,7 +12,7 @@ The human agent speaks to the caller. Copilot provides suggestions in the worksp
 - Your account must belong to the workspace that contains the voice agent and call.
 - The voice agent must have a Copilot Agent attached, with a published version.
 - For in-app transfers, enable **Accept Calls** in your account menu and allow browser microphone access.
-- For observation and takeover from **Live Calls**, enable **Live Observability** in the voice agent's call settings.
+- For observation and takeover from **Live Calls**, enable **Live Observability** in the voice agent's **Advanced Settings > Security**.
 - Knowledge answers need configured knowledge sources. API actions need configured tools and access to the target system.
 
 See [Call Transfer](/voice-agents/call-transfer) for transfer destinations and agent availability.
@@ -25,7 +25,7 @@ See [Call Transfer](/voice-agents/call-transfer) for transfer destinations and a
 4. In **Overview**, write **Instructions for the copilot**. Start with the example below and keep the default models for your first test.
 5. Configure the relevant tabs below.
 6. Test the draft, then have a team administrator select **Publish**.
-7. Open the voice agent's call settings and select it under **AI Assist for Human Agents**.
+7. Open the voice agent's **Advanced Settings > Security** and select it under **AI Assist for Human Agents**.
 8. Save and publish the voice agent's configuration through its normal publish workflow.
 
 ![Copilot Agent Overview in the Revve demo workspace, with instructions, model choices, and the live summary setting](/screenshots/voice-copilot-overview.jpg)
@@ -45,7 +45,8 @@ Help the human agent resolve support requests. Use approved knowledge for policy
 | **Overview** | Instructions, models, and the optional live summary column, refresh period, and summary prompt. |
 | **Knowledge** | Knowledge bases, retrieval mode, and whether to suggest a search or show an answer automatically. |
 | **Monitors** | Conditions that raise warnings, with severity, guidance, and repeat limits. |
-| **Skills** | Procedures with steps, activation conditions, instructions, and optional tool actions. |
+| **Playbooks** | Guided procedures for one task: a trigger, instructions, steps, and the tools the playbook may use. A playbook opens when its trigger matches, or when the agent starts it. |
+| **Skills** | Instruction sets the copilot follows when the agent types `/name`, or offered after the call. |
 | **Tools** | API or code tools available to Copilot and skill steps. A team administrator must add or change tools. |
 | **Policy** | Limits on warning frequency, warnings per call, and classifier calls. |
 | **Versions** | Published versions and configuration history. |
@@ -66,7 +67,25 @@ Tool definitions are an exception: edits to shared tools can affect active sessi
 5. Under **Trigger**, select **Exact phrases** and enter `supervisor` in **Phrases**.
 6. Keep **Watches** set to **Caller** and **Cooldown (s)** at its default of `120`, then select **Save monitor**.
 
-Use **Exact phrases** for a known term you can test predictably. Use **Copilot decides from the description** for requests that can be phrased many ways, and test representative wording. Increase the cooldown if repeated warnings distract agents; shorten it if a repeated request needs attention sooner.
+Use **Exact phrases** for a known term you can test predictably. Use **Copilot decides from the description** for requests that can be phrased many ways, and test representative wording; its optional **Decision threshold** sets how confident the model must be before the monitor fires. Use **Call event** to fire at **Call start**, **Transfer in**, or **Call end**. Increase the cooldown if repeated warnings distract agents; shorten it if a repeated request needs attention sooner.
+
+Playbooks use the same trigger options, plus **Only when the agent starts it**.
+
+### Add a playbook
+
+1. In **Playbooks**, select **New playbook**.
+2. Enter a **Name** and **Description**, and choose a **Trigger**.
+3. Write **Instructions for the copilot**, add the **Steps** the agent should complete, and pick the **Tools this playbook may use**.
+4. Optionally set **Hide after done (seconds)**. `0` keeps a finished playbook on screen until the agent ends it.
+5. Select **Save playbook**.
+
+### Add a skill
+
+1. In **Skills**, select **New skill**.
+2. Enter a **Name** — the agent runs the skill by typing `/` and this name.
+3. Under **When**, choose **When the agent asks** or **Offered after the call**.
+4. Add a **Description**, an optional **Suggest during the call when** condition, and the **Instructions** the copilot follows.
+5. Select **Save skill**.
 
 ### Test before a live call
 
@@ -106,7 +125,7 @@ The assigned human agent controls the Copilot session. Other authorized team mem
 | **Transcript** | Follow the conversation and speaker labels. Use linked timestamps to inspect related evidence or guidance. |
 | **Warnings and guide** | Review active warnings and the current procedure before you continue. |
 | **Copilot thread** | Read answers, knowledge results, action results, and notes. |
-| **Composer** | Ask a question, use a preset request, or enter a slash command. |
+| **Composer** | Ask a question or enter a slash command. |
 | **Summary** | Review the transfer summary when available and the ongoing call summary when enabled. |
 
 The header shows the Copilot name, version, and status. **Listening** means it is ready; **Thinking** means it is processing work.
@@ -115,17 +134,19 @@ On a narrow screen, open the **Copilot** panel from the call header. On a wide s
 
 ## Ask for help and search knowledge
 
-Type a question in the composer, or select **Draft my next line**, **Summarize so far**, or **Search knowledge**.
+Type a question in the composer, or type `/` to pick a command.
 
 For example, ask: "What information must I collect before I escalate this request?"
 
-Press **Enter** to send. Press **Shift+Enter** for a new line. Type `/` to show available skills and commands.
+Press **Enter** to send. Press **Shift+Enter** for a new line. Type `/` to show the command menu, grouped into **Skills**, **Guides** (playbooks), and **Actions**.
 
 | Command | Result |
 |---------|--------|
-| `/search card replacement` | Searches the configured knowledge for the supplied query. |
-| `/summarize` | Requests a summary of the conversation so far. |
-| `/note Customer requests a callback tomorrow` | Saves a note in this Copilot session. |
+| `/search card replacement` | Searches the knowledge base for the supplied query. |
+| `/summarize` | Summarizes the call so far. |
+| `/note Customer requests a callback tomorrow` | Adds a private note to this call. |
+| `/<skill name>` | Runs one of the Copilot Agent's skills. |
+| A playbook from **Guides** | Starts that playbook. |
 
 If Copilot suggests a knowledge search, run or dismiss the suggestion. Automatic answers depend on the **Knowledge** configuration.
 
@@ -137,24 +158,23 @@ Check the source and the caller's context before you use a suggested response. K
 
 Monitors can show warnings with a reason, suggested wording, and transcript evidence. Review the warning and select **Dismiss** when appropriate.
 
-A skill guides you through a configured procedure. It can start from a configured condition, a suggestion you accept, or the slash-command menu.
+A playbook guides you through a configured procedure. It can start from its trigger, a suggestion you accept, or the **Guides** group in the slash-command menu.
 
 The guide shows completed, skipped, and pending steps. Completion depends on the configured conditions and available conversation evidence.
 
-Select **End skill** when you need to leave the current procedure. A completed guide is not proof that an external record changed.
+Select **End playbook** when you need to leave the current procedure. A completed guide is not proof that an external record changed.
 
 ### Review tool actions
 
 When a step or Copilot request needs your input, the panel shows **Needs you** or a pending action.
 
-1. Check the tool name and proposed values.
+1. Check the tool name, its **Read-only tool** or **Write tool** label, and the proposed values.
 2. Select **Edit values** if you need to correct them.
-3. For a read-only action awaiting approval, select **Run**.
-4. For a write action, select **Confirm and run**, then **Click again to run**.
-5. Select **Skip** if the action should not run.
-6. Check the result before you tell the caller that the action succeeded.
+3. Select **Run**. If the tool has **Ask before running** turned on, a **Run *tool name*?** dialog asks you to check the values first; select **Run tool** to continue.
+4. Select **Skip** if the action should not run.
+5. Check the result before you tell the caller that the action succeeded.
 
-Configured read-only tools can also run automatically. Write tools require human confirmation.
+Configured read-only tools can also run automatically. Write tools always require your click to run. **Ask before running** is set per tool in the Copilot Agent's **Tools** tab.
 
 API tools require a working integration. Attaching Copilot does not automatically connect SAP, Cisco, or another external system.
 

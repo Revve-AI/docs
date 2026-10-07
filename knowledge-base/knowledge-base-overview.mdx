@@ -18,8 +18,8 @@ There are two places to manage knowledge in Revve AI:
 
 | Location | What it does |
 |---|---|
-| **Sidebar > Knowledge Base** | The global knowledge hub for your entire team. Add, organize, and manage all your content sources in one place. All agents across your account can pull from this shared library. |
-| **Chat Agent > Knowledge tab** | The agent-specific view. Attach or detach knowledge sources for a particular agent, manage that agent's FAQs, and configure search settings. |
+| **Sidebar > Knowledge** | The team-wide knowledge hub. It has five pages: **Knowledge Bases**, **Sources**, **FAQs**, **Gaps**, and **Crawlers**. Add and manage your content here and group it into knowledge bases. |
+| **Chat Agent > Knowledge tab** | The agent-specific view. It has four sub-tabs: **Knowledge Base** (attach or detach knowledge bases), **FAQs** (manage the agent's FAQs), **Settings** (configure search), and **Test Knowledge** (check what the agent finds for a question). |
 
 ![The Knowledge tab inside a chat agent, showing the Knowledge Base, FAQs, and Settings sub-tabs](/screenshots/knowledge-base-tab.png)
 
@@ -33,7 +33,7 @@ Add URLs from your website, help center, or any publicly accessible page. Revve 
 
 ### 2. Documents
 
-Upload files such as PDFs, Word documents (DOCX), or plain text files (TXT). This is useful for product guides, internal policies, onboarding materials, or any content that is not published on a website.
+Upload files such as PDFs, Word documents (DOC, DOCX), HTML pages (HTML, HTM), Markdown files (MD), or plain text files (TXT). This is useful for product guides, internal policies, onboarding materials, or any content that is not published on a website.
 
 ### 3. FAQs (Frequently Asked Questions)
 
@@ -43,21 +43,38 @@ Create question-and-answer pairs that your agent can reference directly. FAQs ar
 
 When your agent receives a question, it follows this process:
 
-1. **Search** -- The agent searches across all attached knowledge sources (web pages, documents, and FAQs) to find content that matches the question.
+1. **Search** -- The agent searches the knowledge bases and FAQs attached to it to find content that matches the question.
 2. **Rank** -- The most relevant pieces of content are selected and ranked.
 3. **Respond** -- The agent uses the top-ranked content to compose a response in natural language, tailored to the visitor's question.
 
 This means your agent will not make up answers. If the information is in your knowledge base, the agent will find and use it. If the information is missing, the question may be flagged as a **knowledge gap** so you can fill it later.
 
-## Global Knowledge Base vs. Agent Knowledge
+## Sources, Knowledge Bases, and Agents
 
-The **global Knowledge Base** (accessible from the sidebar) is your team-wide content library. It contains all web pages, documents, and FAQs across your account.
+Knowledge is organized in three layers:
 
-The **Knowledge tab** inside each chat agent lets you control which sources from the global library are attached to that specific agent. This means:
+1. **Sources** -- Every web page and document your team adds lives on the **Knowledge > Sources** page. This is your team-wide content library.
+2. **Knowledge bases** -- Named collections of sources, such as "Product Documentation" or "Return Policies". Create one on the **Knowledge > Knowledge Bases** page with a **Name** and an optional **Description**, then add sources to it. A source can belong to more than one knowledge base. Removing a source from a knowledge base doesn't delete the source.
+3. **Agents** -- On the agent's **Knowledge > Knowledge Base** sub-tab, click **Attach Knowledge Base** to choose which knowledge bases the agent uses. The agent searches only the knowledge bases attached to it.
 
-- You can have a large, shared knowledge base for your team.
-- Each agent only uses the sources you explicitly attach to it.
+This means:
+
+- You can have a large, shared content library for your team.
+- You can reuse the same knowledge base across several agents.
+- Each agent only uses the knowledge bases you explicitly attach to it.
 - FAQs can be shared across multiple agents.
+
+### What Needs Publishing
+
+Attaching or detaching a knowledge base, and changing the knowledge **Settings**, are saved to the agent's draft. They only take effect after you publish the agent. See [Publishing & Versioning](/getting-started/publishing-and-versioning).
+
+FAQs aren't versioned. Changes on the **FAQs** sub-tab take effect immediately, and the tab shows a banner saying so.
+
+## Testing What Your Agent Knows
+
+The **Test Knowledge** sub-tab lets you check what the agent finds for a question without starting a chat. Type a question a customer might ask (e.g., "How long do refunds take?") and click **Run** to see which content the agent would use to answer.
+
+A badge shows whether the test uses your **Draft** or the **Published** version. While you're editing, it tests the draft, so you can check knowledge changes before you publish them.
 
 ## Tips
 

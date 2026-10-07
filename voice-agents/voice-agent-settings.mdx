@@ -5,15 +5,18 @@ description: "Every Voice Agent setting explained — what it does, its default,
 
 This page covers the settings in the **General**, **Model Settings**, and **Advanced Settings** tabs. The guiding principle: **the defaults are tuned for natural conversation — change a setting only when you observe the specific problem it solves.** Each section below tells you what that problem looks like.
 
-The **Evaluation** tab is a separate, policy-driven grading system for completed calls — it's covered on its own page: [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation).
+The **Evaluation** tab attaches your team's scorecards to grade completed calls — it's covered on its own page: [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation).
 
 ## General
 
 | Setting | What it does | Guidance |
 | --- | --- | --- |
 | **Name** / **Description** | Internal identification — callers never see these. | Name by use case and audience ("Loan reminder — VN retail"), not just "Test 2". |
-| **Region** | Where the call infrastructure runs: US or South East Asia. | Pick the region closest to your _callers_, not your office — it directly affects audio latency. |
-| **System Prompt** | The instructions driving the whole call (Single Prompt engine). Supports `{{contact}}` placeholders. | The single highest-leverage setting. Specifics beat length; include what the agent must never do. |
+| **Instructions** | The instructions driving the whole call (Single Prompt engine). Supports `{{contact}}` placeholders. | The single highest-leverage setting. Specifics beat length; include what the agent must never do. |
+
+<Note>
+  There's no per-agent region setting. Your team's data region (United States or South East Asia) is set when the team is created and shown in **Settings \> General**.
+</Note>
 
 ## Model Settings
 
@@ -22,19 +25,19 @@ The **Evaluation** tab is a separate, policy-driven grading system for completed
 Configures how the agent understands spoken input.
 
 <Frame>
-  ![Image](/images/image-4.png)
+  ![Image](/images/speech-recognition-settings.png)
 </Frame>
 
 | Setting | Default | When to change |
 | --- | --- | --- |
 | **Provider / Model** | Revve's default STT | Rarely. Change only if a specific language or accent performs poorly and Revve support suggests an alternative. |
 | **Language** | — | Always set this to your callers' language. Wrong language = garbage transcription = nonsense answers. |
-| **Key Terms** | Empty | Add comma-separated brand names, product names, and jargon the transcriber keeps mishearing (check Preview transcripts to find them). |
+| **Key Terms** | Empty | Add comma-separated brand names, product names, and jargon the transcriber keeps mishearing (check **Test agent** transcripts to find them). |
 
 ### AI Model
 
 <Frame>
-  ![Image](/images/image-5.png)
+  ![Image](/images/ai-model-settings.png)
 </Frame>
 
 | Setting | Default | When to change |
@@ -46,14 +49,26 @@ Configures how the agent understands spoken input.
 ### Voice Synthesis
 
 <Frame>
-  ![Image](/images/image-6.png)
+  ![Image](/images/voice-synthesis-settings.png)
 </Frame>
 
 | Setting | Default | When to change |
 | --- | --- | --- |
-| **Provider / Model / Language / Voice** | — | The voice is your brand on the phone. Test 2–3 candidates with your actual script in Preview — voices that sound great reading a sentence can stumble on your product names. |
+| **Provider / Model / Language / Voice** | — | The voice is your brand on the phone. Test 2–3 candidates with your actual script in **Test agent** — voices that sound great reading a sentence can stumble on your product names. |
 | **Speed** | Provider default | Slow down slightly for older audiences or complex information (amounts, dates); speed up slightly for short reminder calls. |
 | **Pronunciation Dictionary** | Empty | Add entries when the voice mispronounces something — your company name, a product, a person. Map the written form to a phonetic spelling. Fix mispronunciations here, not by re-spelling words in your prompt. |
+
+#### Multiple languages
+
+Turn on **Speaks more than one language** when one phone number serves callers in several languages. The agent detects the language of each caller turn and switches its voice to match. The `{{current_language}}` variable follows the caller, so node text and the greeting can branch on it.
+
+| Setting | Default | When to change |
+| --- | --- | --- |
+| **Other languages** | None | Click **Add language**, then pick a **Language** and a **Voice** for it. Each language needs its own voice. |
+| **Language change sensitivity: Turns before change** | 1 | How many turns in a row the caller must use the new language before the agent switches. Raise it if the agent switches on a single foreign word. |
+| **Language change sensitivity: Minimum words** | 3 | Turns shorter than this are ignored, so a bare "okay" can't trigger a switch. |
+
+Use this only when you can't know the caller's language before the call — a single-language agent is more accurate.
 
 ## Advanced Settings
 
@@ -76,7 +91,8 @@ This section controls the _feel_ of the conversation — it's where voice agents
 | Setting | Default | Guidance |
 | --- | --- | --- |
 | **AI Speaks First** \+ **Initial Greeting** | Off | Turn on for outbound calls (the agent called, it should explain why). For inbound, answering with a greeting is also the norm — most agents want this on with a short, branded greeting. |
-| **Allow caller to interrupt the greeting** | Off | Sub-toggle under **AI Speaks First**. Off: the greeting always plays in full. On: callers can barge in and skip ahead. Turn on for repeat-contact outbound — callers who already know why you're calling shouldn't have to sit through the pitch. Keep off when the greeting carries required disclosures. |
+| **Speak in every language** | Off | Shown only for multilingual agents. Says the greeting once per configured language, each in that language's voice. |
+| **Allow caller to interrupt the greeting** | Off | Sub-toggle under **AI Speaks First**. Off: the greeting always plays in full. On: callers can barge in and skip ahead. Turn on for repeat-contact outbound — callers who already know why you're calling shouldn't have to sit through the pitch. Keep off when the greeting carries required disclosures. Not shown for Conversational Flow agents, which set this per node. |
 
 **Turn Handling** — how the agent decides the caller finished speaking, and how fast it replies:
 
@@ -97,6 +113,7 @@ This section controls the _feel_ of the conversation — it's where voice agents
 | **Interruption mode** | VAD | VAD treats _any_ voice longer than the minimum duration as an interruption. Switch to **Adaptive** when backchannels — callers saying "uh-huh", "right" — keep stopping the agent mid-sentence. Adaptive ignores them. |
 | **Min duration** | — | Raise it if coughs and short noises interrupt the agent. |
 | **Backchannel words** | Empty | VAD mode only. Words the agent ignores as interruptions — filler acknowledgments like the Vietnamese "vâng", "dạ", "ạ". Type a word and press Enter to add it. Use this when specific short acknowledgments keep stopping the agent but you want to stay in VAD mode; switching to **Adaptive** is the broader alternative. Empty list = suppression disabled. |
+| **Skip Quiet Interruptions** \+ **Threshold** | Off; threshold 0.58 when turned on | VAD mode only. While the agent is speaking, caller audio quieter than the threshold won't cut it off. Turn on and raise the threshold on noisy lines where background voices keep interrupting the agent. This is separate from the Quiet Speech Handling threshold below, and is normally set higher. |
 
 **Quiet Speech Handling**
 
@@ -119,12 +136,27 @@ The runtime caps this at 2 speak-up prompts per call session, so a caller who st
 | **Follow Up on Silence** | Off | Turn on for outbound and qualification calls — the agent re-engages ("Are you still there?") instead of waiting out the clock. |
 | **Silence Timeout / Max Follow-ups** | 5 s / 3 | Defaults are right for most flows. |
 
+**Backchannel**
+
+| Setting | Default | When to change |
+| --- | --- | --- |
+| **Enable Backchannel** | Off | Lets the agent give short verbal affirmations ("mm-hm", "I see") while the caller talks. Turn on for long caller explanations where silence feels unnatural. |
+| **Backchannel Frequency** | 0.5 (0–1) | Shown when backchannel is on. How often the agent gives those affirmations. |
+
 **Environment**
 
 | Setting | Default | When to change |
 | --- | --- | --- |
-| **Noise Cancellation** | Off | Turn on when callers are in noisy environments (drivers, retail floors) and transcription quality suffers. |
-| **Ambient Sound** | None | Adds background ambience (office, city) to the agent's side. A subtle office ambience can make an agent feel less sterile; skip it unless you've A/B-listened. |
+| **Noise Cancellation** | On | Filters background noise from the caller's audio. Keep it on for callers in noisy environments (drivers, retail floors). Turn it off only if it degrades clear audio. |
+| **Noise suppression level** | 1 (0–1) | Shown when Noise Cancellation is on. Higher levels remove more background noise but may affect voice quality. Lower it if callers' voices sound muffled or clipped. |
+| **Ambient Sound** | None | Adds background ambience to the agent's side: City, Forest, Office, or Crowded Room. A subtle office ambience can make an agent feel less sterile; skip it unless you've A/B-listened. |
+
+**Performance**
+
+| Setting | Default | When to change |
+| --- | --- | --- |
+| **Prepare Next Steps In Advance** | Off | For Conversational Flow agents. Prepares the next steps you've marked while the caller is still on the current one, so the next step answers faster. It sends extra requests to the agent's LLM, and on a hosted provider each request is billed. |
+| **Nodes To Prepare** | 2 (1–5) | Shown when the option above is on. How many marked next nodes the agent prepares each time it enters a node. |
 
 ### Voicemail
 
@@ -146,9 +178,13 @@ Lets the AI hand the call to a human, with a spoken handover message:
 | **Transfer To** | **Revve User (in-app agent)** / **SIP Address** / **Phone Number** | Revve User routes the call to an available human agent in the Revve app — no external number needed. SIP Address targets a SIP endpoint. Phone Number dials an external number in E.164 format (`+84775352590`). |
 | **Transfer Type** | **Bridge Transfer** (default) / **Cold Transfer** | Bridge: a warm consult transfer — the caller is held with music while the AI privately briefs the human with the call summary, then connects them and goes silent (but keeps logging). Cold: the call is handed off entirely, no further logging — choose this for compliance contexts where the AI must fully exit. |
 | **Transfer Message** | Free text | What the AI says before transferring ("Let me connect you with a specialist — one moment."). Always set one; silent transfers feel like being hung up on. |
-| **Connection timeout (seconds)** | Whole seconds, **1–180**. Default: **45** for phone/SIP bridges; **30** for in-app transfers. | Lower it to move on sooner when nobody answers; raise it to give the recipient more time. Applies to each attempt, including fallback attempts. It does not apply to Cold Transfer. |
+| **Call duration (seconds)** | Whole seconds, **1–180**. Default: **45** for phone/SIP bridges; **30** for in-app transfers. | How long the transfer can wait to connect before failing or trying its fallback. Lower it to move on sooner when nobody answers; raise it to give the recipient more time. Applies to each attempt, including fallback attempts. It does not apply to Cold Transfer. |
+| **Wait before summary (seconds)** | **0–30**. Default: **1**. | Phone/SIP bridge transfers. How long to wait after the destination answers before speaking the summary; the caller stays on hold. Raise it when the destination plays a recorded announcement first. |
+| **Who gets the call** | **Any available agent** / **A group** | Revve User transfers. Any available agent offers the call to any free agent. A group offers it only to one group's agents, using that group's **Routing rule**. |
+| **Routing rule** | **Simultaneous** / **One at a time, longest idle first** | Shown when you pick a group. Simultaneous rings every available member at once. Longest idle rings the agent who's been free the longest, then the next. |
+| **Ring each agent for (seconds)** | **1–60**. Default: **5**. | Longest-idle routing only. How long each agent rings before the call moves to the next one. |
 
-For flow transfers, set the timeout on the **Transfer Call** node. See [Call Transfer](/voice-agents/call-transfer#set-how-long-to-wait-for-a-connection) for defaults, failure behavior, and how answered greetings or queues affect the timeout.
+For Conversational Flow agents, this section only links to the flow — set transfers, including the timeout, on the **Transfer Call** node. See [Call Transfer](/voice-agents/call-transfer#set-how-long-to-wait-for-a-connection) for defaults, failure behavior, and how answered greetings or queues affect the timeout.
 
 ### Everything else
 
@@ -160,22 +196,25 @@ The remaining sections are covered in depth on [Voice Agent Advanced Capabilitie
 | **Phone Verification** | Confirm the caller's identity by having them state their phone number, checked against the number already on file for that contact. |
 | **Normalization** | Normalize spoken data like addresses and license plates into structured formats. |
 | **Retry & Callback** | Auto-retry failed outbound calls (busy, no answer, failed) and let customers request callbacks. |
-| **Tools** | Attach custom tools (API calls, SMS sending) the agent can use mid-call, plus presets: two calendar tools, a ticket-creation tool, and a deterministic value-validation tool. Not every preset in the dropdown works on a phone call — see [Voice Agent Tools](/voice-agents/voice-agent-tools) before you attach one. |
+| **Tools** | Attach custom tools (API calls, code, SMS sending) the agent can use mid-call, plus presets: two calendar tools, a ticket-creation tool, a DTMF (keypad tone) tool, and a deterministic value-validation tool. Not every preset in the dropdown works on a phone call — see [Voice Agent Tools](/voice-agents/voice-agent-tools) before you attach one. |
+| **CRM** | Look up the caller in your CRM when an inbound call starts. |
 | **Webhook** | Send call events to a URL on your side. |
 | **Analysis & Summary** | Configure the post-call summary and the data fields extracted from each call (these appear in Call History). |
-| **Security** | Sensitive-data handling for this agent's calls. |
+| **Reliability** | Health checks for the speech and AI providers, the messages played when one fails, and a watchdog for when speech recognition stops returning text. |
+| **Security** | Sensitive-data handling, **Live Observability** (let teammates watch, listen to, and take over calls from the Live Calls board), and **AI Assist for Human Agents** (give teammates monitors, guides, and a copilot when they join a call). |
 | **Notification** | Alert your team about call outcomes. |
+| **Video** | **Video mode**: when enabled, web calls request the caller's camera and record an MP4 video. |
 
 ## A tuning workflow that works
 
-1. Ship with defaults. Make 5–10 test calls in **Preview**, including a noisy-environment call from your phone.
+1. Ship with defaults. Make 5–10 test calls in **Test agent**, including a noisy-environment call from your phone.
 2. Read the transcripts. Transcription errors → fix **Language**/**Key Terms** first; everything downstream depends on hearing correctly.
 3. Fix the single most annoying rhythm problem (cutting off / sluggishness) with **one** turn-handling change, re-test, repeat.
 4. Only then polish: voicemail message, transfer message, pronunciation dictionary.
 
 ## What's Next
 
-- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — automatically grade completed calls against a weighted set of metrics.
+- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — automatically score completed calls with your team's scorecards.
 - [Voice Agent Tools](/voice-agents/voice-agent-tools) — every Tools-tab preset, and which ones don't work on a phone call.
 - [Call Transfer](/voice-agents/call-transfer) — the full warm-transfer workflow, including routing to in-app agents.
 - [Do Not Call List](/voice-agents/do-not-call-list) — the team-wide list every outbound call is checked against before it's placed.

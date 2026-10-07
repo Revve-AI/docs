@@ -25,15 +25,18 @@ Single Prompt is the default and most common engine type. You provide one set of
 On the **Basic** tab:
 - **Objectives** — The core instructions that guide the agent's behavior.
 - **Role** — A description of the agent's persona.
-- **AI Model** — Which LLM to use.
-- **Language & Tone** — Response language and communication style.
+- **Model** — Which LLM to use.
+- **Languages** and **Communication Tone** — Response language and communication style.
 
 On the **Advanced Settings** tab:
 - **Human Escalation** — When to hand off to a human.
 - **Contact Collection** — Lead capture form configuration.
 - **Schedule Meeting** — Calendar booking integration.
+- **Message Approval** — Require approval before messages are sent, for all outgoing messages or only campaign messages.
 - **Inactivity Follow-up** — Auto-reply when the visitor goes silent.
 - **Tools** — External API calls and CRM integrations.
+
+**Contact Collection**, **Schedule Meeting**, and **Message Approval** appear only for Single Prompt agents.
 
 ### Best For
 
@@ -63,36 +66,48 @@ Conversational Flow uses a **visual node-based editor** where you design a struc
 
 ### How It Works
 
-1. You create **nodes** — each one is a conversation stage (e.g., "Greeting", "Qualification", "Schedule Meeting").
+1. You create **nodes** — each one is a conversation stage (e.g., "Greeting", "Qualification", "Schedule Meeting") or a silent logic step.
 2. You define **edges** (transitions) between nodes with conditions for when to move from one stage to the next.
-3. Each node has its own **instructions** that apply only when the conversation is in that stage.
-4. The agent follows the flow, transitioning between nodes based on the conversation.
+3. Each conversation node has its own **instructions** that apply only when the conversation is in that stage.
+4. The agent follows the flow, transitioning between nodes based on the conversation. Silent logic nodes run instantly and route the conversation without sending a message.
 
 ![Visual flow editor showing connected conversation nodes](/screenshots/chatbot-flow-editor.png)
 
 ### What You Configure
 
 On the **Flow** tab:
-- **Nodes** — Create conversation stages with individual instructions.
+- **Nodes** — Create conversation stages with individual instructions, or silent logic steps.
 - **Edges** — Define transitions with conditions (e.g., "when the user provides their email, move to the Qualification node").
-- **Global Prompt** — Instructions that apply across all nodes.
-- **Start Node** — Which node begins the conversation.
+- **Start node** — The node that begins the conversation, marked with a **Start** badge. The first node you add becomes the start node. If you delete it, the next node in the flow takes its place.
 
-Each node can independently enable:
+On the **Basic** tab:
+- **Global Objectives** — Instructions that apply across all nodes.
+
+Each conversation node can independently enable:
 - Contact collection
 - Meeting scheduling
 - Human escalation
 - Testimonial display
 - Custom tools
 
+Silent logic nodes (Logic Split, Extract Variables, Code) don't have these options.
+
 ### Node Types
 
 | Type | Purpose |
 |------|---------|
 | **Normal Conversation** | General conversation stage with custom instructions. |
-| **Schedule Meeting** | A stage specifically designed to book a meeting. |
+| **Schedule Meeting** | A stage specifically designed to book a meeting on a connected calendar. |
 | **Contact Collection** | A stage that captures visitor contact information. |
-| **Transfer Call** | A telephony hand-off stage (phone number, SIP, or in-app agent). Its configuration targets voice calls — for handing a *chat* to a human, use the Human Escalation toggle on a Normal Conversation node instead. |
+| **Logic Split** | Routes the conversation instantly based on rules or the conversation. Never sends a message. |
+| **Extract Variables** | Silently captures details from the conversation (like a department or order number) into variables you can use in later nodes as `{{name}}`. |
+| **Code** | Runs JavaScript in a sandbox to call APIs, compute values, or set variables. Never sends a message. |
+
+Logic Split, Extract Variables, and Code nodes always have an **Else** transition, which is used when no other condition matches.
+
+<Note>
+Chat flows don't offer the **Transfer Call** node, which hands off phone calls. To hand a chat to a human, turn on **Human Escalation** on a conversation node.
+</Note>
 
 ### Best For
 
@@ -109,9 +124,10 @@ Each node can independently enable:
 |---------|--------------|-------------------|
 | **Setup complexity** | Low — write one set of instructions | Medium — design a node graph |
 | **Conversation flexibility** | High — agent adapts naturally | Structured — follows defined paths |
-| **Configuration tabs** | Basic, Appearance, Knowledge, Installation, Advanced, Preview, Evaluations, Versions | Same + **Flow** tab |
+| **Configuration tabs** | Basic, Appearance / Email Settings / Channel Settings (depending on channel), Knowledge, Installation, Advanced Settings, Preview (website and SMS only), Evaluations, Versions, Experiments | Same + **Flow** tab |
 | **Per-stage instructions** | No — one set of instructions for all | Yes — each node has its own |
 | **Visual designer** | No | Yes |
+| **Logic and variables** | No | Logic Split, Extract Variables, and Code nodes |
 | **Contact Collection** | Configured in Advanced Settings | Can be enabled per node |
 | **Schedule Meeting** | Configured in Advanced Settings | Can be enabled per node |
 | **Best for** | General support, FAQ, flexible conversations | Structured funnels, step-by-step flows |

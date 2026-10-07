@@ -1,64 +1,90 @@
 ---
 
 title: "Zalo Channel Setup"
-description: "Connect your Zalo Official Account to enable your Chat Agent to communicate via Zalo."
+description: "Connect a Zalo account or Zalo Official Account to enable your Chat Agent to communicate via Zalo."
 ---
 
-> **Setup Required:** This channel requires initial technical setup by your account administrator before you can configure it here. This includes creating a Zalo Official Account and connecting it to Revve via OAuth. Contact your Revve team or administrator to get started.
+> **Setup Required:** This channel requires initial setup before you can configure it here. This includes connecting a Zalo account or Zalo Official Account to Revve. Contact your Revve team or administrator to get started.
 
-Once your administrator has completed the initial setup, you can configure the following settings directly from the dashboard:
+Once the account is connected, you can configure the following settings directly from the dashboard:
 
-- Select which connected Zalo Official Account the agent uses
+- Select which connected Zalo account or Zalo OA the agent uses
 - Configure outbound message templates for campaigns
 - Set up the agent's prompt, knowledge base, languages, and communication tone
 - Publish the agent to start handling Zalo conversations
 
-Revve AI Chat Agents can communicate through Zalo, Vietnam's leading messaging platform. By connecting your Zalo Official Account (OA), your Chat Agent can automatically respond to messages from customers who reach out through Zalo. This guide covers how to set up and configure your Zalo Chat Agent.
+Revve AI Chat Agents can communicate through Zalo, Vietnam's leading messaging platform. Your Chat Agent can automatically respond to messages from customers who reach out through Zalo. This guide covers how to set up and configure your Zalo Chat Agent.
 
-When you create a Chat Agent with the **Zalo** channel type, the Zalo OA connection is configured in the **Basic** tab under General Settings.
+## Zalo vs. Zalo OA
+
+Revve has two separate Zalo channel types. Pick one when you create the agent:
+
+| Channel type | Account | How it connects |
+|--------------|---------|-----------------|
+| **Zalo** | A personal Zalo account used for business. | Scan a QR code with the Zalo app. |
+| **Zalo OA** | A Zalo Official Account. | Sign in to Zalo and authorize Revve (OAuth). |
+
+For both types, you choose the account on the agent's **Channel Settings** tab.
 
 ---
 
 ## Accessing Zalo Configuration
 
-1. Navigate to **Agents > Chat Agents**.
-2. Select your Zalo Chat Agent (or create a new one with the Zalo channel type).
-3. Click the **Basic** tab.
-4. In the General Settings section, locate the **Zalo OA** dropdown.
+1. Navigate to **AI Agents > Chat Agents**.
+2. Select your Zalo or Zalo OA Chat Agent (or create a new one with that channel type).
+3. Click the **Channel Settings** tab.
+4. Locate the **Zalo Account** dropdown (Zalo agents) or the **Zalo OA** dropdown (Zalo OA agents).
 
-![Zalo chatbot Basic tab showing the Zalo OA dropdown and general settings](/screenshots/zalo-basic-settings.png)
+![Zalo chatbot Channel Settings tab showing the account dropdown](/screenshots/zalo-oa-channel-settings.png)
 
 ---
 
 ## Configuration Fields
 
-The Zalo-specific field in General Settings:
+The Zalo-specific fields on the **Channel Settings** tab:
 
-| Setting | Description |
-|---------|-------------|
-| **Zalo OA** | Select the Zalo Official Account that the agent will use for sending and receiving messages. The dropdown lists all Zalo OAs that have been connected in your team's Settings. |
+| Setting | Channel type | Description |
+|---------|--------------|-------------|
+| **Zalo Account** | Zalo | Select the Zalo account that the agent will use for sending and receiving messages. The dropdown lists the accounts connected in **Settings > Channels > Zalo**. |
+| **Zalo OA** | Zalo OA | Select the Zalo Official Account that the agent will use for sending and receiving messages. The dropdown lists the OAs connected in **Settings > Channels > Zalo OA**. |
+
+Both dropdowns include **Connect new account** to connect another account.
 
 ---
 
 ## Setup Steps
 
-### 1. Connect Your Zalo Official Account
+### 1. Connect Your Zalo Account or Zalo OA
 
-Before you can assign a Zalo OA to a Chat Agent, you need to connect it in your team settings.
+Before you can assign an account to a Chat Agent, connect it in **Settings > Channels**.
 
-1. Go to **Settings** in the left sidebar.
-2. Navigate to the Zalo integration section.
-3. Follow the prompts to authenticate and connect your Zalo Official Account.
-4. Once connected, your Zalo OA will appear in the integration settings and be available in Chat Agent configuration.
+**Zalo (personal account):**
+
+1. Go to **Settings > Channels** and open the **Zalo** tab.
+2. Click **Add Account** (or **Connect Your First Zalo Account**).
+3. Scan the QR code with the Zalo app on your phone and approve the connection.
+4. Choose how you'll use the account:
+   - **Outreach campaigns only** — Send to existing contacts. Revve only sends messages to your existing contacts.
+   - **Two-way conversations** — Handle incoming and outgoing messages. Revve handles new conversations but won't reply to existing friends.
+5. Confirm it's a **Business account**.
+
+If a connection drops, click **Reconnect** on the account's card.
+
+**Zalo OA:**
+
+1. Go to **Settings > Channels** and open the **Zalo OA** tab.
+2. Click **Add OA Account** (or **Connect Your First Zalo OA**).
+3. Sign in to Zalo and authorize Revve to access your Official Account.
+4. Once connected, the OA appears on the Zalo OA tab with the status **Connected**.
 
 ### 2. Create and Configure the Zalo Chat Agent
 
-1. Go to **Agents > Chat Agents** and click **New Chat Agent**.
-2. Select **Zalo** as the channel type.
-3. In the **Basic** tab, fill in the general settings:
+1. Go to **AI Agents > Chat Agents** and click **New Agent**.
+2. Select **Zalo** or **Zalo OA** as the channel type.
+3. On the **Channel Settings** tab, select your connected Zalo account or Zalo OA.
+4. On the **Basic** tab, fill in the general settings:
    - **Name** and **Description** for the agent.
-   - **AI Provider** and **Model** to power the agent.
-   - **Zalo OA** -- select your connected Zalo Official Account.
+   - **Model** to power the agent.
    - **Languages** -- add Vietnamese or other supported languages.
    - **Communication Tone** -- choose the tone that matches your brand.
    - **Role** -- define the agent's role and personality.
@@ -69,14 +95,34 @@ Before you can assign a Zalo OA to a Chat Agent, you need to connect it in your 
 If your Zalo agent will initiate conversations or send proactive messages, configure outbound templates.
 
 1. In the **Basic** tab, click **Outbound Templates** in the left sidebar.
-2. Click **Create Your First Template** to define message templates for outbound campaigns.
+2. Click **Create Your First Template** (or **Add** if you already have templates) to define message templates for outbound campaigns.
 3. Templates support personalized messages with drag-and-drop reordering.
 
 ![Outbound Templates section for creating campaign message templates](/screenshots/zalo-outbound-templates.png)
 
-### 4. Publish the Agent
+### 4. Configure Connection Request Messages (Zalo only)
 
-After configuring all settings, publish the agent to make it live. Incoming Zalo messages to the connected OA will be routed to this agent.
+Zalo agents have an extra **Connection Settings** section on the **Basic** tab. It sets the message sent with connection requests to new leads:
+
+- **Message Type** — **Fixed Message** (the same text every time) or **AI Generated Message**.
+- **AI Prompt** and **Information Sources** — For AI-generated messages, the prompt and the information to draw on (relevant content from assets, customer research, previous conversations).
+
+### 5. Publish the Agent
+
+After configuring all settings, publish the agent to make it live. Incoming Zalo messages to the connected account will be routed to this agent.
+
+---
+
+## Blocking Contacts (Zalo OA)
+
+On Zalo OA, you can block a contact from the Inbox, for example to stop spam or abuse.
+
+1. In the **Inbox**, open the menu on the conversation and choose **Block "*name*"**.
+2. Optionally enter a **Reason**, then click **Block**.
+
+New messages from a blocked contact are dropped, and the agent doesn't answer them. The block applies in Revve only. It doesn't block the contact on Zalo itself. To undo it, choose **Unblock "*name*"** from the same menu.
+
+Blocking isn't available for the personal **Zalo** channel type.
 
 ---
 
@@ -93,9 +139,9 @@ After configuring all settings, publish the agent to make it live. Incoming Zalo
 
 | Issue | Solution |
 |-------|----------|
-| No Zalo OA appears in the dropdown | Verify that your Zalo Official Account is connected in Settings. You may need to re-authenticate. |
-| Agent does not respond to incoming messages | Check that the agent has been published and that a Zalo OA is selected in the Basic tab. |
-| Outbound messages are not delivered | Verify that your Zalo OA is in good standing and has the necessary permissions for sending messages. |
+| No account appears in the dropdown | Verify that the account is connected in **Settings > Channels** on the **Zalo** or **Zalo OA** tab, matching the agent's channel type. Reconnect it if its status is Disconnected or Token Expired. |
+| Agent does not respond to incoming messages | Check that the agent has been published and that an account is selected on the Channel Settings tab. For a personal Zalo account, check that it was set up for **Two-way conversations**. For Zalo OA, check that the contact isn't blocked. |
+| Outbound messages are not delivered | Verify that your Zalo account or OA is in good standing and has the necessary permissions for sending messages. |
 
 ---
 

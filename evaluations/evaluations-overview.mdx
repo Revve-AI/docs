@@ -1,48 +1,47 @@
 ---
 
-title: "What Is Evaluations?"
-description: "Pre-ship regression testing for your agents — define scenarios, run them against a Text or Voice agent, and see pass/fail results and transcripts before real customers hit the change."
+title: "What Is AI Agent Testing?"
+description: "Pre-ship regression testing for your agents — group test cases into suites, run them against a Text or Voice agent version, and see pass/fail results and transcripts before real customers hit the change."
 ---
 
-**Evaluations** is where you test an agent before it goes live, not after. You define a test scenario — a persona to simulate, or a fixed script — run it against a Text or Voice agent, and get back a pass/fail verdict with the full transcript, graded against metrics you choose. It's the tool for answering "did my prompt edit break anything?" before you publish, rather than finding out from a customer complaint or a bad call.
+**AI Agent Testing** is where you test an agent before it goes live, not after. You write test cases — a simulated caller or visitor with instructions — group them into a **Test Suite** for one agent, run the suite against an agent version, and get back a pass/fail verdict per test case with the full transcript, graded by your scorecards. It's the tool for answering "did my prompt edit break anything?" before you publish, rather than finding out from a customer complaint or a bad call.
 
-Evaluations is its own item in the left dashboard nav (flask icon), visible to anyone holding the **Manage Agents** permission (see [Roles & Permissions](/governance-access/roles-and-permissions)). It expands to five areas: **Evaluators**, **Profiles**, **Metrics**, **Scorecards**, and **Runs**.
+AI Agent Testing is its own item in the left dashboard nav, visible to anyone holding the **Manage Agents** permission (see [Roles & Permissions](/governance-access/roles-and-permissions)). It expands to six pages: **Experiments**, **Scorecards**, **Evaluation Criteria**, **Test Suites**, **Test Runs**, and **Simulator Profiles**.
 
-![The Evaluations product in the left dashboard nav, showing Evaluators, Profiles, Metrics, Scorecards, and Runs](/screenshots/evaluations-nav.png)
+![The AI Agent Testing section in the left dashboard nav](/screenshots/ai-agent-testing-nav.png)
 
 <Note>
-Evaluations is easy to confuse with two other things that use similar words:
+AI Agent Testing is easy to confuse with two other things that use similar words:
 
-1. **The per-Voice-Agent Evaluation tab** ([Voice Agent Evaluation](/voice-agents/voice-agent-evaluation)) automatically grades every *live* call a single voice agent completes, after the fact. It's configured on that one agent and needs no test scenarios — Evaluations, by contrast, runs simulated or scripted tests *before* a call ever happens with a real customer.
-2. **The per-Chat-Agent "Evaluations" tab** (mentioned in [Creating Your First Chat Agent](/getting-started/creating-your-first-chat-agent)) is an older, separate legacy system for one chatbot's test cases and test history. It predates this product, runs on different underlying tables, and isn't documented further here.
+1. **The per-Voice-Agent Evaluation tab** ([Voice Agent Evaluation](/voice-agents/voice-agent-evaluation)) attaches scorecards to one voice agent so every *live* call it completes is graded automatically, after the fact. Test Suites, by contrast, run simulated tests *before* a call ever happens with a real customer. Both use the same scorecards.
+2. **The per-Chat-Agent "Evaluations" tab** (mentioned in [Creating Your First Chat Agent](/getting-started/creating-your-first-chat-agent)) is an older, separate legacy system for one chatbot's test cases and test history. It predates this product and isn't documented further here.
 </Note>
 
 ## How it works
 
-1. **Build an Evaluator.** An Evaluator is a test case: pick the agent under test (any Text/Chat agent or Voice agent), define a scenario — either an LLM-generated persona and instructions, or a fixed script of messages — and choose the metrics to grade it against. You also set limits: max turns, and for voice, max call duration.
-2. **Add a Profile, for voice evaluators only.** A Profile is a reusable simulated-caller persona: which LLM plays the caller, what it sounds like (TTS voice/language), how it listens (STT), and a free-text instruction describing who it is and its emotional state (e.g. "Frustrated caller"). Text evaluators skip this — there's no simulated voice to configure.
-3. **Grade against Metrics.** Metrics are your team's shared scoring-criteria library — deterministic checks and LLM-judged criteria — reused across Evaluators, per-agent Evaluation policies, and Scorecards alike. See [Evaluation Metrics](/evaluations/evaluation-metrics) for the full breakdown of metric types.
-4. **Launch a Run from the Evaluators page.** Running one or more Evaluators (against the same agent) kicks off a **Run** — a queued, asynchronous batch execution. There's no "New Run" button on the Runs page itself; Runs is read-only execution history.
-5. **Read the results.** A finished run reports pass/fail counts, a success rate, and per-conversation transcripts with tool-call logs, so you can see exactly why a scenario failed. The full create-evaluator-then-run-it workflow is covered in [Creating an Evaluator](/evaluations/creating-an-evaluator).
+1. **Create a Test Suite for one agent.** A suite groups test cases and shared scorecards so you can run one consistent evaluation against any version of that agent. Pick the **Agent type** (Text or Voice) and the **Agent** when you create it — the agent can't be changed afterward.
+2. **Add test cases.** Each test case describes one conversation to simulate: instructions for the simulated caller or visitor, whether it runs as **Text** or **Voice**, a **Caller profile** for voice, call variables, and limits such as max turns and max duration. Test cases run in creation order. See [Creating a Test Case](/evaluations/creating-an-evaluator).
+3. **Grade with scorecards.** Attach **shared scorecards** to the suite so every test case is graded the same way, and add extra scorecards to individual test cases when needed. Scorecards are built from your team's **Evaluation Criteria** library. See [Scorecards](/evaluations/scorecards) and [Evaluation Criteria](/evaluations/evaluation-metrics).
+4. **Run the suite.** Click **Run suite**, choose the **Agent version** to test (including your draft), optionally name the run, and confirm. The run is queued and executes asynchronously.
+5. **Read the results.** **Test Runs** lists every run with its suite, agent version, status, results, and duration. Open a run for each test case's pass/fail result, transcript, and scorecard breakdown, and **Re-run** it after you fix something.
 
-Evaluators work across agent types — the Evaluators list has an Agent Type filter for **All Types** / **Text** / **Voice**, so this is a team-wide tool, not something scoped to one product line.
+## The pages
 
-## Capabilities
-
-| Area | What it's for | Where to go deeper |
+| Page | What it's for | Where to go deeper |
 |------|----------------|---------------------|
-| **Evaluators** | Define a test case: agent under test, scenario (generated persona or fixed script), metrics, and turn/duration limits. Run one or many at once with **Run Selected**. | [Creating an Evaluator](/evaluations/creating-an-evaluator) |
-| **Profiles** | Voice-only. Reusable simulated-caller configurations — LLM, TTS voice/language, STT, and a persona instruction — attached to voice Evaluators. | [Evaluation Profiles](/evaluations/evaluation-profiles) |
-| **Metrics** | The shared scoring-criteria library (deterministic checks and LLM-judged criteria) used by Evaluators, the per-agent Evaluation tab, and Scorecards. | [Evaluation Metrics](/evaluations/evaluation-metrics) |
-| **Scorecards** | A separate system for grading batches of *uploaded call recordings* (from Call History) against the same shared Metrics library — not simulated pre-ship runs. | [Scorecards](/evaluations/scorecards) |
-| **Runs** | Read-only history of queued/executed evaluation runs — pass/fail counts, success rate, transcripts. Launched from Evaluators, not from here. | [Creating an Evaluator](/evaluations/creating-an-evaluator) |
+| **Experiments** | Run two published versions of an agent side by side on real traffic, then ship the one that does better. Experiments are created from an agent's **Experiments** tab or when publishing with **Test with an experiment first**. | [Publishing & Versioning](/getting-started/publishing-and-versioning) |
+| **Scorecards** | Grading rubrics — an evaluation target, a judge model, and criteria worth 100 points — used by Test Suites, voice agents' Evaluation tab, and manual call analysis. | [Scorecards](/evaluations/scorecards) |
+| **Evaluation Criteria** | The shared library of scoring criteria (deterministic checks and LLM-judged criteria) that scorecards are built from. | [Evaluation Criteria](/evaluations/evaluation-metrics) |
+| **Test Suites** | Groups of test cases for one agent, with shared scorecards. Run a suite against any version of the agent. Filter the list by agent type (**Text** / **Voice**). | [Creating a Test Case](/evaluations/creating-an-evaluator) |
+| **Test Runs** | History of queued and executed suite runs — status, results, transcripts. Runs are started from a suite, not from here. | [Creating a Test Case](/evaluations/creating-an-evaluator) |
+| **Simulator Profiles** | Voice-only. Reusable simulated-caller configurations — LLM, TTS voice and language, STT, and a persona instruction — used as a voice test case's **Caller profile**. | [Simulator Profiles](/evaluations/evaluation-profiles) |
 
-<Note>
-**Scorecards** is a related but distinct concept from the rest of Evaluations: it grades recordings of real calls that already happened, uploaded as a batch from Call History, rather than running a simulated test before you ship. It shares the same team-wide Metrics library, and a scorecard bundles a name, description, and a set of weighted metrics — the same weighting UI as the per-Voice-Agent Evaluation tab — but the batches it lists are created elsewhere.
-</Note>
+<Tip>
+You can turn a real call into a test case: open the call in Call History and click **Create test case** in its **Evaluation** section. This is a quick way to lock in a conversation that went wrong so it's tested on every future version.
+</Tip>
 
 ## What's Next
 
-- [Evaluation Metrics](/evaluations/evaluation-metrics) — the deterministic and LLM-judged metric types shared across Evaluators, Scorecards, and per-agent Evaluation.
-- [Creating an Evaluator](/evaluations/creating-an-evaluator) — build a test case, run it, and read the results.
+- [Creating a Test Case](/evaluations/creating-an-evaluator) — build a test case, run its suite, and read the results.
+- [Scorecards](/evaluations/scorecards) — build the rubrics that grade test cases and live calls.
 - [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — if what you actually want is automatic post-call grading of every live call, not pre-ship testing.

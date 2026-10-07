@@ -7,7 +7,7 @@ This guide takes you from nothing to a Voice Agent you can actually talk to. The
 
 ## Step 1: Start from a template
 
-Go to **Agents \> Voice Agents** in the left sidebar and click **\+ New Voice Agent**. Pick the template closest to your use case:
+Go to **AI Agents \> Voice Agents** in the left sidebar and click **New Agent**. **Start blank** is shown at the top; below it, under **Or start from a template**, pick the template closest to your use case:
 
 ![Template picker showing the available Voice Agent templates](/screenshots/voice-template-picker.png)
 
@@ -26,7 +26,7 @@ Go to **Agents \> Voice Agents** in the left sidebar and click **\+ New Voice Ag
 
 ## Step 2: Describe your agent
 
-The setup step asks for three things:
+The setup step (**Set up your voice agent**) asks for three things:
 
 ![Voice agent setup step with name, custom requirement, and contact field placeholders](/screenshots/voice-template-setup.png)
 
@@ -34,11 +34,15 @@ The setup step asks for three things:
 - **Custom requirement (optional)** — the more specific, the better the generated prompt. Tell it your company, product, target customer, and call goal: _"Bank X selling personal loans up to 30M VND, target young professionals, goal: get them to install the app and start onboarding."_
 - **Contact fields the bot will know** — check the fields (like `{{fullName}}` or `{{lastState}}`) you want available as placeholders. At call time these are filled with the contact's real data, so the agent can open with "Hi Minh, I'm calling about…" instead of a generic greeting.
 
-Click **Generate & create**. Revve writes the full system prompt and creates the agent.
+Click **Generate & create**. Revve writes the agent's full instructions and creates the agent.
+
+<Note>
+  The **Interviewer** template has its own four-step setup: **Source** (paste the job description or give a link to it), **Job description**, **Variables**, and **Finalize** (agent name and optional extra requirements).
+</Note>
 
 ## Step 3: Review the generated prompt
 
-You land on the agent's page. Open the **General** tab and read the generated **System Prompt** end to end:
+You land on the agent's page. Open the **General** tab and read the generated **Instructions** end to end:
 
 <Frame>
   ![Image](/images/image.png)
@@ -46,14 +50,17 @@ You land on the agent's page. Open the **General** tab and read the generated **
 
 - Fix anything factually wrong about your business — the generator only knows what you told it.
 - Add guardrails it missed: what the agent must never promise, when it should give up gracefully.
-- Check **Region** (US or Vietnam) — pick the region closest to your callers for the lowest latency.
+
+<Note>
+  There's no per-agent region setting. Your team's data region (United States or South East Asia) is set when the team is created and shown in **Settings \> General**.
+</Note>
 
 ## Step 4: Choose models and a voice
 
 Open the **Model Settings** tab. Three sections, top to bottom:\
 
 <Frame>
-  ![Image](/images/image-2.png)
+  ![Image](/images/voice-agent-model-settings.png)
 </Frame>
 
 1. **Speech Recognition** — set the **Language** your callers speak. If your calls contain brand names or technical terms the transcriber might mishear, add them to **Key Terms**.
@@ -62,19 +69,22 @@ Open the **Model Settings** tab. Three sections, top to bottom:\
 
 ## Step 5: Talk to your agent
 
-Open the **Preview** tab and click **Start a test call**. The call runs right in your browser — no phone needed:
+Open the **Test agent** tab (the last tab). With **Web Call** selected, click **Start a test call**. The call runs right in your browser — no phone needed:
 
 <Frame>
-  ![Image](/images/image-3.png)
+  ![Image](/images/voice-agent-test.png)
 </Frame>
 
 - If your prompt uses contact placeholders, fill in test values for them first (e.g. set `fullName` to your own name).
 - Watch the **live transcript** as you talk — it shows exactly what the speech recognition heard, which is invaluable when an answer goes wrong.
 - Try interrupting the agent mid-sentence, staying silent, and going off-script. These are the things real callers do.
 
-You can also test over a real phone: click **Generate Link** to create a test call link you can open on your phone.
+You can also test over a real phone:
 
-Iterate: tweak the prompt in **General**, come back to **Preview**, call again. Drafts auto-save as you edit.
+- Select **Phone Call** to have the agent call you. Choose the **From** number, enter your number in **To**, pick the agent version, and fill in any call variables.
+- Or click **Generate signed link** to create a test call link you can open on your phone.
+
+Iterate: tweak the instructions in **General**, come back to **Test agent**, call again. Drafts auto-save as you edit.
 
 ## Step 6: Publish
 
@@ -88,7 +98,8 @@ Published versions are immutable — you can always see exactly what was live wh
 
 A published agent can already take **web calls**. For real phone traffic:
 
-- **Inbound** — assign one of your team's phone numbers to the agent under **Advanced Settings \> Phone Number**. From then on, calls to that number are answered by this agent.
+- **Inbound** — on the [Phone Numbers](/administration/phone-numbers) page, edit one of your team's numbers, turn on **Enable Voice**, and choose this agent as the **Voice Agent**. Turn on **Always Use This Agent** to skip campaign routing so every inbound call to the number goes to this agent.
+- **Outbound caller ID** — under **Advanced Settings \> Phone Number**, choose the **Phone Number or Pool** the agent calls from. This setting doesn't route inbound calls.
 - **Outbound** — enroll contacts in a [Campaign](/campaigns/campaign-overview) that uses this agent, or trigger calls via the API.
 
 <Note>

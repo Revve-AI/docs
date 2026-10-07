@@ -5,7 +5,7 @@ description: "For team admins deciding what follow-up work to automate: what Aut
 
 An **Automation Rule** connects an event in Revve to actions in your workflow: *when* something happens (a call finishes analysis, an enrollment completes, a contact changes), *if* it matches your conditions, *do* one or more things (call your API, update the contact, send an email, create a ticket, enroll the contact in another campaign). Rules are the glue between what your agents and campaigns produce and the follow-up work that would otherwise be manual.
 
-You'll find them in the sidebar under **Automations**, with two children: **Rules** (define what runs) and **Executions** (see what ran). Both require the **Manage Automations** permission — admin-only by default; see [Roles and Permissions](/governance-access/roles-and-permissions).
+You'll find them in the sidebar under **Automations**, with two children: **Rules** (define what runs) and **Executions** (see what ran). Both require the **Manage Automations** permission, which both the admin and the default member roles have; see [Roles and Permissions](/governance-access/roles-and-permissions).
 
 ![Automation Rules list showing the Create Rule button, event type and status filters, and columns for each rule's event, status, conditions, and actions](/screenshots/automation-rules-list.png)
 
@@ -21,11 +21,12 @@ Conditions and action inputs read from the event's payload using dot-paths like 
 
 ## What rules can react to
 
-Eleven trigger events cover the lifecycle of conversations, contacts, and campaigns:
+Twelve trigger events cover the lifecycle of calls, conversations, contacts, and campaigns:
 
 | Event | Fires when |
 |-------|-----------|
-| **Call Analyzed** | A voice call finishes analysis. Payload includes call details, transcript, summary, [custom analysis data](/inbox/conversation-analysis-panel), the contact, and campaign/enrollment context. |
+| **Call Started** | A call starts — once per call, before the caller answers, so unanswered outbound calls fire too. Also fires for inbound SIP calls and calls placed by team members. |
+| **Call Analyzed** | A call finishes analysis — AI agent calls and calls placed by team members alike. Payload includes call details, transcript, summary, [custom analysis data](/inbox/conversation-analysis-panel), the contact, campaign/enrollment context, and who handled the call (see below). |
 | **Call Evaluated** | A [call evaluation](/voice-agents/voice-agent-evaluation) reaches a final result — passed, failed, or error. Payload includes status, final score, pass rate, and per-metric scores. |
 | **Chat Analyzed** | A chat conversation finishes analysis. Payload includes chat details, transcript, summary, custom analysis data, the contact, and campaign context. |
 | **Node Moved** | A chat conversation flow advances from one node to another. |
@@ -39,6 +40,10 @@ Eleven trigger events cover the lifecycle of conversations, contacts, and campai
 
 The two workhorses for most teams are **Call Analyzed** (push every call's outcome and extracted data into your systems) and **Enrollment Completed** (branch on the exit reason — hand successes to sales, route failures to a nurture campaign).
 
+**Who handled the call:** the **Call Analyzed** payload records ownership. `payload.call.agent` is the agent who handled the call, `payload.call.agents` lists everyone who did (AI agent, human, or external number), and `payload.call.handoffs` lists every transfer and takeover with its method and status. For human agents, `agent.wrap_up` carries the outcome, notes, and call disposition they saved.
+
+Revve also emits **Ticket Created** and **Ticket Updated** events. They power the Salesforce Case sync and appear in execution history, but you can't pick them as a trigger in the rule builder.
+
 ## What rules can do
 
 Five action types are available from the action menu:
@@ -51,7 +56,7 @@ Five action types are available from the action menu:
 | **Create Ticket** | Creates a ticket of a chosen type and auto-assigns it via routing rules. |
 | **Enroll in Campaign** | Enrolls the event's contact into an active campaign. |
 
-You may also see **managed** actions on some rules — Salesforce/HubSpot sync actions like **Save Call Result**, **Save Chat Result**, **Save Lead**, and **Save Campaign Member**. These appear read-only with a "managed" badge: they're provisioned by the CRM app's settings, not addable from the action menu.
+You may also see **managed** actions on some rules — Salesforce, HubSpot, and Gong sync actions like **Save Call Result**, **Save Chat Result**, **Save Lead**, **Save Campaign Member**, Salesforce Case sync, and Gong **Upload Call**. These appear read-only with a "managed" badge: they're provisioned by the app's settings, not addable from the action menu. See [Integrations Overview](/integrations/integrations-overview).
 
 Because actions run sequentially and can reference earlier results, you can chain them — for example, an **API Call** that looks up an account in your backend, followed by an **Update Contact Field** that writes the response onto the contact. Configuration details for each action are in [Creating Automation Rules](/automations/creating-automation-rules).
 
@@ -73,7 +78,7 @@ Each execution gets one of three statuses:
 | **Failed** | The rule ran but no action succeeded, or the run errored. |
 | **Skipped** | The event arrived but no active rule was listening for that event type. |
 
-The table shows the rule, event type, status, an action success count (e.g. "2/3 success"), duration in milliseconds, and when it executed. Filter by event-data search, date range (defaults to the last month), event type (currently Call Analyzed and Call Evaluated), rule, or status. A rule whose conditions didn't match logs no row at all — only rules that actually ran appear here.
+The table shows the rule, event type, status, an action success count (e.g. "2/3 success"), duration in milliseconds, and when it executed. Filter by event-data search, date range (defaults to the last month), event type (currently Call Started, Call Analyzed, and Call Evaluated), rule, or status. A rule whose conditions didn't match logs no row at all — only rules that actually ran appear here.
 
 Click a row to open the **Execution Detail** panel: per-action result cards with request/response details (secrets redacted), error messages, and a Retry Log for retried API calls — plus an **Event Data** tab with the raw payload, which doubles as a reference for the fields your conditions and templates can use.
 
@@ -87,7 +92,7 @@ There is no "retry execution" button. If a run failed and you want it to happen 
 - **One event, one run.** No automatic re-runs; the only retries are the opt-in HTTP retries on API Call actions.
 - **Rules deactivate, they don't delete.** There is no UI to delete a rule — toggle it inactive instead.
 - **API Call URLs must match your team's domain allowlist.**
-- **Access is admin-only by default** via the [Manage Automations permission](/governance-access/roles-and-permissions).
+- **Access** is controlled by the [Manage Automations permission](/governance-access/roles-and-permissions), which the default admin and member roles both include. Remove it from a custom role to restrict who can change rules.
 
 ## What's Next
 
