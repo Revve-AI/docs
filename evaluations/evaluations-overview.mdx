@@ -20,7 +20,7 @@ AI Agent Testing is easy to confuse with two other things that use similar words
 ## How it works
 
 1. **Create a Test Suite for one agent.** A suite groups test cases and shared scorecards so you can run one consistent evaluation against any version of that agent. Pick the **Agent type** (Text or Voice) and the **Agent** when you create it — the agent can't be changed afterward.
-2. **Add test cases.** Each test case describes one conversation to simulate: instructions for the simulated caller or visitor, whether it runs as **Text** or **Voice**, a **Caller profile** for voice, call variables, and limits such as max turns and max duration. Test cases run in creation order. See [Creating a Test Case](/evaluations/creating-an-evaluator).
+2. **Add test cases.** Each test case describes one conversation to simulate — Text or Voice, depending on the suite: instructions for the simulated caller or visitor, a **Caller profile** for AI-generated callers, call variables, and limits such as max turns and max duration. Test cases run in creation order. See [Creating a Test Case](/evaluations/creating-an-evaluator).
 3. **Grade with scorecards.** Attach **shared scorecards** to the suite so every test case is graded the same way, and add extra scorecards to individual test cases when needed. Scorecards are built from your team's **Evaluation Criteria** library. See [Scorecards](/evaluations/scorecards) and [Evaluation Criteria](/evaluations/evaluation-metrics).
 4. **Run the suite.** Click **Run suite**, choose the **Agent version** to test (including your draft), optionally name the run, and confirm. The run is queued and executes asynchronously.
 5. **Read the results.** **Test Runs** lists every run with its suite, agent version, status, results, and duration. Open a run for each test case's pass/fail result, transcript, and scorecard breakdown, and **Re-run** it after you fix something.
@@ -34,7 +34,7 @@ AI Agent Testing is easy to confuse with two other things that use similar words
 | **Evaluation Criteria** | The shared library of scoring criteria (deterministic checks and LLM-judged criteria) that scorecards are built from. | [Evaluation Criteria](/evaluations/evaluation-metrics) |
 | **Test Suites** | Groups of test cases for one agent, with shared scorecards. Run a suite against any version of the agent. Filter the list by agent type (**Text** / **Voice**). | [Creating a Test Case](/evaluations/creating-an-evaluator) |
 | **Test Runs** | History of queued and executed suite runs — status, results, transcripts. Runs are started from a suite, not from here. | [Creating a Test Case](/evaluations/creating-an-evaluator) |
-| **Simulator Profiles** | Voice-only. Reusable simulated-caller configurations — LLM, TTS voice and language, STT, and a persona instruction — used as a voice test case's **Caller profile**. | [Simulator Profiles](/evaluations/evaluation-profiles) |
+| **Simulator Profiles** | Reusable simulated-caller configurations — a persona instruction plus optional LLM, TTS voice and language, and STT overrides — used as a test case's **Caller profile**. Required for every AI-generated caller, in text and voice suites alike; the voice and STT settings only apply to voice suites. | [Simulator Profiles](/evaluations/evaluation-profiles) |
 
 <Tip>
 You can turn a real call into a test case: open the call in Call History and click **Create test case** in its **Evaluation** section. This is a quick way to lock in a conversation that went wrong so it's tested on every future version.
