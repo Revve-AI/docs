@@ -4,7 +4,7 @@ title: "What Can Ask Revve Do?"
 description: "The complete capability catalog for anyone who works in the Revve dashboard: everything you can ask the copilot to look up, create, or propose — with copy-paste example prompts — and a clear list of what it will never do."
 ---
 
-Ask Revve does three kinds of work, in increasing order of how much they change: it **looks things up** (read-only, any team member), it **creates new things** on your confirmation (agents, metrics, campaigns — requires the right permission), and it **proposes edits** to existing agents that you review before anything changes. This page is the full catalog of each — what you can ask for, in the terms the copilot actually understands, with prompts you can paste as-is and adapt.
+Ask Revve does three kinds of work, in increasing order of how much they change: it **looks things up** (read-only, any team member), it **creates new things** on your confirmation (agents, metrics, campaigns, dashboards — requires the right permission), and it **proposes edits** to existing agents, metrics, and flow components that you review before anything changes. This page is the full catalog of each — what you can ask for, in the terms the copilot actually understands, with prompts you can paste as-is and adapt.
 
 If you haven't met the copilot yet, start with the [Ask Revve overview](/ask-revve/ask-revve-overview) — it covers where the dock lives, how threads work, and the review-and-apply proposal flow. This page assumes that and answers the next question: *what, exactly, can I ask it to do?*
 
@@ -87,6 +87,22 @@ Ask Revve can search your team's [metric library](/evaluations/evaluation-metric
 
 > "Do we already have a metric that checks whether the agent confirmed the appointment time?"
 
+### Knowledge base
+
+Ask Revve can search your team's knowledge — both FAQs and sources (web pages and uploaded files) — and cite the FAQ or page it used. You can narrow the search to one named knowledge base, to the sources a specific chat agent uses, or to an FAQ folder, and ask it to list which knowledge bases exist. Search is read-only.
+
+> "Do we have anything in the knowledge base about refunds for annual plans? Cite the source."
+
+### Flow components
+
+It can list your team's reusable [flow components](/voice-agents/voice-conversational-flow#global-nodes-and-reusable-components) and open one in full, so you can ask what a component does before using or changing it.
+
+> "Which flow components do we have, and what does the identity-check component do?"
+
+### Dashboards
+
+It can list your team's [custom dashboards](/history-analytics/custom-dashboards) and the metrics available for charts, and preview a chart before building it.
+
 ### Phone numbers and contact fields
 
 Two lookups that mostly power its other work, but that you can ask for directly:
@@ -104,9 +120,13 @@ These actions happen **immediately when you confirm in conversation** — there 
 
 Give it a goal and it builds a Vietnamese or English voice agent: name, instructions, greeting, your choice of a single-prompt or [conversational-flow](/voice-agents/voice-conversational-flow) engine, whether the AI speaks first, and a caller ID drawn from one team number or a number pool (one or the other, not both). The agent lands **unpublished and fully editable**, with language-appropriate speech, transcription, and model defaults already set.
 
-It cannot create chat agents — voice only today.
-
 > "Create a Vietnamese voice agent that calls insurance leads to confirm their renewal appointment. Use the flow engine, have the AI speak first, and pick a number from our outbound pool."
+
+### Create a chat agent
+
+It can also build a [chat agent](/getting-started/what-is-a-chat-agent): name, description, instructions, role, tone, up to six conversation starters, the channel (Website, Email, SMS, WhatsApp, Zalo, Zalo OA, Messenger, or TikTok), and optionally the folder to put it in. Like voice agents, it lands unpublished.
+
+> "Create a website chat agent for our dental clinic that answers opening-hours and pricing questions, with three conversation starters."
 
 ### Create evaluation metrics
 
@@ -119,7 +139,12 @@ It can create up to 20 metrics in one go, of either kind:
 
 ### Attach metrics to a voice agent
 
-It can attach metrics to a voice agent with per-metric weights, optional thresholds, and a minimum pass score (it keeps the agent's current value, or defaults to 4). This writes to the agent's **draft** and merges with metrics already attached — and like everything else, it cannot publish the result.
+It can attach metrics to a voice agent with per-metric weights and optional thresholds. Because voice agents are graded through [scorecards](/evaluations/scorecards), it routes each metric to a scorecard for the right speaker:
+
+- If the agent already has a scorecard for that speaker (agent or caller), the metric is added to it. That's a **live** change to a shared scorecard, so it affects every agent that scorecard is attached to — the copilot warns you when a scorecard is shared.
+- If there isn't one, it creates a new scorecard and attaches it to the agent's **draft**. Publish the agent to start evaluating with it.
+
+Deterministic metrics ride along with the first scorecard. Existing metrics on a scorecard are kept. It cannot publish the agent.
 
 > "Attach our three call-quality metrics to the Renewals agent's draft, weighted equally, minimum pass score 4."
 
@@ -139,16 +164,24 @@ A copilot-created campaign lands **active but empty**: no contacts are enrolled 
 
 > "Create a campaign for the Q3 renewal outreach with exit conditions for 'appointment booked' and 'do not call', and attach the Renewals agent."
 
+### Build a dashboard
+
+It can build a [custom dashboard](/history-analytics/custom-dashboards) for call or chat data: it looks up the available metrics, previews each chart, and saves the dashboard as an **unpublished draft** you own. It can also change the draft of an existing dashboard. Open the dashboard to review and publish it yourself — the copilot can't publish.
+
+> "Build a dashboard of call volume and success rate by agent for the last 30 days."
+
 ### Save a skill
 
 Turn a workflow you just ran into a reusable, named procedure — personal skills for yourself, or team skills with **Manage Settings**. See [Skills](/ask-revve/skills) for scopes and authoring.
 
 ## Propose changes to existing agents
 
-Anything that would modify an existing agent goes through the reviewed proposal flow instead of happening directly. Ask Revve can propose:
+Anything that would modify an existing agent, metric, or flow component goes through the reviewed proposal flow instead of happening directly. Ask Revve can propose:
 
 - A rewrite of the agent's **system/global prompt**.
 - **Conversation-flow edits**: change a node's instruction, add a node, remove a node (inbound transitions are detached), add or remove a transition, or edit a transition's condition or name.
+- **Metric improvements**: a rewritten judge prompt, 1–5 score rubric, or speaker scope for an LLM-judge metric, ideally grounded in failing calls. Applying updates the shared team metric itself, so the new definition is live for every scorecard using it at the next evaluation — there's no publish step. Deterministic metrics can't be edited this way.
+- **Flow component edits**: changes to a reusable flow component. Applying commits to the component's draft; publish the component (and re-publish the agents that use it) for the change to take effect.
 
 It makes one proposal per turn; you review per-change diffs, can edit the proposed text inline, and applying commits to the agent's **draft** only — it cannot publish. Proposing and applying both require **Manage Agents**. The full review-and-apply mechanics — proposal cards, Apply/Discard, the draft-lock caveat — are covered in the [Ask Revve overview](/ask-revve/ask-revve-overview).
 
@@ -162,9 +195,9 @@ The boundaries are as deliberate as the capabilities. Ask Revve will **not**:
 |---|---|
 | **Publish** — ever | Drafts only; [going live](/getting-started/publishing-and-versioning) is always your call |
 | Edit an existing agent's prompt or flow directly | Only via the reviewed proposal flow above |
-| Create chat agents, or attach metrics to chat agents | Voice agents only, for now — build chat agents in the dashboard |
-| Delete anything | No agent, metric, campaign, field, or skill deletion; use the dashboard |
-| Touch knowledge bases | No adding, editing, or removing KB content |
+| Attach metrics to chat agents | Metrics attach to voice agents only — attach scorecards to chat test suites in the dashboard |
+| Delete anything | No agent, metric, campaign, field, skill, or dashboard deletion; use the dashboard |
+| Change knowledge bases | It can search them, but not add, edit, or remove KB content |
 | Send messages, reply in threads, or place calls | All conversation access is read-only |
 | Change settings | Channels, team settings, phone-number and pool config, and an existing agent's speech/model settings are dashboard-only |
 | Configure campaign internals | No contact enrollment, scheduling, or step configuration |

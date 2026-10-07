@@ -6,49 +6,52 @@ description: "Upload files, add web page URLs, and set up automated crawlers to 
 
 Your agent needs content to answer questions. This guide covers how to add web pages and documents to your knowledge base, and how to use website crawlers to automatically keep everything up to date.
 
-## Adding Content from the Global Knowledge Base
+## Adding Content on the Sources Page
 
-Navigate to **Knowledge Base > Web Pages & Docs** in the left sidebar to access your team's central content library. From here, you can add individual web pages or upload documents.
+Navigate to **Knowledge > Sources** in the left sidebar to access your team's central content library. From here, you can add individual web pages or upload documents.
 
 ![The global Knowledge Base showing a list of web page sources with their titles, URLs, types, statuses, and dates](/screenshots/knowledge-web-pages-docs.png)
 
 ### Adding a Web Page
 
-1. Click the **Add** button in the top-right area of the Knowledge Base page.
-2. Select **Add Web Page** from the dropdown menu.
-3. Enter the full URL of the page you want to add (for example, `https://yourcompany.com/pricing`).
-4. Click **Save**. Revve will fetch the page content and index it for your agent.
+1. Click the **Add** button in the top-right area of the Sources page.
+2. Select **Add Web Page** from the dropdown menu. This opens the new crawler setup.
+3. Enter the full URL of the page you want to add (for example, `https://yourcompany.com/pricing`) and choose **Single Page (Scrape)** as the indexing type.
+4. Finish the remaining steps and submit. Revve will fetch the page content and index it.
+
+See [Creating a New Crawler](#creating-a-new-crawler) for the full setup.
 
 ### Uploading a Document
 
 1. Click the **Add** button.
 2. Select **Upload Document** from the dropdown menu.
-3. Choose a file from your computer.
-4. Click **Upload**. The document will be processed and added to your knowledge base.
+3. Drag and drop your documents, or choose files from your computer. You can upload several files at once and optionally add labels.
+4. Click **Upload Documents**. The documents will be processed and added to your sources.
 
-![The Add dropdown showing options to Add Web Page or Upload Document](/screenshots/knowledge-add-dropdown.png)
+![The Add dropdown showing options to Add Web Page or Upload Document](/screenshots/knowledge-upload-document.png)
 
 **Supported file formats:**
 
 | Format | Description |
 |---|---|
 | PDF | Product guides, datasheets, policy documents |
-| DOCX | Word documents, internal procedures |
+| DOCX, DOC | Word documents, internal procedures. Tables in DOCX files keep their structure. |
+| HTML, HTM | Saved web pages, exported help articles |
+| MD | Markdown files, technical docs |
 | TXT | Plain text files, notes, scripts |
 
-## Adding Content from a Chat Agent
+## Making Content Available to an Agent
 
-You can also add knowledge sources directly from within a specific chat agent:
+Agents don't use sources directly. To give an agent your content:
 
-1. Open your chat agent and go to the **Knowledge** tab.
-2. Click **Start Editing** to enable changes.
-3. Click the **Add** button to add a web page or upload a document.
+1. Add the sources to a knowledge base on the **Knowledge > Knowledge Bases** page.
+2. Open your chat agent, go to the **Knowledge** tab, and click **Start Editing**.
+3. On the **Knowledge Base** sub-tab, click **Attach Knowledge Base** and choose the knowledge base.
+4. Publish the agent. Attaching a knowledge base is saved to the draft and only takes effect after publishing.
 
-Sources added from within a chat agent are automatically attached to that agent. Sources added from the global Knowledge Base need to be attached to each agent individually.
+See [Knowledge Base Overview](/knowledge-base/knowledge-base-overview) for how sources, knowledge bases, and agents fit together.
 
-![The Knowledge tab inside a chat agent in editing mode, with the Add button enabled](/screenshots/knowledge-base-editing.png)
-
-**Note:** The banner at the top reminds you that "Knowledge base and FAQs are not versioned. Changes here take effect immediately." This means any content you add or remove is live right away -- there is no need to publish a new version.
+![The Knowledge tab inside a chat agent in editing mode](/screenshots/knowledge-base-editing.png)
 
 ## Managing Knowledge Sources
 
@@ -62,23 +65,47 @@ Each source in your knowledge base has the following attributes:
 | **Status** | `Active` means the source is available to agents. You can deactivate a source without deleting it. |
 | **Created At** | When the source was first added. |
 | **Last Index** | When the content was last fetched and processed. |
+| **Expiry At** | When the source expires, or "Never". See [Source Expiry](/knowledge-base/source-expiry). |
+| **Action** | Deactivate, Activate, Re-index, or Retry indexing, depending on the source's status. |
 
 ### Filtering and Searching
 
 Use the filters at the top of the sources table to narrow your view:
 
-- **Search bar** -- Search by title or URL.
-- **All Statuses** -- Filter by Active or Inactive status.
-- **All Types** -- Filter by Web Page or Document.
+- **Search bar** -- Search by title, URL, or content.
+- **All Statuses** -- Filter by Failed, Active, Inactive, Processing, Pending, or Pending Approval.
+- **All Types** -- Filter by Web Page, PDF, DOCX, DOC, HTML, TXT, or MD.
 - **All Labels** -- Filter by label tags.
+
+Your search, filters, and page are kept in the page URL, so you can share or bookmark a filtered view.
+
+### Viewing a Source
+
+Click a source to open the **Source Detail** panel. It has three tabs:
+
+- **Content** -- The text Revve extracted from the source, as the AI sees it.
+- **Chunks** -- How the content was split for search.
+- **History** -- The source's indexing history.
+
+From the panel you can also change the source's expiry date. The panel's link includes the source, so you can share it with a teammate.
 
 ### Activating and Deactivating Sources
 
-Click the **Deactivate** button next to any source to temporarily remove it from your agent's knowledge without deleting it. You can reactivate it later to make it available again.
+Click **Deactivate** next to any source to temporarily remove it from your agent's knowledge without deleting it. If the source is used by a chat agent, you'll be asked to confirm. Click **Activate** to make it available again.
+
+### Re-indexing Sources
+
+Click **Re-index** next to a source to fetch and process it again, for example after the web page or document has changed. If indexing failed, click **Retry indexing**.
+
+### Bulk Actions
+
+Select sources with the checkboxes to **Deactivate**, **Activate**, or **Re-index** them all at once. To act on every source that matches your filters, choose **Select all *N* matching items**.
 
 ### Pending Approval
 
 If you have enabled the "Require approval before indexing" option on a crawler, newly discovered pages will appear under the **Pending Approval** tab. You can review and approve them before they become available to your agents.
+
+Sources past their expiry date appear under the **Expired** tab. See [Source Expiry](/knowledge-base/source-expiry).
 
 ## Website Crawlers
 
@@ -86,7 +113,7 @@ For websites with many pages, manually adding each URL is impractical. Website c
 
 ### Viewing Crawlers
 
-Navigate to **Knowledge Base > Website Crawlers** in the left sidebar to see all configured crawlers.
+Navigate to **Knowledge > Crawlers** in the left sidebar to see all configured crawlers.
 
 ![The Website Crawlers page showing a configured crawler with its URL, type, schedule, and run history](/screenshots/knowledge-crawlers.png)
 
@@ -103,8 +130,9 @@ Each crawler shows:
 
 ### Creating a New Crawler
 
-1. Click the **New Crawler** button.
-2. Fill in the configuration:
+Click the **New Crawler** button. Setup has five steps: **URL & Type**, **Scraping Options**, **Chunking**, **Schedule**, and **Review**. Click **Next** to move between steps and submit on the Review step.
+
+The main settings are:
 
 ![Crawler configuration showing name, source URL, indexing type, approval settings, and labels](/screenshots/knowledge-crawler-config.png)
 
@@ -145,7 +173,7 @@ Each crawler has additional tabs for deeper management:
 - **Enable approval for large sites.** If your website has hundreds of pages, enable the approval requirement so you can review which pages get indexed.
 - **Set up content update schedules.** If your website changes frequently (e.g., a help center with regular updates), configure the Content Update Schedule to re-crawl weekly or daily.
 - **Label your sources.** Labels help you organize content by topic, product, or department, making it easier to manage which agents use which content.
-- **Check the Last Index date.** If a source has not been re-indexed recently, the agent may be using outdated information. Re-index manually or adjust the crawler schedule.
+- **Check the Last Index date.** If a source has not been re-indexed recently, the agent may be using outdated information. Click **Re-index** on the source or adjust the crawler schedule.
 
 ## Next Steps
 

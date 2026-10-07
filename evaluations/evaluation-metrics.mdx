@@ -1,72 +1,94 @@
 ---
 
-title: "Evaluation Metrics"
-description: "The team-wide library of reusable scoring criteria — deterministic checks and LLM-judged rubrics — shared by Evaluators, Scorecards, and the per-Voice-Agent Evaluation tab."
+title: "Evaluation Criteria"
+description: "The team-wide library of reusable scoring criteria — deterministic checks and LLM-judged criteria — that scorecards are built from."
 ---
 
-**Metrics** (**Evaluations → Metrics** in the left dashboard nav) is a standalone library where a team defines reusable scoring criteria once and attaches them wherever calls or conversations get graded. It's the same system already introduced in [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation): metrics belong to your team, not to a single agent, so a metric you build here is the same metric you can add to a Voice Agent's **Evaluation** tab, an Evaluator, or a Scorecard. This page covers the library UI itself — where you create, edit, and delete metrics. For how a metric is scored (Deterministic vs. LLM Judge, the seven deterministic checks, Binary vs. Scale 1-5, speaker scope, score rubrics), see [Voice Agent Evaluation — Metric types](/voice-agents/voice-agent-evaluation#metric-types); that mechanics doesn't change based on where the metric is used.
+**Evaluation Criteria** (**AI Agent Testing → Evaluation Criteria** in the left dashboard nav) is the library where your team defines reusable standards for reviewing agent conversations. You define a criterion once, then add it to as many [scorecards](/evaluations/scorecards) as you like. Scorecards grade conversations wherever they're used — Test Suites, a Voice Agent's **Evaluation** tab, and manual call analysis.
 
-![The Metrics library page, showing the metrics table with Name, Type, Description, and Created columns, and the New Metric button](/screenshots/evaluations-metrics-list.png)
+![The Evaluation Criteria library page, showing the criteria table and the New Criterion button](/screenshots/ai-agent-testing-nav.png)
 
 <Note>
-One team-wide library, several consumers. A metric created here can be attached to:
+A criterion defines **what** the judge checks and **how** it reports the result. The scorecard decides **how many points** that result is worth, whether failing it is a knockout, and the passing score. That's why the same criterion can be worth 10 points on one scorecard and 40 on another.
 
-- The per-Voice-Agent **Evaluation** tab — see [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation).
-- An **Evaluator**, in the top-level Evaluations product — see [Creating an Evaluator](/evaluations/creating-an-evaluator).
-- A **Scorecard**, for grading uploaded call recordings — see [Evaluations Overview](/evaluations/evaluations-overview).
-
-Editing a metric here changes it everywhere it's attached — there's no per-consumer override of a metric's own definition, only of its weight and threshold within each policy.
+Editing a criterion here changes it on every scorecard that uses it.
 </Note>
 
-## Creating a metric
+## The criteria list
 
-Click **New Metric** (top right, also shown in the empty state) to open a side panel titled **New Metric**. Editing an existing metric — click its row — opens the same panel titled **Edit Metric**.
-
-| Field | Notes |
-|-------|-------|
-| **Name** | Required. Placeholder example: "e.g. Verified Identity". Keep it specific enough to recognize in a weighted-metrics table on an agent or Scorecard, where you won't see the full description. |
-| **Description** | Optional. Placeholder: "What this metric checks...". Worth filling in — it's the only context a teammate attaching your metric to their own agent sees before they add it. |
-| **Type** | Required. **Deterministic** or **LLM Judge**. See [Metric types](/voice-agents/voice-agent-evaluation#metric-types) for the difference. |
-
-**When Type is Deterministic:**
-
-| Field | Notes |
-|-------|-------|
-| **Check Type** | Defaults to **Tool Called**. The same seven deterministic checks documented in [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation#deterministic-checks) — Tool Called, Tool Not Called, Tool Called With, Contains Text, Not Contains Text, Regex Match, Turn Count. |
-
-**When Type is LLM Judge:**
-
-| Field | Notes |
-|-------|-------|
-| **Scoring** | Radio: **Binary (pass/fail)** ("Judge returns true or false. Default.") or **Scale 1-5** ("Judge assigns a score (1-5) using your rubric. Default pass threshold is 4."). Binary is enough for a yes/no policy check; reach for Scale 1-5 when you actually want a numeric trend to watch over time — it costs you five rubric fields up front, but a metric that's always going to be pass/fail doesn't need it. |
-| **Judge Prompt** | The grading instruction sent to the LLM alongside the transcript. Placeholder example in the app: "Did the agent verify the customer's identity before providing account information?" Write it as a specific yes/no or gradable question, not a vague theme like "was the agent helpful". |
-| **Who is being evaluated?** | Radio: **AI Agent** ("Score the agent's utterances. The caller's lines stay as context.") or **Caller** ("Score the caller's utterances. The agent's lines stay as context."). |
-| **Score rubric — what merits each score for this metric?** | Only shown when Scoring is Scale 1-5. Five fields, **Score 1** through **Score 5**, each with placeholder "What in the conversation would warrant this score?". Fill in every level, not just the ends — a judge with no definition for "3" will assign one anyway, just inconsistently. |
-
-Submit with the button at the bottom of the panel: **Create** for a new metric, **Save Changes** when editing.
+The table shows each criterion's **Name**, **Type**, **Scoring**, **Description**, and **Created** date. Search by name, or filter by type: **All types**, **Deterministic**, or **LLM Judge**.
 
 <Tip>
-Use the **Type** filter above the table (**All types** / **Deterministic** / **LLM Judge**) to check for near-duplicates before creating a new metric — it's easy to end up with two similarly-named LLM Judge metrics asking almost the same question, which just doubles judge cost without adding signal.
+Check for near-duplicates before creating a new criterion — it's easy to end up with two similarly named LLM Judge criteria asking almost the same question, which doubles judge cost without adding signal.
 </Tip>
 
-## Where metrics get used
+## Creating a criterion
 
-| Consumer | What it's for | Docs |
-|----------|----------------|------|
-| Voice Agent **Evaluation** tab | Automatic post-call grading of every completed call for one agent, split into Caller/Agent groups with weights and a minimum pass score. | [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) |
-| **Evaluators** | Pre-ship regression testing — grade a simulated or scripted test conversation before you publish an agent change. | [Creating an Evaluator](/evaluations/creating-an-evaluator) |
-| **Scorecards** | Grade batches of already-recorded calls uploaded from Call History, using the same weighted-metrics UI as the Voice Agent Evaluation tab. | [Evaluations Overview](/evaluations/evaluations-overview) |
+Click **New Criterion** to open the **New evaluation criterion** panel. Click an existing criterion's row to open the same panel as **Edit evaluation criterion**.
 
-## Deleting a metric
+| Field | Notes |
+|-------|-------|
+| **Name** | Required, e.g. "Verified Identity". Keep it specific enough to recognize in a scorecard's criteria table, where you won't see the full description. |
+| **Description** | Optional — what this criterion checks. Worth filling in; it's the context a teammate sees before adding your criterion to their scorecard. |
+| **Type** | Required. **Deterministic** or **LLM Judge**. |
 
-The row-level delete action opens an **AlertDialog** titled **Delete metric**:
+Submit with **Create** for a new criterion, or **Save Changes** when editing.
 
-> This metric will be removed from all evaluators that use it. This action cannot be undone.
+### Deterministic criteria
 
-Read that literally and it undersells the blast radius: the confirmation copy only mentions evaluators, but the same metric may also be attached to a Voice Agent's Evaluation policy or a Scorecard. Deletion isn't scoped to one consumer — if you're not certain a metric is unused, check its usage on Voice Agents and Scorecards before deleting it, not just in the Evaluators list. There's no undo.
+A deterministic criterion is a fact checked mechanically against the conversation — pass or fail, no LLM involved, so it's cheap and instant. Choose a **Check Type**:
+
+| Check | What it verifies | Settings |
+|-------|------------------|----------|
+| **Tool Called** | A tool appears in the tool call logs. | **Tool Name** |
+| **Tool Not Called** | A tool does not appear in the logs. | **Tool Name** |
+| **Tool Called With** | A tool was called with matching parameters. | **Tool Name**, **Expected Parameters (JSON)** |
+| **Contains Text** | An agent message contains a substring. | **Text** |
+| **Not Contains Text** | The agent never says a substring. | **Text** |
+| **Regex Match** | An agent message matches a regex pattern. | **Pattern** |
+| **Turn Count** | The conversation completed within N turns. | **Max Turns** |
+
+Use deterministic checks for facts you can verify from logs — whether a validation tool ran, whether a required phrase was said.
+
+### LLM Judge criteria
+
+An LLM Judge criterion is a grading prompt that the scorecard's judge model applies to the transcript. Use it for anything that requires judgment: tone, adherence to a policy, whether the agent handled an objection well.
+
+**Scoring** — how the judge reports its result:
+
+| Scoring | What the judge does | How the scorecard uses it |
+|---------|---------------------|---------------------------|
+| **Binary (pass/fail)** | Returns true or false. | Assigns the points. |
+| **Scale 1-5** | Assigns 1–5 using your rubric. | Maps each score to points. |
+| **Checklist** | Reports which required steps happened. | Sets award tiers, or points per requirement. |
+| **Count occurrences** | Counts how many times one event happened. | Decides how the count affects points, e.g. a deduction per occurrence. |
+
+**Judge prompt** — the grading instruction. Write it as a specific question, e.g. "Did the agent verify the customer's identity before providing account information?", not a vague theme like "was the agent helpful". For **Count occurrences**, this field becomes **What should the judge count?** — describe one event, e.g. "Count each time the agent interrupts the caller before they finish speaking."
+
+**Who is being evaluated?** — whose lines drive the score. The other lines stay in the transcript as context.
+
+| Option | Scores |
+|--------|--------|
+| **AI Agent** | The agent's utterances. |
+| **Caller** | The caller's utterances. |
+| **Human agent** | The person who takes over after a transfer. |
+
+A criterion can only be added to a scorecard whose evaluation target matches.
+
+**Score rubric** — shown for **Scale 1-5**. Fill in **Score 1** through **Score 5** with what in the conversation would warrant each score. Fill in every level, not just the ends — a judge with no definition for "3" will assign one anyway, just inconsistently.
+
+**Requirements** — shown for **Checklist**. Click **Add requirement** for each step the judge should observe ("What must happen in the conversation?"). Point tiers are configured on the scorecard.
+
+## Importing criteria
+
+To create many criteria at once, click **Import** and upload an Excel or CSV file. Click **Download template** for the expected columns. One file can contain both types — set each row's type to `deterministic` or `llm_judge`.
+
+## Deleting a criterion
+
+Use the row's delete action to open **Delete evaluation criterion**. If the criterion is used by scorecards, the dialog names how many and warns that deleting it will remove it from them. Deletion can't be undone, so review those scorecards first — removing a criterion changes their point totals.
 
 ## What's Next
 
-- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — the metric type system in full: deterministic checks, LLM Judge scoring, speaker scope, and how a group's final score is calculated.
-- [Evaluations Overview](/evaluations/evaluations-overview) — how Evaluators, Profiles, Metrics, Scorecards, and Runs fit together.
-- [Creating an Evaluator](/evaluations/creating-an-evaluator) — build a pre-ship test case and attach metrics from this library to it.
+- [Scorecards](/evaluations/scorecards) — combine criteria into a 100-point rubric with knockouts and a passing score.
+- [What Is AI Agent Testing?](/evaluations/evaluations-overview) — how suites, runs, scorecards, and criteria fit together.
+- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — grade every live call a voice agent completes.

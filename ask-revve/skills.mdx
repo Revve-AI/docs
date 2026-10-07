@@ -24,7 +24,23 @@ Skills live in three tabs, each with its own ownership and permission model:
 | **Team** | Every member of the workspace | Anyone with the **Manage Settings** permission — others see the tab read-only, with no **New skill** button |
 | **Global** | Everyone | No one — built in by Revve, read-only |
 
-Global skills are the copilot's stock playbooks. The ones that ship include `analyze-bot-feedback`, `create-voice-agent`, `improve-bot-prompt`, `revve-voice-prompt-vi`, `summarize-recent-calls`, and `skill-creator`.
+Global skills are the copilot's stock playbooks. These ship with Revve:
+
+| Skill | What it's for |
+|-------|---------------|
+| `analyze-bot-feedback` | Summarize feedback patterns across recent chat or voice conversations — why scores are down, what users complain about. |
+| `build-dashboard` | Build, read, or change an analytics dashboard from a prompt. |
+| `create-chat-agent` | Create a new chat agent end to end. |
+| `create-voice-agent` | Create a new voice agent end to end. |
+| `edit-flow-components` | Edit a reusable flow component. |
+| `flow-node-types` | Design and validate conversational flows — when to use Logic Split, Extract Variables, and Code nodes. |
+| `improve-bot-prompt` | Improve or rewrite a chat or voice agent's prompt based on conversation feedback. |
+| `improve-metrics` | Rewrite an existing LLM-judge metric's prompt or 1–5 rubric, grounded in failing calls. |
+| `revve-voice-prompt-vi` | Author and refine Vietnamese voice-agent prompts and flows. |
+| `search-knowledge-base` | Find what your knowledge base contains — FAQs and source pages. |
+| `skill-creator` | Create or update personal or team skills. |
+| `summarize-recent-calls` | Produce a brief executive summary of a voice agent's recent calls. |
+| `write-code-node` | Write the JavaScript inside a flow's Code node. |
 
 Start in **Personal** while a workflow is still yours to refine; promote it to **Team** once it's stable and you want every teammate's copilot following the same procedure. Team scope is the point of the feature — it turns individual habits into shared process. See [Roles & Permissions](/governance-access/roles-and-permissions) for how **Manage Settings** is granted.
 

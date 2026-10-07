@@ -18,7 +18,7 @@ There are two places to manage FAQs:
 
 ### Global FAQs Page
 
-Navigate to **Knowledge Base > FAQs** in the left sidebar. This is the team-wide FAQ library where you create, edit, and organize all your FAQs.
+Navigate to **Knowledge > FAQs** in the left sidebar. This is the team-wide FAQ library where you create, edit, and organize all your FAQs.
 
 ![The global FAQs page showing the FAQ list with question, answer, labels, status, and action columns](/screenshots/knowledge-faqs.png)
 
@@ -30,13 +30,26 @@ Open a chat agent, go to the **Knowledge** tab, and click the **FAQs** sub-tab. 
 
 ## Creating a New FAQ
 
-1. Go to **Knowledge Base > FAQs** in the left sidebar.
-2. Click the **Add** button.
+1. Go to **Knowledge > FAQs** in the left sidebar.
+2. Click the **Add** button and choose **Add FAQ**.
 3. Enter the **Question** -- Write it the way a customer would naturally ask it. For example: "How can I reset my online banking password?"
 4. Enter the **Answer** -- Provide a clear, complete response. Include any relevant links or steps.
-5. Save the FAQ.
+5. Optionally choose a folder, add labels, and select the chat agents to attach the FAQ to.
+6. Click **Add FAQ**.
 
 The FAQ will be processed and made available to any agent it is attached to.
+
+![The Add FAQ form](/screenshots/knowledge-add-faqs.png)
+
+## Importing FAQs from a File
+
+To create many FAQs at once:
+
+1. Click the **Add** button and choose **Upload Documents**.
+2. Drag and drop your files, or choose them from your computer. Supported formats are **TXT**, **CSV**, and **XLSX**.
+3. Click **Import as FAQs**.
+
+Revve processes each file and creates FAQs from it. The **Import Jobs** list in the dialog shows the progress of each import.
 
 ## FAQ Fields
 
@@ -47,20 +60,32 @@ Each FAQ in the list displays the following information:
 | **Question** | The customer question this FAQ addresses. |
 | **Answer** | The response your agent will use. Answers may be truncated in the list view. |
 | **Labels** | Optional tags for organizing FAQs by topic or department. |
+| **Folder** | The folder the FAQ is in. |
 | **Status** | `Active` means the FAQ is available to agents. Inactive FAQs are ignored. |
 | **Created** | When the FAQ was first created. |
 
+Use the search box (**Search FAQs...**) and the status and label filters to narrow the list.
+
 ## Organizing FAQs with Folders
 
-The global FAQs page includes a **Folders** panel on the left side. You can create folders to group related FAQs together -- for example, by product, department, or topic. Click **New Folder** to create one, then move FAQs into it for easier management.
+The global FAQs page includes a **Folders** panel on the left side. You can create folders to group related FAQs together -- for example, by product, department, or topic. Click **New Folder** to create one, then move FAQs into it for easier management. Folders can be nested, renamed, moved, and deleted.
 
-## Editing an FAQ
+## Row Actions
 
-Click on any FAQ in the list to open it for editing. You can update the question, answer, labels, or status. Changes take effect immediately -- there is no need to publish.
+Each FAQ has a **⋮** (More actions) menu with these options:
 
-## Deactivating an FAQ
+| Action | What it does |
+|---|---|
+| **Edit** | Update the question, answer, folder, labels, or attached agents. Click **Save Changes** when done. Changes take effect immediately -- there is no need to publish. |
+| **Deactivate** / **Activate** | Temporarily remove the FAQ from your agents' responses without deleting it, or make it available again. If the FAQ is attached to chat agents, you'll be asked to confirm. |
+| **Move** | Move the FAQ to another folder. |
+| **Duplicate** | Copy the FAQ into a folder. Labels are copied; chat agent attachments are not. |
 
-Click the **Deactivate** button next to any FAQ to temporarily remove it from your agent's responses without deleting it. This is useful when an answer needs updating but you do not want the outdated version to be used in the meantime.
+Deactivating is useful when an answer needs updating but you do not want the outdated version to be used in the meantime.
+
+## Bulk Actions
+
+Select FAQs with the checkboxes to act on several at once: **Activate**, **Deactivate**, **Move**, **Duplicate**, or **Add Label**. To act on every FAQ that matches your filters, choose **Select all *N* matching**.
 
 ## Attaching FAQs to a Chat Agent
 
@@ -75,7 +100,13 @@ The **Attached** column in the agent's FAQ list shows when each FAQ was attached
 
 ## Exporting FAQs
 
-Click the **Export CSV** button to download all your FAQs as a CSV file. This is useful for backup, review, or importing into other systems.
+Click **Export CSV** and choose what to export:
+
+- **Export Selected Items** -- the FAQs you've selected (shown when you have a selection).
+- **Export Current Page** -- the FAQs on the current page.
+- **Export All Data** -- every FAQ that matches your filters.
+
+The export runs in the background. You'll receive an email when the CSV file is ready. Exports are useful for backup, review, or importing into other systems.
 
 ## How FAQ Matching Works
 
