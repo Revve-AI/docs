@@ -1,10 +1,10 @@
 ---
 
 title: "Ask Revve: Your In-App Copilot"
-description: "For every Revve user: chat with the built-in copilot to analyze calls, create agents and campaigns, and propose prompt changes — with a review-and-apply safety net for app owners."
+description: "For every Revve user: chat with the built-in copilot to analyze calls, create agents, campaigns, and dashboards, and propose changes — with a review-and-apply safety net for app owners."
 ---
 
-**Ask Revve** is the AI copilot built into the Revve dashboard. Ask it questions in plain language — "why did this call fail?", "show calls with negative feedback" — and it searches your conversations, calls, and metrics to answer. It can also do work for you: create a voice agent, set up evaluation metrics, draft a campaign, or propose edits to an agent's prompt that you review before anything changes.
+**Ask Revve** is the AI copilot built into the Revve dashboard. Ask it questions in plain language — "why did this call fail?", "show calls with negative feedback" — and it searches your conversations, calls, and metrics to answer. It can also do work for you: create a chat or voice agent, set up evaluation metrics, draft a campaign or dashboard, or propose edits to an agent, metric, or flow component that you review before anything changes.
 
 It never publishes anything. Changes to your agents arrive as proposals, apply only to a draft, and going live remains a human decision.
 
@@ -33,7 +33,14 @@ Keep one thread per task rather than one giant thread. "Improve the greeting for
 
 ## It knows what you're looking at
 
-On a chat agent, voice agent, or call-detail page, Ask Revve attaches the thing you're viewing as a context chip in the composer (for example **This call**). That means "improve this bot's greeting" or "why did this call fail?" just works — you don't have to name the agent or paste a call ID. Click the chip's dismiss control if you want a question answered without that context. Other pages attach no context, so name what you're asking about.
+On a chat agent, voice agent, flow component, dashboard, or call-detail page, Ask Revve attaches the thing you're viewing as a context chip in the composer (for example **This call**). A call opened from the call history slide-over is attached too. That means "improve this bot's greeting" or "why did this call fail?" just works — you don't have to name the agent or paste a call ID. Click the chip's dismiss control if you want a question answered without that context. Other pages attach no context, so name what you're asking about.
+
+## Attach files
+
+Click the paperclip (**Attach file**) in the composer to add files to a message — for example, a policy document to turn into agent instructions, or a CSV of questions to check against your knowledge base.
+
+- Up to **5 files** per message, **10 MB** each.
+- Supported formats: **PDF**, **DOCX**, **TXT**, **MD**, and **CSV**.
 
 ## What it can do
 
@@ -42,10 +49,10 @@ Ask Revve's capabilities come in three tiers, ordered by how much they change:
 | Tier | Examples | Review step? |
 |------|----------|--------------|
 | **Answer and analyze** | Search conversations, calls, and metrics; summarize recent calls; surface negative feedback | None — read-only |
-| **Act directly** | Create a voice agent; create [evaluation metrics](/evaluations/evaluation-metrics) and attach them to an agent; create custom contact fields; create a [campaign](/campaigns/creating-a-campaign) and attach an agent; save skills | None — happens immediately (requires **Manage Agents**) |
-| **Propose agent changes** | Edit a chat or voice agent's prompt or conversation flow | Yes — you review a diff and apply per change |
+| **Act directly** | Create a chat or voice agent; create [evaluation metrics](/evaluations/evaluation-metrics) and attach them to a voice agent's scorecards; create custom contact fields; create a [campaign](/campaigns/creating-a-campaign) and attach an agent; build a [dashboard](/history-analytics/custom-dashboards) draft; save skills | None — happens immediately (requires **Manage Agents**) |
+| **Propose changes** | Edit a chat or voice agent's prompt or conversation flow; improve an LLM-judge metric; edit a flow component | Yes — you review a diff and apply per change |
 
-Direct actions create *new* things — a new agent, a new metric, a new campaign. One caveat to know: a copilot-created campaign lands **active** (though empty — no contacts are enrolled until you add them), not as a draft. Anything that would modify an existing agent's prompt or flow goes through the proposal flow below.
+Direct actions create *new* things — a new agent, a new metric, a new campaign, a new dashboard draft. Two caveats to know: a copilot-created campaign lands **active** (though empty — no contacts are enrolled until you add them), not as a draft; and attaching metrics to a voice agent can add them to a scorecard that's already live and shared with other agents. Anything that would modify an existing agent's prompt or flow, a metric's definition, or a flow component goes through the proposal flow below. See [What Can Ask Revve Do?](/ask-revve/what-can-ask-revve-do) for the full catalog.
 
 ## Proposals: review before anything changes
 
@@ -61,7 +68,9 @@ Applying opens a confirmation dialog — **Apply to draft?** — that spells out
 
 The safety story, stated plainly:
 
-- Proposals write to the agent's **draft**, never to the live published version.
+- Agent proposals write to the agent's **draft**, never to the live published version.
+- Flow component proposals write to the component's draft. Nothing goes live until you publish the component and re-publish the agents that use it.
+- **Metric proposals are the exception:** applying one updates the shared team metric itself, so the new definition is used by every scorecard with that metric at the next evaluation. There's no draft or publish step for metrics.
 - **Publishing stays a separate, human step** — the same [draft/publish workflow](/getting-started/publishing-and-versioning) as any manual edit, including [publish approval](/governance-access/publish-approval-workflow) if your workspace requires review.
 - Proposing and applying agent changes both require the **Manage Agents** permission — without it, the copilot declines to propose changes at all (and conversations are private to each user, so there is no hand-off-to-a-teammate path).
 
@@ -75,7 +84,7 @@ Drafts are single-editor. If a teammate holds the agent's edit lock, applying fa
 |--------|---------------|
 | Chat with Ask Revve, run analyses | Any team member |
 | Direct actions (create agents, metrics, campaigns) | **Manage Agents** |
-| Apply a proposal to an agent's draft | **Manage Agents** permission |
+| Apply a proposal (agent, metric, or flow component) | **Manage Agents** permission |
 | Create custom contact fields or team-scoped skills via the copilot | **Manage Settings** permission |
 | Publish an agent draft | Unchanged — your normal publish flow and approvals |
 

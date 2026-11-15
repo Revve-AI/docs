@@ -1,93 +1,93 @@
 ---
 
-title: "Creating an Evaluator"
-description: "Define a test case, attach it to a Text or Voice agent, launch a Run, and read the pass/fail results — the full create-run-inspect loop for Evaluations."
+title: "Creating a Test Case"
+description: "Create a Test Suite, add test cases for a Text or Voice agent, run the suite against an agent version, and read the pass/fail results — the full create-run-inspect loop for AI Agent Testing."
 ---
 
-By the end of this page you'll have created an Evaluator, run it, and read the results. This assumes you already have at least one [Metric](/evaluations/evaluation-metrics) in your team's library — every Evaluator requires at least one — and, if you're building a voice Evaluator, at least one Profile (Step 2 covers this).
+By the end of this page you'll have created a Test Suite, added a test case, run it, and read the results. This assumes you already have at least one [Scorecard](/evaluations/scorecards) to grade with and, if you'll use an AI-generated caller, at least one [Simulator Profile](/evaluations/evaluation-profiles).
 
-## Step 1: Create an evaluator
+## Step 1: Create a Test Suite
 
-Go to **Evaluations > Evaluators** in the left nav:
+Test cases live inside a suite, and every suite belongs to one agent. Go to **AI Agent Testing > Test Suites** and click **New suite** (or **Create first suite** if you have none yet).
 
-![The Evaluators list with no evaluators yet, showing the New Evaluator button, search and filter controls, and the table's column headers](/screenshots/evaluations-evaluators-list.png)
+| Field | What to enter |
+|-------|---------------|
+| **Name** | Required, e.g. "Booking regression". |
+| **Description** | Optional — what this suite covers. |
+| **Agent type** | **Text** or **Voice**. |
+| **Agent** | The agent under test. It can't be changed after the suite is created. |
 
-Click **New Evaluator**:
+On the suite, attach **shared scorecards** — every test case in the suite is graded against them. Use the search box and the **Agent type** filter on the Test Suites list to find a suite later.
 
-![The New Evaluator form, showing the Basics section (Name, Description, Agent under test) and the top of the Behavior section (Message Mode)](/screenshots/evaluations-evaluator-form.png)
+## Step 2: Add a test case
 
-Fill in three sections:
+On the suite, click **New test case**. The form has four sections.
 
-**Basics**
+**Test case details**
 
+- **Suite** — preselected when you start from a suite. The **Agent** is derived from the suite and can't be edited here.
 - **Name** — required, e.g. "Appointment Cancellation".
-- **Description** — optional, what this evaluator tests.
-- **Agent** — required. Pick the Text or Voice agent under test, then use the version picker to pin the evaluator to a specific published version or the current draft.
+- **Description** — optional, what this test case checks.
 
-**Behavior**
+**Conversation**
 
-- **Message Mode** — **LLM Generated** or **Fixed Messages**. LLM Generated has a simulated user improvise within instructions you write; Fixed Messages plays back an exact script with no improvisation.
-  - For LLM Generated: write **Instructions** (the customer persona and scenario) and, optionally, an **Expected Outcome** describing what the agent should achieve.
-  - For Fixed Messages: build the **User Messages** list — the exact turns the simulated user will send, in order.
+- **Caller behavior** — **AI-generated caller** or **Scripted caller**.
+  - **AI-generated caller**: write **Instructions** — the customer persona and scenario. The simulated caller improvises within them. You can insert variables.
+  - **Scripted caller**: build the **Script** — the exact turns the simulated caller sends, in order. For voice suites you can record each line; once every line is recorded, the test uses recorded playback instead of text-to-speech.
+- **Caller profile** — required for AI-generated callers. It controls how the simulated caller behaves (and, for voice, how it sounds). See [Simulator Profiles](/evaluations/evaluation-profiles).
+- **Agent speaks first** — voice only. Turn on when the agent under test should open the conversation (for example, an outbound call flow).
 
-**Scoring & Limits**
+**Scorecards**
 
-- **Metrics** — required, at least one. Multi-select from your team's shared library; see [Evaluation Metrics](/evaluations/evaluation-metrics) if you need to create one first.
-- **Max Turns** — required. How many conversation turns the simulation is allowed before it stops. Voice evaluators also set **Max Duration (seconds)**, a hard cap on call length. Both are per-evaluator numbers you choose based on how long a real conversation for this scenario should reasonably take — there's no team-wide default, so start from what a normal call or chat for this scenario looks like and pad it a bit.
-- **Min Pass Threshold** — a slider from 0-100% in 5% steps, defaulting to 80%. This is the score an individual run result must clear to count as "passed."
+The suite's shared scorecards are listed as **Inherited from suite**. Add more scorecards here when this test case needs extra checks. A test case needs at least one scorecard that contributes to the result, inherited or its own, before it can run.
 
-<Tip>
-Set **Min Pass Threshold** deliberately, not just at the 80% default. A threshold that's too low lets a mediocre run read as "passed" and hides real regressions; too high and a run with one minor, acceptable miss reads as a failure and trains the team to ignore the badge. Calibrate it against a run you've already read the transcript for.
-</Tip>
+**Limits**
 
-An **Advanced** section (collapsed by default) holds four more fields you don't need for a first evaluator: **Mock Tools** (stub tool-call responses so the evaluator runs without real integrations), **Dynamic Variables** (key/value template variables available to the scenario), **Tags**, and **Folder Path** (a dot-delimited grouping path, e.g. "Sales.Inbound").
+- **Max turns** — how many conversation turns the simulation is allowed before it stops.
+- **Max duration (seconds)** — voice only, a hard cap on call length.
 
-## Step 2: Add a Profile (voice evaluators only)
+Set both from what a normal conversation for this scenario looks like, padded a bit.
 
-If **Agent** is a Voice agent, Basics also shows a required **Profile** picker — a reusable simulated-caller definition: which LLM plays the caller and at what temperature, its TTS voice and language, its STT, and a free-text **Instruction** describing the persona (e.g. "Frustrated caller"). Text evaluators skip this entirely; there's no simulated voice to configure.
+An **Advanced** section (collapsed by default) holds:
 
-If your team has no Profiles yet, go to **Evaluations > Profiles** and click **New profile** before returning to finish the evaluator — see [Evaluation Profiles](/evaluations/evaluation-profiles) for every profile field and persona-writing guidance.
+- **Tool mocks** — stub tool-call responses so the test runs without real integrations.
+- **Call variables** — values available during the simulated conversation. Voice suites have two sets: what the **Agent under test** knows about the customer, and what the **Simulated caller** claims about themselves.
+- **Tags** and **Folder path** — for organizing test cases.
 
-<Tip>
-Build a small set of reusable Profiles (a calm caller, a frustrated caller, a caller with background noise) rather than a one-off Profile per evaluator. The same Profile can drive many Evaluators, so the effort of tuning one persona's voice and temperature pays off across every scenario that needs that kind of caller.
-</Tip>
-
-Voice evaluators also get an **Agent speaks first** switch in Behavior, off by default — it controls whether the simulated agent or the simulated caller opens the conversation. Leave it off unless the scenario you're testing specifically depends on the agent greeting first (e.g. an outbound call flow).
-
-## Step 3: Run it
-
-There's no "New Run" button on the Runs page — a Run always starts from the **Evaluators** list. Either:
-
-- Click **Run** on a single evaluator's row, or
-- Check several evaluators' boxes and click **Run Selected (N)**.
+Save the test case. Test cases run in the order they were created.
 
 <Tip>
-**Run Selected** requires every checked evaluator to target the same agent — it's meant for running a whole regression suite against one agent at once, not for mixing scenarios across agents. Group your evaluators by agent (Tags or Folder Path help here) if you want to select-and-run a suite in one click.
+To test a real conversation, open a call in Call History and click **Create test case** in its **Evaluation** section. The form opens with the call imported ("Imported from call"); pick a voice suite for that agent and save.
 </Tip>
 
-Launching a run enqueues it for asynchronous background execution — it doesn't run inline in your browser, so you can navigate away and come back.
+<Tip>
+To reuse a test case for another agent, open it and choose **Test this against another agent**. Pick a **Target suite** assigned to the other agent, then click **Duplicate test case**.
+</Tip>
+
+## Step 3: Run the suite
+
+Runs always start from a suite. On the suite, click **Run suite**:
+
+1. Choose the **Agent version** to test — a published version or the **Current draft**.
+2. Optionally enter a **Run name**.
+3. Confirm. If any test case isn't ready (for example, it has no scorecard that contributes to the result), the dialog lists what to fix first.
+
+The run is queued and executes in the background, so you can navigate away and come back.
 
 ## Step 4: Read the results
 
-Go to **Evaluations > Runs**. The list shows Name, Status, Agent, Results ("X/Y passed"), Success Rate, Duration, and Created, and auto-refreshes every 5 seconds while any run is Pending or Running. Filter by status — **All Statuses**, **Pending**, **Running**, **Completed**, **Failed**, **Cancelled** — if the list gets long.
+Go to **AI Agent Testing > Test Runs**. The list shows **Run**, **Suite**, **Agent version** (a version number or "Current draft"), **Status**, **Results**, **Created**, and **Duration**. Search by run or suite name, or filter by status — **All statuses**, **Pending**, **Running**, **Completed**, **Failed**, **Cancelled**.
 
-Click a run to open its detail page:
-
-- KPI tiles: **Total**, **Passed**, **Failed**, **Errors**, plus a **Success Rate** bar.
-- Below, each individual result shows a status badge (Pending / Running / Evaluating / Passed / Failed / Error / Skipped). Click a result to open its detail panel: the full simulated transcript, tool-call logs, and the per-metric score breakdown.
+Click a run to open its detail page. The header shows the suite, agent, target version, creation time, and duration. Below, each test case's result shows its status. Click a result to see the full simulated transcript, tool-call logs, and the scorecard breakdown — each scorecard's score, its pass threshold, and every criterion's result.
 
 <Tip>
-When a result fails, read the transcript before the metric breakdown — it's usually obvious within a few turns whether the agent went wrong or the scenario itself was unrealistic (a persona instruction that no real caller would say). Fix whichever one is actually broken rather than loosening the metric to make the run pass.
+When a result fails, read the transcript before the scorecard breakdown — it's usually obvious within a few turns whether the agent went wrong or the scenario itself was unrealistic (a persona instruction that no real caller would say). Fix whichever one is actually broken rather than loosening the scorecard to make the run pass.
 </Tip>
 
-From the run detail page, two actions let you re-run: **Re-run** repeats the exact same configuration, and **Re-run with…** opens a dialog to explicitly pick a different agent version or draft before re-running.
-
-<Tip>
-After fixing a prompt or flow that caused a failure, use **Re-run with…** against the new draft rather than eyeballing whether the diff looks right. It re-executes the same scenario against the specific version you point it at, so you get a pass/fail verdict on the actual fix instead of a guess.
-</Tip>
+Click **Re-run** on the run detail page to run the same suite and version again. To test a fix in your draft, start a new run from the suite with **Run suite** and pick **Current draft**.
 
 ## What's Next
 
-- [Evaluation Metrics](/evaluations/evaluation-metrics) — the deterministic and LLM-judged metric types you attach to an Evaluator's Scoring & Limits section.
-- [What Is Evaluations?](/evaluations/evaluations-overview) — the concept-level tour of Evaluators, Profiles, Metrics, Scorecards, and Runs.
+- [Scorecards](/evaluations/scorecards) — build the rubrics that grade your test cases.
+- [What Is AI Agent Testing?](/evaluations/evaluations-overview) — the concept-level tour of suites, runs, scorecards, and profiles.
 - [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — if what you actually want is automatic post-call grading of every live call, not pre-ship testing.

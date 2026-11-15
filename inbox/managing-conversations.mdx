@@ -1,7 +1,7 @@
 ---
 
 title: "Managing Conversations"
-description: "How to assign conversations, apply labels, change status, reply to visitors, and leave internal comments."
+description: "How to assign conversations, apply labels, change status, reply to visitors, block contacts, and leave internal comments."
 ---
 
 Once you open a conversation in the Inbox, you have several tools for managing it effectively. This page covers assigning conversations, applying labels, changing conversation status, replying to visitors, and leaving internal comments.
@@ -25,18 +25,33 @@ The assignment change is logged in the conversation timeline so you can track ha
 
 ## Applying Labels
 
-Labels help you categorize and organize conversations. Each conversation can have one label at a time.
+Labels help you categorize and organize your work. There are two kinds, and each can hold one label at a time:
 
-**To add or change a label:**
+| Label | Applies to | Where to set it |
+|-------|-----------|-----------------|
+| **Contact label** | The person. It shows on every conversation with that contact. | The tag icon on a row in the conversation list. |
+| **Conversation label** | This one conversation. | **+ Label** in the conversation header. |
+
+Use contact labels for facts about the person (for example, "VIP" or "Existing customer") and conversation labels for this particular thread (for example, "Support" or "Follow-up").
+
+**To set a contact label:**
 
 1. Hover over a conversation in the left panel.
 2. A **tag icon** appears in place of the timestamp.
-3. Click the tag icon to open the label selector.
-4. Choose a label from the list, or select **No Label** to remove the current label.
+3. Click the tag icon to open the **Contact label** menu.
+4. Choose a label, or select **No Label** to remove it.
+
+**To set a conversation label:**
+
+1. Open the conversation.
+2. Click **+ Label** in the conversation header (or the current label, if one is set).
+3. Choose a label from the **Conversation label** menu, or select **No Label** to remove it.
+
+Rows in the conversation list show both labels.
 
 **To manage your team's labels:**
 
-1. Open the label selector on any conversation.
+1. Open either label menu.
 2. Click **Manage Labels** at the bottom of the list.
 3. In the dialog you can:
    - Create new labels with a custom name and color
@@ -81,8 +96,13 @@ The message input area is at the bottom of the chat thread.
 | Zalo | Full support | Supports file attachments |
 | Zalo OA | Full support | Messages sent after 48 hours may incur a fee |
 | Facebook Messenger | Full support | Must reply within 24 hours of the visitor's last message |
-| SMS | Coming soon | Manual replies are not yet available |
+| TikTok | Full support | Replies to TikTok Direct Messages |
+| SMS | Text only | Sent through Twilio. Attachments aren't supported, and contacts who opted out of SMS aren't sent anything. |
 | Email | Coming soon | Manual replies are not yet available |
+
+Manual replies aren't possible on a closed conversation.
+
+**Images from website visitors:** if your website agent allows image uploads, the images a visitor sends appear in the conversation as attachments. See [Chat Agent Advanced Settings](/general-configuration/chat-agent-advanced-settings).
 
 **To reply:**
 
@@ -92,6 +112,20 @@ The message input area is at the bottom of the chat thread.
 4. For website conversations, you can use markdown formatting for bold, italic, links, and lists.
 
 **Sensitive data protection:** If your team has enabled sensitive data protection in Settings, the system will warn you before sending messages that contain patterns matching sensitive data (such as credit card numbers or social security numbers). You can choose to cancel or send anyway.
+
+## Blocking a Contact
+
+On **Messenger** and **Zalo OA** conversations, you can block a contact — for example, to stop spam or abuse.
+
+1. In the conversation list, open the block menu on the conversation's row and choose **Block "*name*"**.
+2. Optionally enter a **Reason (optional)**, then click **Block**.
+
+New messages from a blocked contact are dropped, and the agent doesn't answer them. Blocked conversations show a **Blocked** icon in the list.
+
+- **Messenger:** the contact is also blocked on your Facebook Page, so they can no longer message it. Pages connected before blocking was released may need reconnecting first — see [Messenger Channel Setup](/channel-setup/messenger-channel-setup#blocking-contacts).
+- **Zalo OA:** the block applies in Revve only.
+
+To undo it, choose **Unblock "*name*"** from the same menu.
 
 ## Internal Comments
 
@@ -109,7 +143,7 @@ Comments show the author's name, avatar, and timestamp. You can **edit** or **de
 ## Best Practices
 
 - **Assign before replying** -- taking ownership ensures your team knows who is handling each conversation.
-- **Use labels consistently** -- agree on a labeling system with your team (e.g., "Hot Lead", "Support", "Follow-up") to keep conversations organized.
+- **Use labels consistently** -- agree on a labeling system with your team, and on which labels belong to contacts (e.g., "Hot Lead") versus conversations (e.g., "Support", "Follow-up").
 - **Close conversations when resolved** -- this keeps the Mine and Unassigned tabs focused on active work.
 - **Leave comments for context** -- if you are handing off a conversation or noting something for later, internal comments are the right place.
 - **Check the Unassigned tab regularly** -- conversations that triggered a human takeover but have not been claimed will appear here.

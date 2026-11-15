@@ -4,9 +4,9 @@ title: "SMS Channel Setup"
 description: "Connect a Twilio phone number to enable your Chat Agent to communicate via SMS."
 ---
 
-> **Setup Required:** This channel requires initial technical setup by your account administrator before you can configure it here. This includes provisioning a Twilio phone number and connecting it to your Revve account. Contact your Revve team or administrator to get started.
+> **Setup Required:** An admin first connects your Twilio account and enables SMS on a number under **Settings > Phone Numbers** — see [Setup Steps](#setup-steps) below.
 
-Once your administrator has completed the initial setup, you can configure the following settings directly from the dashboard:
+Once a number is connected, you can configure the following settings directly from the dashboard:
 
 - Select which connected phone number the agent uses
 - Configure the agent's prompt, knowledge base, and behavior
@@ -20,7 +20,7 @@ When you create a Chat Agent with the **SMS** channel type, a **Channel Settings
 
 ## Accessing Channel Settings
 
-1. Navigate to **Agents > Chat Agents**.
+1. Navigate to **AI Agents > Chat Agents**.
 2. Select your SMS Chat Agent (or create a new one with the SMS channel type).
 3. Click the **Channel Settings** tab.
 
@@ -32,29 +32,36 @@ When you create a Chat Agent with the **SMS** channel type, a **Channel Settings
 
 | Setting | Description |
 |---------|-------------|
-| **Phone Number** | Select the Twilio phone number that the agent will use for sending and receiving SMS messages. The dropdown lists all phone numbers that have been connected in your team's Settings, displayed with a label and the full phone number. |
+| **Phone Number** | Select the Twilio phone number that the agent will use for sending and receiving SMS messages. The dropdown lists only phone numbers with SMS enabled on the **Phone Numbers** page, displayed with a label and the full phone number. Click **Manage phone numbers** to go there. |
 
 ---
 
 ## Setup Steps
 
-### 1. Connect Twilio in Team Settings
+### 1. Connect Twilio
 
 Before you can assign a phone number to an SMS Chat Agent, you need to connect your Twilio account.
 
-1. Go to **Settings** in the left sidebar.
-2. Navigate to the integrations or phone number section.
-3. Connect your Twilio account by providing your Twilio Account SID and Auth Token.
-4. Import or register the phone numbers you want to use with Revve AI.
+1. Go to **Settings > Phone Numbers**.
+2. On the **Twilio** card, click **Connect**.
+3. In the **Connect Twilio Account** dialog, enter your Twilio **Account SID** (it starts with `AC`) and **Auth Token**.
 
-### 2. Assign a Phone Number
+### 2. Import a Number and Enable SMS
+
+1. On the Phone Numbers page, click **Import from Twilio** and select the numbers you want to use. If none are listed, buy numbers in the Twilio Console first.
+2. Edit the imported number and turn on **Enable SMS**. This configures the Twilio webhook for incoming SMS messages.
+
+Only numbers with SMS enabled can be assigned to an SMS Chat Agent.
+
+### 3. Assign a Phone Number
 
 1. Open your SMS Chat Agent and go to the **Channel Settings** tab.
 2. Click the **Phone Number** dropdown.
 3. Select the phone number you want this agent to use.
-4. Save your changes.
 
-### 3. Publish the Agent
+Your selection is saved to the draft automatically.
+
+### 4. Publish the Agent
 
 After assigning a phone number and configuring your agent's behavior (prompt, knowledge base, etc.), publish the agent to make it live. Incoming SMS messages to the assigned phone number will be routed to this agent.
 
@@ -64,8 +71,17 @@ After assigning a phone number and configuring your agent's behavior (prompt, kn
 
 - **Use dedicated numbers per agent.** Each SMS Chat Agent should be assigned its own phone number to avoid message routing conflicts.
 - **Keep responses concise.** SMS messages have character limits, and longer messages may be split into multiple parts. Configure your agent's prompt to encourage brief, focused responses.
-- **Test before going live.** Send test SMS messages to the assigned phone number to verify the agent responds correctly.
+- **Test before going live.** Use the agent's **Preview** tab to simulate an SMS conversation, including any variables your prompt uses. Then send real test SMS messages to the assigned phone number to verify the agent responds correctly.
 - **Monitor conversations.** SMS conversations appear in your team's Inbox, where you can review agent responses and take over conversations when needed.
+
+---
+
+## Replying Manually from the Inbox
+
+After taking over an SMS conversation in the Inbox, you can send replies yourself. They're sent by SMS through Twilio.
+
+- Manual SMS replies are **text only**. Attachments can't be sent.
+- Messages aren't sent to recipients who have opted out of SMS.
 
 ---
 
@@ -73,8 +89,8 @@ After assigning a phone number and configuring your agent's behavior (prompt, kn
 
 | Issue | Solution |
 |-------|----------|
-| No phone numbers appear in the dropdown | Verify that your Twilio account is connected in Settings and that phone numbers have been imported. |
-| Agent does not respond to incoming SMS | Check that the agent has been published and that the correct phone number is assigned. Also verify the Twilio webhook is properly configured. |
+| No phone numbers appear in the dropdown | Verify that your Twilio account is connected on the **Phone Numbers** page, that the number is imported, and that **Enable SMS** is turned on for it. The tab shows "No SMS-enabled phone numbers found" until a number has SMS enabled. |
+| Agent does not respond to incoming SMS | Check that the agent has been published and that the correct phone number is assigned. Also verify **Enable SMS** is on for the number, which sets up the Twilio webhook. |
 | Messages are not being delivered | Check your Twilio dashboard for delivery errors. Common issues include unverified phone numbers or insufficient Twilio account balance. |
 
 ---

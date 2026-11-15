@@ -7,7 +7,7 @@ description: "How drafts, publishing, and version history work for voice agents,
 Voice agents use the same **draft-based editing workflow** as chat agents: a live published version, a private working draft, a 2-hour editing lock, and an immutable version history on every publish. If you haven't read [Publishing & Versioning](/getting-started/publishing-and-versioning), start there — it covers the full mechanics of drafts, the editing lock, and the Versions table in depth. This page assumes that pattern and documents only what's different for voice agents.
 
 <Note>
-This page documents the **Revve provider** path (tabs Dashboard / General / Model Settings / Knowledge Base / Advanced Settings / Evaluation / Preview / Versions). Legacy Retell-provider agents show a different set of tabs and aren't covered here.
+This page documents the **Revve provider** path (tabs Dashboard / General / Model Settings / Conversational Flow (flow agents only) / Knowledge Base / Advanced Settings / Evaluation / Versions / Experiments / Test agent). Legacy Retell-provider agents show a different set of tabs and aren't covered here.
 </Note>
 
 ## What's identical to chat agents
@@ -17,33 +17,35 @@ Voice agents are not a `type` on the same underlying agent record — they're bu
 - **Start Editing** creates a draft based on the current published version and acquires an editing lock.
 - The editing lock lasts **2 hours**, shown as a countdown in the top bar, and can only be held by one person at a time.
 - **Stop Editing** releases the lock and preserves the draft for later.
-- **Publish** creates a new, immutable version and makes it the active version.
+- **Publish** opens the publish page, which lists the changes in your draft and drafts **Version Notes** for you. Publishing creates a new, immutable version.
+- **Rollout** on the publish page: **Publish to everyone** makes the new version live straight away. **Test with an experiment first** saves the version without making it live, then takes you to experiment setup on the **Experiments** tab, where it can be tested against the live version on a share of real calls.
+- The top bar's version dropdown lets you view any published version read-only, with a **Live** badge on the version that's currently serving calls and **Back to Live** to return.
 - If someone else publishes while you're editing, you'll hit the same base-version-vs-active-version conflict check described in [Publishing & Versioning](/getting-started/publishing-and-versioning).
 
 The banner, lock timer, and **Start Editing**/**Stop Editing** buttons are the literal same shared UI component chat agents use — not a lookalike — so anything you already know about that banner from the chat-agent page applies here unchanged.
 
 ## The Versions tab
 
-Every Revve-provider voice agent has a **Versions** tab in its left navigation, alongside General, Model Settings, Conversational Flow, Knowledge Base, Advanced Settings, Evaluation, and Preview.
+Every Revve-provider voice agent has a **Versions** tab in its tab row, alongside General, Model Settings, Conversational Flow, Knowledge Base, Advanced Settings, Evaluation, Experiments, and Test agent.
 
 ![Versions tab for a voice agent showing draft and published version history](/screenshots/voice-versions.png)
 
-**Your Draft** — same shape as chat agents:
+**Current Draft** — same shape as chat agents:
 
 - **Based on** — which published version the draft was branched from.
 - **Created** — when the draft was created.
-- A **Publish** button, or a **Submit for Review** button if you don't hold the Publish Agents permission. See [Roles & Permissions](/governance-access/roles-and-permissions) for what that permission controls and [Publish Approval Workflow](/governance-access/publish-approval-workflow) for how request/approve/decline works — voice agents are one of the three resource types that workflow covers.
+- A **Publish** button, or a **Submit for Review** button if you don't hold the Publish Agents permission. See [Roles & Permissions](/governance-access/roles-and-permissions) for what that permission controls and [Publish Approval Workflow](/governance-access/publish-approval-workflow) for how request/approve/decline works — voice agents are one of the resource types that workflow covers.
 
 **Published Versions** — the same table columns as chat agents:
 
 | Column | Description |
 |--------|-------------|
-| **Version** | Version number, with an **Active** badge on the currently live version. |
+| **Version** | Version number, with an **Active** badge on the currently live version. A version published for an experiment isn't active until it's rolled out. |
 | **Note** | The publish note added at publish time. |
 | **Published by** | The team member who published the version. |
 | **Published** | When the version was published. |
 | **View** | Read-only inspection of that version's configuration. |
-| **View changes** | Voice-only. See below. |
+| **View changes** | A field-level diff against the prior version. See below. |
 
 ## What voice agents version
 
@@ -51,9 +53,9 @@ A published voice agent version snapshots more than conversational content. The 
 
 In practice, this means a voice agent's version history is a record of what phone number and which speech/LLM providers were live at a given point in time — not just prompt or flow changes. For a compliance review, a version entry can answer "which STT/TTS/LLM provider and which outbound number was this agent using on a given date," in addition to what the conversational flow looked like.
 
-## View changes: the one thing voice agents have that chat agents don't
+## View changes
 
-The Versions table for voice agents adds a **View changes** button next to **View** on each row — chat agents and campaigns only get **View**. Clicking **View changes** opens a dialog showing a field-level diff against the prior version, including knowledge base references resolved to their names rather than raw IDs.
+Each row in the Versions table has a **View changes** button next to **View** — chat agents and campaigns have the same button. Clicking **View changes** opens a dialog showing a field-level diff against the prior version. For voice agents, knowledge base references are resolved to their names rather than raw IDs.
 
 <Warning>
 **View changes** is read-only. It shows you what changed between two versions — it does not apply, restore, or revert anything. There is no button anywhere in the product that rolls a published voice agent configuration back to a prior version.

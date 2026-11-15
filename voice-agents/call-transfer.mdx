@@ -10,16 +10,20 @@ This is the voice equivalent of [Human Takeover](/inbox/human-takeover) in the c
 
 ## How a transfer works
 
-1. The agent decides to transfer (your System Prompt controls when — tell it explicitly, e.g., "If the caller asks for a human, or asks about refunds, transfer the call").
+1. The agent decides to transfer (your agent's **Instructions** control when — tell it explicitly, e.g., "If the caller asks for a human, or asks about refunds, transfer the call").
 2. It speaks your **Transfer Message** to the caller, so the handover doesn't feel like a hang-up.
 3. It generates a call summary (guided by your **Summary Prompt**) for the human who picks up.
-4. It routes the call according to **Transfer To**: ringing an available agent in the Revve app, or dialing out to a SIP address or phone number.
+4. It routes the call according to **Transfer To**: ringing an available agent (or a group's agents) in the Revve app, or dialing out to a SIP address or phone number.
 
 For **SIP Address** and **Phone Number** transfers using the default **Bridge Transfer** type, there's an extra step between 3 and 4: the caller is put on hold with music while the agent privately briefs the human — see [Bridge or cold transfer](#bridge-or-cold-transfer) below.
 
 ## Step 1: Configure Call Transfer on the agent
 
 Open your voice agent, go to **Advanced Settings** → **Call Transfer**, and flip the toggle on to reveal the settings.
+
+<Note>
+For a Conversational Flow agent, this section only shows a link to **Open Conversational Flow** — configure transfers on a **Transfer Call** node instead. The node has the same settings described on this page. See [Voice Conversational Flow](/voice-agents/voice-conversational-flow#transfer-a-call).
+</Note>
 
 ![Call Transfer in the Advanced Settings sidebar, toggled off — enable it to reveal the transfer settings](/screenshots/voice-call-transfer.png)
 
@@ -32,6 +36,26 @@ Open your voice agent, go to **Advanced Settings** → **Call Transfer**, and fl
 | **Revve User (in-app agent)** | Routes the call to an available human agent in the Revve app — no phone system needed. | Your team works in Revve anyway. This is the simplest setup: teammates toggle **Accept Calls** on and answer in the browser (see Step 2). |
 | **SIP Address** | Transfers the call to a SIP endpoint (full URI, e.g., `sip:agent@domain` — it must start with `sip:`). | You run a call center or PBX with SIP addressing. |
 | **Phone Number** | Transfers the call to an external phone number. Set the **Destination Phone Number** in E.164 format (e.g., `+84775352590`). | The human side is just a phone — a hotline, a queue, someone's mobile. |
+
+### Route in-app transfers to a group
+
+For **Revve User** transfers, choose **Who gets the call**:
+
+| Option | What it does |
+|--------|--------------|
+| **Any available agent** | Offers the call to any free agent. |
+| **A group** | Offers the call only to the agents of one group, using that group's **Routing rule**. Select the group from the list. Groups are managed in [Conversation Routing](/administration/conversation-routing). |
+
+When you pick a group, choose its **Routing rule**:
+
+| Rule | What it does |
+|------|--------------|
+| **Simultaneous** | Rings all available members of the group at the same time. The first to accept gets the call. |
+| **One at a time, longest idle first** | Rings the agent who has been free the longest, then the next. |
+
+With **One at a time, longest idle first**, set **Ring each agent for (seconds)** — how long each agent rings before the call moves to the next longest-idle agent. Use **1–60** seconds; the default is **5**. It can't exceed the transfer's **Call duration**.
+
+### Fallback
 
 For **Revve User**, you can set a **Fallback Phone Number (optional)** in E.164 format. If outbound calling is available, Revve tries this number after an in-app transfer fails. If that attempt cannot connect, or no fallback number is configured, Revve can try another available in-app agent once.
 
@@ -48,7 +72,7 @@ For **SIP Address** and **Phone Number** transfers, choose a **Transfer Type**:
 
 ### Set how long to wait for a connection
 
-Set **Connection timeout (seconds)** to a whole number from **1 to 180**. It controls the wait for each transfer attempt to connect. The setting appears for **Revve User** transfers and for **Bridge Transfer** to a phone number or SIP address. It does not apply to **Cold Transfer**.
+Set **Call duration (seconds)** to a whole number from **1 to 180** — how long the transfer can wait to connect before failing or trying its configured fallback. It controls the wait for each transfer attempt to connect. The setting appears for **Revve User** transfers and for **Bridge Transfer** to a phone number or SIP address. It does not apply to **Cold Transfer**.
 
 | Destination | Default when no timeout is saved |
 | --- | --- |
@@ -56,6 +80,10 @@ Set **Connection timeout (seconds)** to a whole number from **1 to 180**. It con
 | **Revve User (in-app agent)** | 30 seconds |
 
 Older transfer nodes can retain a 30-second default. Set the field explicitly when you need a specific timeout.
+
+### Wait before speaking the summary
+
+For **Bridge Transfer** to a phone number or SIP address, **Wait before summary (seconds)** sets how long the agent waits after the destination answers before speaking the summary. The caller stays on hold during the wait. Use **0–30** seconds; the default is **1**. Raise it when the destination plays a recorded announcement first, so the summary isn't spoken over it.
 
 Use a shorter value when callers should return to the AI sooner if nobody answers. Use a longer value when your team needs more time to answer. For example, **20** gives each attempt a 20-second connection window.
 
@@ -88,7 +116,7 @@ Turn **Accept Calls** on. Anyone with it paused is skipped when a transfer comes
 
 When the agent initiates an in-app transfer, the selected available teammate sees an **Incoming Call** card. It includes a countdown in seconds and a call summary when available.
 
-The countdown uses **Connection timeout (seconds)**, with a default of 30 seconds when no value is saved.
+The countdown uses **Call duration (seconds)**, with a default of 30 seconds when no value is saved.
 
 - **Accept** — you're connected to the caller in the browser, and you get the AI-generated call summary so you're not walking in blind.
 - **Decline** — you pass, and Revve follows the fallback sequence.

@@ -9,15 +9,22 @@ The endpoint supplies the business behavior. Revve configures when to call it, s
 
 ## Configure a tool
 
-Open the voice agent's **Advanced Settings**, go to **Tools**, and choose **Add** to create a custom API call.
+Open the voice agent's **Advanced Settings**, go to **Tools**, click **Add**, and choose **API Call**. The **Set up API call** dialog offers two ways to start:
+
+- **Configure manually** — fill in every setting yourself.
+- **Import from cURL** — paste a cURL command (for example, one copied from your API's documentation or your browser's developer tools). Revve fills in the URL, method, headers, and body from it, and you edit them on the next step.
+
+Then:
 
 1. Give the tool a unique name and a description explaining when the agent should use it.
-2. Set the destination URL and HTTP method.
+2. Set the destination URL and HTTP method (POST, GET, PUT, DELETE, or PATCH).
 3. Add the headers required by the service. Keep credentials in the request configuration, outside the spoken instructions.
 4. Define request fields. Use **AI Generated** for information the agent collects from the caller, and **Fixed Value** for configured values or supported variable templates.
 5. Have the endpoint return a compact response with an explicit outcome and the fields the agent needs. Normalize complex responses in your API or integration gateway.
-6. Set a **Tool Call Message** if the caller should hear a short acknowledgment while the request runs.
-7. Save the tool and test it with the agent's draft before publishing.
+6. Optionally add **Response Variables** to keep values from the response for the rest of the call (see below).
+7. Set a **Tool Call Message** if the caller should hear a short acknowledgment while the request runs.
+8. Turn on **Global Tool** if the tool should be available in every node of a Conversational Flow.
+9. Save the tool and test it with the agent's draft before publishing.
 
 Configured request fields form the request body; they are not automatically converted into GET query parameters. If a service requires query parameters, include them in the URL using supported variable templates, or expose a compatible POST endpoint through your gateway. Test the received URL and body against the service's contract.
 
@@ -29,7 +36,17 @@ Use the field types offered by each editor. Structured domain data can be repres
 
 ## Map results and route the conversation
 
-Return a clear status such as `verified`, `rejected`, or `unavailable`, together with the values the conversation needs. The shared tool editor exposes **Result Mapping**, but the Revve voice runtime does not apply it. Normalize responses in the receiving API or gateway; use [flow logic and Code nodes](/voice-agents/voice-conversational-flow) for additional deterministic handling.
+Return a clear status such as `verified`, `rejected`, or `unavailable`, together with the values the conversation needs. The agent always receives the full JSON response.
+
+### Response Variables
+
+Use **Response Variables** to save a value from the JSON response as a call variable after a successful call. Map a response path to a variable name — for example, `data.count` → `attempts`. Later nodes, conditions, and tool calls can then read it as `{{attempts}}` (or `vars.attempts` in Code nodes). This is how a result like a verification status or a case ID drives the rest of the call without the agent having to repeat it.
+
+<Note>
+The tool editor also shows a **Result Mapping** section, which is shared with chat agents. The Revve voice runtime does not apply it — use **Response Variables** on voice agents instead.
+</Note>
+
+For more complex handling, normalize responses in the receiving API or gateway, or use [flow logic and Code nodes](/voice-agents/voice-conversational-flow). For logic that's easier to write as code than as an HTTP request — combining several calls, or transforming a response — use a **Run Code** tool; see [Voice Agent Tools](/voice-agents/voice-agent-tools#run-code).
 
 A typical account-service flow is:
 
@@ -45,7 +62,7 @@ Connect explicit failure paths for missing fields, rejected verification, unavai
 
 The tool calls HTTP endpoints. A GraphQL service can be called through its HTTP interface using the query and variables required by that service. For SOAP, gRPC, private networks, or specialized authentication, expose a compatible HTTP interface through your integration gateway and keep protocol conversion there. This is an integration pattern; it does not turn Revve's own API into a native gRPC service.
 
-The same approach connects core banking, CRM, messaging, identity providers, fraud engines, and enterprise notification services. Configure proxy access when the destination requires it.
+The same approach connects core banking, CRM, messaging, identity providers, fraud engines, and enterprise notification services. When the destination requires a proxy, set **Proxy Configuration** on the tool: **Host**, **Port**, and, if **Authentication Required** is on, a **Username** and **Password**.
 
 ## Design retries and reconciliation
 

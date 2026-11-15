@@ -1,9 +1,16 @@
 ---
 title: "Custom Dashboards"
-description: "For team leads: build and publish call reports with charts, metric calculations, and filters."
+description: "For team leads: build and publish call and chat reports with charts, metric calculations, and filters."
 ---
 
-Use **Analytics > Dashboards** to create reports from your team's call data. Start with a call-volume report, then add the outcomes and quality measures your team needs.
+Use **Analytics > Dashboards** to create reports from your team's call or chat data. Start with a volume report, then add the outcomes and quality measures your team needs.
+
+Each dashboard has a **Dashboard type**, chosen when you create it and fixed afterward:
+
+| Type | Data |
+|------|------|
+| **Call** | Your team's calls — call metrics, analysis fields, evaluation and review results. |
+| **Chat** | Your team's chat conversations — chat count, CSAT rating, escalations, human replies, and AI failures. |
 
 Revve also provides [built-in Analytics dashboards](/history-analytics/analytics-dashboard) for operational, chat, AI, and human-agent performance.
 
@@ -35,7 +42,7 @@ To use an existing dashboard as a starting point, open its menu and select **Dup
 
 1. Open **Analytics > Dashboards**.
 2. Select **New dashboard**.
-3. Enter a name and an optional description, then select **Create**.
+3. Enter a **Name**, choose the **Dashboard type** (**Call** or **Chat**), add an optional description, then select **Create**.
 4. Select **Add chart**.
 5. Choose a **Graph Type** and **Metric**.
 6. Select the available aggregation, filters, and breakdown for that metric.
@@ -49,13 +56,18 @@ Chart changes and layout changes appear in the draft and save automatically. Pub
 
 A new chart starts with **Line**, no metric selected, no filters or breakdown, and the dashboard's date range. Select a metric before saving.
 
+The chart editor has two tabs: **Data** (graph type, metric, filters, breakdown, date range) and **Display** (how the chart looks). You can also **Add a description** to a chart; it appears as an info tooltip on the chart.
+
 | Setting | Options and when to use them |
 |---------|---------|
 | **Graph Type** | Use Line for trends, Column or Bar to compare volumes, Donut for proportions, and Number for one headline value. |
 | **Metric** | One metric from the workspace's available catalog. |
 | **Aggregation** | Count records, sum amounts, or use a rate for a proportion. Average describes typical values; 95th percentile highlights the upper tail. Availability depends on the metric. |
-| **Filters** | Conditions on supported fields. All configured conditions must match. |
+| **Filters** | Conditions on supported fields. All configured conditions must match. Fields with a fixed set of values use **is any of** / **is none of** with a checklist of values. |
 | **Breakdown** | Split the metric by a supported dimension, such as agent, call type, sentiment, or scorecard. |
+| **Split by** | Add a second dimension to the breakdown, for one series per value. |
+| **Sort** | For Donut and categorical charts: **Highest first** or **Lowest first**. |
+| **Color** | Pick a color for each series from a 36-color palette. **Reset all** returns to the default colors. |
 | **Date range** | Inherit the dashboard range to compare charts over the same period. Override it only when a chart intentionally needs a different period. |
 | **Time interval** | Start with Automatic. Use hour or day to inspect short-term changes; week or month makes longer trends easier to read. Available for Line, Column, and Bar charts. |
 
@@ -64,6 +76,10 @@ A new chart starts with **Line**, no metric selected, no filters or breakdown, a
 If a breakdown includes records without a value, **Hide unclassified** removes that series from the display.
 
 ### Available data
+
+**Chat dashboards** offer chat metrics such as **Chat count**, **CSAT rating**, **Escalated**, **Human replied**, **Escalation reached an agent**, and **AI Failure**, with breakdowns and filters by **Handled by**, **Channel**, **AI agent**, **Agent**, **Failure category**, and **Escalation outcome**.
+
+**Call dashboards** offer:
 
 | Metric group | Examples |
 |--------------|----------|
@@ -105,6 +121,16 @@ Use a chart's controls to edit, duplicate, or delete it. Each dashboard supports
 
 Use the star on the dashboard list to mark a personal favorite. Dashboard definitions and call data remain scoped to the workspace.
 
+### Export and import
+
+To copy a dashboard to another team or keep a backup, open its menu on the dashboard list and select **Export dashboard**. This downloads the dashboard's configuration as a file — not its data.
+
+To bring a dashboard in, select **Import dashboard**, then **Choose file** or paste the file's contents. The import creates a new, unpublished dashboard in this team.
+
+### Build dashboards with Ask Revve
+
+You can also ask [Ask Revve](/ask-revve/ask-revve-overview) to build or change a dashboard, for example "Build a dashboard of call volume and success rate by agent for the last 30 days." It can preview charts and drafts the dashboard for you to review and publish.
+
 There is no separate access list for individual dashboards. Workspace access and publish permissions do not create a private per-user report.
 
 ## Publish and review changes
@@ -133,8 +159,8 @@ Custom dashboards provide configurable analysis of stored call data. Keep these 
 
 - There is no user-configurable refresh interval in seconds or minutes. Changing a chart query updates its results; automatic cache handling is not a wallboard refresh setting.
 - Custom dashboards do not provide live queue service levels, agent login/logout history, or timers for current telephony states.
-- Calculations use the metric's supported aggregations. There is no arbitrary formula editor, calculated row/column editor, or custom series color picker.
-- The custom dashboard page does not provide Excel, PDF, or CSV export. Built-in Chat Agents analytics has separate CSV exports.
+- Calculations use the metric's supported aggregations. There is no arbitrary formula editor or calculated row/column editor.
+- The custom dashboard page does not export chart data to Excel, PDF, or CSV. **Export dashboard** exports the configuration only. Built-in Chat Agents analytics has separate CSV exports.
 - Dashboard charts show aggregates. Use the relevant conversation or call history to inspect individual records, transcripts, and recordings.
 - Dashboard configuration does not send results to an external CRM or DMC. Such updates require a separate API integration or automation.
 

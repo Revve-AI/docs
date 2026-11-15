@@ -1,6 +1,6 @@
 ---
 title: "Voice Agent Advanced Capabilities"
-description: "The remaining Advanced Settings tabs — outbound caller ID, Vietnamese phone verification and normalization, retries, webhooks, call analysis, security, and notifications — for the agent builder taking a working agent to production."
+description: "The remaining Advanced Settings tabs — outbound caller ID, Vietnamese phone verification and normalization, retries, CRM lookup, webhooks, call analysis, reliability, security, notifications, and video — for the agent builder taking a working agent to production."
 ---
 
 [Voice Agent Settings](/voice-agents/voice-agent-settings) covers the conversation-shaping tabs of Advanced Settings — Call Behavior, Conversation, Voicemail, and Call Transfer. This page covers the remaining operational tabs: the capabilities you enable once the agent talks well and you need it to _operate_ well — verify identities, retry failed dials, feed your systems, and alert your team.
@@ -18,7 +18,7 @@ The **Outbound Phone Number** card controls which number appears as caller ID wh
 If the select is empty, follow the inline link to the Phone Numbers page to add a number first.
 
 <Note>
-  This tab selects the **outbound caller ID only**. It does not assign an inbound number to the agent — there is no inbound routing control here.
+  This tab selects the **outbound caller ID only**. It does not assign an inbound number to the agent. To route inbound calls, edit the number on the [Phone Numbers](/administration/phone-numbers) page: turn on **Enable Voice**, choose this agent as the **Voice Agent**, and optionally turn on **Always Use This Agent** so every inbound call to the number skips campaign routing.
 </Note>
 
 ## Phone Verification
@@ -61,6 +61,17 @@ Only True if user explicitly ask for a callback for follow later via call. If on
 ```
 
 It's deliberately strict — it refuses to schedule callbacks the customer never explicitly agreed to, and excludes voicemails and calls that already ended in a booked appointment. Loosen it with care: a permissive prompt means calling people back who didn't ask for it.
+
+## CRM
+
+The **Inbound CRM lookup** card looks up inbound callers in Salesforce. After this agent is selected for an inbound call, Revve searches Salesforce for the caller and adds the exact match to Revve.
+
+| Setting | Default | When to change |
+| --- | --- | --- |
+| **Look up inbound callers in Salesforce** | Off | Turn on when your customer records live in Salesforce and you want inbound callers matched to them. Lookup errors don't block the call. |
+| **Salesforce connection** | — | Which of your team's Salesforce connections to search. The connection belongs to the team; this selection applies only to this agent. |
+
+If no connection is listed, connect Salesforce in **Apps** first.
 
 ## Webhook
 
@@ -105,13 +116,50 @@ Click **Add** to define a field:
 | **Format (Optional)** | No | An output format hint, e.g. `YYYY-MM-DD` for dates. |
 | **Extract Separately** | No | Runs a dedicated LLM call to extract this field for better accuracy, with its own model selectors; the field shows a "Separate" badge. Use it for the one or two fields that drive downstream decisions and must be right — each separate extraction is an extra LLM call. |
 
+## Reliability
+
+Three cards that keep a provider outage from leaving callers stuck on a broken call.
+
+### Preflight Health Check
+
+Verifies this call's LLM, speech recognition (STT), and voice synthesis (TTS) providers before the conversation starts. A definitive failure ends the call with a spoken message instead of leaving the caller on a broken line.
+
+| Setting | Default | When to change |
+| --- | --- | --- |
+| **Preflight Health Check** | On | Leave on. Turn off only if you're troubleshooting the check itself. |
+| **Checks: LLM / STT / TTS** | All on | Turn each provider check on or off independently. |
+| **Timeout (ms)** | 3000 (500–10000) | The time budget for the whole check, not per provider. A check still running when it expires is skipped, not failed — a slow provider never ends a call. |
+
+### Failure Messages
+
+What the agent says before ending the call on a provider failure. The LLM and default messages are also spoken on an unrecoverable LLM error mid-call, so they're the ones callers hear most often. All four are optional — leave a field blank to use the built-in message in the agent's own language.
+
+| Setting | What it's for |
+| --- | --- |
+| **Default Message** | The fallback for any failure that has no message of its own. |
+| **LLM Failure Message (optional)** | Overrides the default for an LLM failure, at call start or mid-call. |
+| **STT Failure Message (optional)** | Overrides the default for a speech recognition failure at call start. |
+| **TTS Failure Message (optional)** | Overrides the default for a voice synthesis failure at call start. It can only be spoken when TTS itself works — if TTS is the broken component, the call ends silently. |
+
+### STT Watchdog
+
+Logs an alert when speech recognition stops returning transcripts mid-call while the caller keeps speaking. It never ends the call. Unlike the preflight check, it can catch a provider going silent mid-call.
+
+| Setting | Default | When to change |
+| --- | --- | --- |
+| **STT Watchdog** | On | Leave on so silent transcription failures show up in your logs. |
+| **Consecutive Empty Transcripts** | 3 (1–20) | How many caller speech segments in a row must produce no transcript. Both this and the setting below must be met before an alert. |
+| **Minimum Seconds Without a Transcript** | 10 (0–120) | How long since the last real transcript. This guards against false alerts — a caller reciting a phone number or address naturally produces several empty segments. |
+
 ## Security
 
-The **Security Settings** card holds one toggle:
+The **Security Settings** card holds three settings:
 
 | Setting | Default | When to change |
 | --- | --- | --- |
 | **Opt Out of Sensitive Data Storage** | Off | Prevents storage of sensitive conversation data. Turn on when your compliance posture requires it — collections, healthcare, financial services. The trade-off: what isn't stored can't be reviewed later, so weigh it against your QA and dispute-resolution needs. |
+| **Live Observability** | Off | Lets team members watch, listen to, and take over this agent's calls from the **Live Calls** board. Turn on when supervisors need to monitor calls in real time. |
+| **AI Assist for Human Agents** | None | Gives team members monitors, guides, and a copilot while they take over or join this agent's calls. Pick the Copilot agent to use. See [Agent Assist Copilot](/voice-agents/agent-assist-copilot). |
 
 ## Notification
 
@@ -120,6 +168,16 @@ The **Notifications** card alerts your team when specific conditions are met in 
 Configuration is the same as the chat agent's Notification panel — trigger description, **Channel** (**Email** or **Slack** — Slack requires the Slack app, and an inline Install Slack card appears if it's not installed), a required **Subject/Title**, then recipients (email addresses) or a Slack Integration \+ Channel ID. See [Chat Agent Advanced Settings](/general-configuration/chat-agent-advanced-settings) for the field-by-field walkthrough.
 
 One detail worth knowing for voice: email recipients accept template variables like `{{lead_owner_email}}` (validated as chips as you type), so an alert can route to the specific owner of the contact who was on the call rather than a shared inbox.
+
+## Video
+
+The **Video mode** setting lets web calls use the caller's camera. When enabled, web calls request camera access and record the video as an MP4.
+
+| Option | What happens |
+| --- | --- |
+| **Off — audio only** (default) | No camera. |
+| **Optional — ask for camera, allow decline** | The caller is asked for camera access but can decline and continue with audio only. |
+| **Required — block start until camera granted** | The call can't start until the caller allows camera access. |
 
 ## What's Next
 

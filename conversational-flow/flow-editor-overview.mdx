@@ -21,8 +21,8 @@ If your agent only needs a single set of instructions for every conversation, th
 
 ## How to Access the Flow Editor
 
-1. Navigate to **Agents > Chat Agents** in the left sidebar.
-2. Click on the Chat Agent that uses the **Conversational Flow** engine type. You can identify it by the label "Conversational Flow" shown beneath the agent name in the list.
+1. Navigate to **AI Agents > Chat Agents** in the left sidebar.
+2. Click on the Chat Agent that uses the **Conversational Flow** engine type. You can identify it by "Conversational Flow" in the **Engine** column of the agents list.
 3. Select the **Flow** tab in the top navigation bar of the agent detail page.
 
 The Flow tab is only available for agents created with the Conversational Flow engine type. Single Prompt agents will not display this tab.
@@ -46,16 +46,21 @@ At the bottom-left corner of the canvas you will find zoom and navigation contro
 | **Fit View** | Automatically zooms and pans so that all nodes are visible on screen. |
 | **Toggle Interactivity** | Locks or unlocks the ability to drag nodes and pan the canvas. Useful for reviewing without accidental changes. |
 
-### Toolbar (Editing Mode)
+### Toolbar
 
-When you click **Start Editing** to acquire the edit lock, a toolbar appears above the canvas:
+A toolbar sits above the canvas. **Import Flow** and **Add Node** appear only after you click **Start Editing** to acquire the edit lock.
 
 | Button | What It Does |
 |--------|--------------|
-| **Save Flow** | Persists all changes you have made to the flow. The button is highlighted when there are unsaved changes. |
 | **Import Flow** | Uploads a previously exported flow from a JSON file, replacing the current flow. |
 | **Export Flow** | Downloads the current flow as a JSON file for backup or transfer to another agent. |
+| **Auto arrange** | Lays out the nodes automatically. |
+| **Show all edges** | Edges into heavily targeted nodes are hidden at rest to reduce clutter. Toggle this to show them all. |
+| **Notes** | Shows or hides the note bubbles above nodes. Add a note to a node to explain it to the next builder. |
 | **Add Node** | Opens a dialog to create a new node and place it on the canvas. |
+| **Search** | Finds a node by name. |
+
+There's no Save button. Changes to the flow are saved to your draft automatically while you hold the edit lock.
 
 ### Version Control and Editing Lock
 
@@ -63,12 +68,13 @@ The flow editor uses a collaborative editing model:
 
 - **Versions** -- Each published state of your flow is saved as a version (for example, "v2 (current)"). You can view older versions in read-only mode from the Versions tab.
 - **Edit Lock** -- Only one team member can edit a flow at a time. Click **Start Editing** to acquire the lock. When you are finished, click **Stop Editing** to release it so others can make changes.
-- **Publish** -- After saving your flow, click **Publish** to make the new version live.
+- **Publish** -- When your draft is ready, click **Publish** to make the new version live. See [Publishing & Versioning](/getting-started/publishing-and-versioning).
 
 ## Tips
 
 - Use **Fit View** frequently to get a bird's-eye view of your entire flow, especially after adding new nodes.
-- Always **Save Flow** before leaving the page. The editor will warn you if you try to navigate away with unsaved changes.
+- Wait for changes to finish saving before you leave the page. The editor warns you if you try to navigate away while changes haven't been saved yet.
+- Use **Auto arrange** to tidy a flow that has grown messy, and **Notes** to leave explanations for teammates.
 - **Export your flow** before making major changes so you can restore it if needed.
 - Release the edit lock when you are done so other team members are not blocked.
 

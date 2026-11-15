@@ -1,85 +1,99 @@
 ---
 
 title: "Scorecards"
-description: "Reusable weighted-metrics policies for batch-grading uploaded recordings of real calls — for the QA lead auditing compliance, sampling agent quality, or scoring calls made outside Revve."
+description: "Reusable 100-point grading rubrics, built from your team's evaluation criteria, that score test runs, live voice calls, and uploaded call recordings the same way."
 ---
 
-A **Scorecard** (**Evaluations → Scorecards** in the left dashboard nav, visible with the **Manage Agents** permission) is a reusable scoring policy for **real call recordings you upload** — a named bundle of metrics from the shared [Metrics library](/evaluations/evaluation-metrics), each with a weight, plus a minimum passing score per side of the conversation. Upload a batch of recordings, and every call in the batch gets graded against the scorecard the same way, so "did this call pass?" means the same thing across a hundred recordings and across months of audits.
+A **Scorecard** (**AI Agent Testing → Scorecards** in the left dashboard nav, visible with the **Manage Agents** permission) is a reusable grading rubric. It picks whose side of the call to evaluate, the model that judges it, and a set of criteria from your [Evaluation Criteria](/evaluations/evaluation-metrics) library worth up to **100 points** in total, with a minimum passing score. Every conversation graded by the scorecard is scored the same way, so "did this call pass?" means the same thing across test runs, live calls, and audits.
 
-This is the one part of Evaluations that faces backward instead of forward. [Evaluators and Runs](/evaluations/creating-an-evaluator) grade *simulated* conversations before you ship a change; a Scorecard grades calls that *already happened* — a QA sample of last month's collections calls, recordings exported from a legacy dialer before you migrate, or any call made outside Revve entirely. If what you want is automatic grading of every live call one agent completes, that's the per-agent [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) tab, not a scorecard.
+## Where scorecards are used
 
-## Where Scorecards fits
+| Where | What it grades | When |
+|-------|----------------|------|
+| [Test Suites](/evaluations/creating-an-evaluator) | Simulated test conversations. Attach scorecards to a suite (shared by all its test cases) or to one test case. | When you run a suite — pre-ship regression testing. |
+| Voice Agent [Evaluation tab](/voice-agents/voice-agent-evaluation) | Every live call one voice agent completes. | Automatically, after each call. |
+| [Uploaded call recordings](#scoring-uploaded-recordings) | Batches of recordings uploaded in Call History. | When you upload a batch — QA sampling, compliance audits, calls made outside Revve. |
+| Manual call analysis | Calls your team members place themselves. | After each call. |
 
-Four things in Revve grade conversations, and they all draw metrics from the same library:
-
-| System | Grades | When |
-|--------|--------|------|
-| [Metrics library](/evaluations/evaluation-metrics) | Nothing itself — it's the shared library of judging criteria the other three attach. | — |
-| Voice Agent [Evaluation tab](/voice-agents/voice-agent-evaluation) | Every live production call, for one agent. | Automatically, after each call completes. |
-| [Evaluators / Runs](/evaluations/creating-an-evaluator) | Simulated or scripted test conversations. | Before you publish a change — pre-ship regression testing. |
-| **Scorecards** | Uploaded recordings of real calls, in batches. | Whenever you upload a batch — QA sampling, compliance audits, historical or external calls. |
-
-Because a scorecard is just a policy over shared metrics, editing a metric's definition in the library changes how every scorecard that uses it grades — the scorecard only owns the metric's weight within its policy.
+Because a scorecard only references criteria from the shared library, editing a criterion changes how every scorecard that uses it grades. The scorecard owns the points, behavior, and passing score.
 
 ## The Scorecards page
 
-The page ("Reusable scoring policies for evaluating uploaded call recordings") lists your team's scorecards in a table:
+The page lists your team's scorecards:
 
 | Column | Meaning |
 |--------|---------|
 | **Name** | The scorecard's name. Click the row to open it for editing. |
-| **Metrics** | How many metrics the policy includes. |
-| **Updated** | When the policy was last changed. |
+| **Criteria** | How many criteria the scorecard includes. |
+| **Updated** | When it was last changed. |
 
-Before you've created any, the empty state reads "No scorecards yet — Create your first scorecard to start scoring uploaded recordings."
+Use **New scorecard** to create one, or **Import** to create scorecards and their criteria from a CSV — each row is one criterion in a scorecard, with its type set to `deterministic` or `llm_judge`.
 
-![The Scorecards page in its empty state, with the No scorecards yet message and the New scorecard button](/screenshots/evaluations-scorecards.png)
+![The Scorecards page with the New scorecard and Import buttons](/screenshots/evaluations-scorecards.png)
 
 ## Creating and editing a scorecard
 
-Click **New scorecard** (top right) to open a sheet from the right — "Pick metrics and weights to score completed call recordings." Clicking an existing row opens the same sheet as **Edit scorecard**.
+Click **New scorecard** to open the scorecard editor. Clicking an existing row opens the same page for editing. It has four sections:
+
+**Basic details**
 
 | Field | Notes |
 |-------|-------|
-| **Name** | Required. Placeholder: "e.g. Compliance scorecard". Name it after the *question the audit answers* (Compliance, Greeting quality, Collections script adherence), not after the batch you're about to upload — the whole point is reusing it across batches. |
-| **Description** | Placeholder: "What does this scorecard measure?". Worth filling in — it's what tells a teammate whether to reuse your scorecard or create another. |
-| Weighted metrics | The policy itself — see below. |
+| **Name** | Required, e.g. "Compliance scorecard". Name it after the *question it answers* (Compliance, Greeting quality, Collections script adherence), not after one batch or agent — the point is reuse. |
+| **Description** | What the scorecard measures. It's what tells a teammate whether to reuse your scorecard or create another. |
 
-The policy editor is the **same weighted-metrics editor as the Voice Agent Evaluation tab**: pick metrics from the shared [Metrics library](/evaluations/evaluation-metrics), give each a weight, and set a minimum passing score (1–5) per tab. It has separate **Caller** and **Agent** tabs, each with its own minimum pass score — so a scorecard can hold the agent side to a strict compliance bar while scoring the caller side leniently (or not at all). If you already know that editor from an agent's Evaluation tab, there's nothing new to learn here; the scoring mechanics are documented in [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation).
+**Evaluation target** — *What do you want to evaluate?*
+
+| Target | What it scores |
+|--------|----------------|
+| **Agent** | How the AI agent handled the call. |
+| **Caller** | The caller's side of the conversation. |
+| **Human agent** | The person who takes over after a transfer. Calls without a transfer are skipped. |
+
+Only criteria for the chosen target can be added. To grade more than one side, create one scorecard per target.
+
+**Judge model** — the model used to evaluate the LLM-judged criteria. Deterministic checks don't use it.
+
+**Evaluation criteria** — click **Add criterion** and search your library. For each criterion, set:
+
+- **Points** — the criterion's **Maximum points**. All criteria must add up to exactly **100**. **Split evenly** and **Scale proportionally** help balance them, and a running total warns you when you're over or under.
+- **Scoring rule** — how the criterion earns its points. The options depend on the criterion's scoring:
+  - Pass/fail checks earn all their points or none.
+  - **Scale 1-5** criteria award points per rating (**Rating awards**).
+  - **Checklist** criteria use **Completion tiers** (every requirement equal) or **Points per requirement** (important requirements worth more).
+  - **Count occurrences** criteria deduct points: **All or nothing** (any violation loses all points) or **Graduated deductions** (deduct more as occurrences increase).
+- **Behavior** on this scorecard:
+  - **Standard** — counts normally toward the 100-point total and pass/fail.
+  - **Knockout** — counts normally, but failing it sets the whole call's final score to 0.
+  - **Informational only** — evaluated and shown, but never counted toward the score.
+
+Finally, set the **Minimum passing score**: a call passes when its total points meet this value.
 
 Submit with **Create scorecard** (new) or **Save changes** (editing).
 
 <Tip>
-Weight by what a failure costs you, not by how easy the metric is to check. In a compliance scorecard, "read the required disclosure" should be able to sink the score on its own — give it a dominant weight — while style metrics like tone share the remainder. A flat equal-weights policy lets three polite pleasantries outvote one missed disclosure.
+Allocate points by what a failure costs you, not by how easy the criterion is to check. In a compliance scorecard, make "read the required disclosure" a **Knockout** so it fails the call on its own, and let style criteria like tone share the remaining points.
 </Tip>
 
-## Upload Batches
+## Scoring uploaded recordings
 
-Once you've uploaded at least one batch of recordings, an **Upload Batches** section appears below the scorecards table — "Batches of uploaded call recordings queued for scoring" Scoring is asynchronous: a batch queues, processes each file, and reports progress here.
+To grade calls that already happened — a QA sample, recordings from a legacy dialer, or calls made outside Revve — upload them in **Call History**:
 
-| Column | Meaning |
-|--------|---------|
-| **Batch** | The batch's name. Click it to open **Call History** filtered to just that batch's calls. |
-| **Status** | `completed`, `processing`, `failed`, or `partial` (some files scored, some didn't). |
-| **Progress** | Processed count out of total files. |
-| **Failed** | How many files couldn't be processed. |
-| **Created** | When the batch was uploaded. |
+1. Click **Upload batch** to open **Upload Audio Batch**.
+2. Choose the **Scorecard** to grade with.
+3. Choose the **Agent** who handled the calls, or add a **Manifest** that sets the agent, time, and direction per call.
+4. Optionally name the batch, then add the **Audio files**.
 
-<Note>
-The Scorecards page defines the policy and tracks batch progress — that's all. Uploading the recordings themselves, and reviewing each scored call afterward, both happen on the **Call History** side. Clicking a batch name here is the shortcut across: it lands you in Call History pre-filtered to that batch.
-</Note>
-
-A `partial` or `failed` status means some files never got scored — check the **Failed** count before treating the batch's results as a complete sample, especially for a compliance audit where the unscored calls are exactly the ones you can't vouch for.
-
-## When to reach for a scorecard
+Scoring is asynchronous. Uploaded calls appear in Call History — filter **Source** by **Upload** to find them — and each scored call shows its scorecard result in its **Evaluation** section.
 
 | Situation | Why a scorecard |
 |-----------|-----------------|
-| Compliance audit of a sample of last month's collections calls | One weighted policy applied identically to every sampled recording — auditable, repeatable month over month. |
-| Scoring recordings from a legacy dialer before migrating to Revve | The calls never touched a Revve agent, so no Evaluation tab ever graded them; upload and grade them against the same metrics your Revve agents use, for a like-for-like baseline. |
-| Spot-checking agent quality with a weighted rubric | Cheaper than grading every live call — sample, upload, score, repeat with the same scorecard so trends are comparable. |
+| Compliance audit of a sample of last month's collections calls | One rubric applied identically to every sampled recording — auditable, repeatable month over month. |
+| Scoring recordings from a legacy dialer before migrating to Revve | The calls never touched a Revve agent; grade them with the same scorecard your Revve agents use, for a like-for-like baseline. |
+| Spot-checking quality with a weighted rubric | Cheaper than grading every call — sample, upload, score, and repeat with the same scorecard so trends are comparable. |
 
 ## What's Next
 
-- [Evaluation Metrics](/evaluations/evaluation-metrics) — build the deterministic and LLM-judged metrics your scorecards attach.
-- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — the same weighted-metrics editor, applied automatically to every live call one agent completes.
+- [Evaluation Criteria](/evaluations/evaluation-metrics) — build the deterministic and LLM-judged criteria your scorecards use.
+- [Creating a Test Case](/evaluations/creating-an-evaluator) — grade simulated conversations with your scorecards before you ship.
+- [Voice Agent Evaluation](/voice-agents/voice-agent-evaluation) — grade every live call a voice agent completes.

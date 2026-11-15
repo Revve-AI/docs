@@ -24,7 +24,7 @@ The **Global Node** toggle makes this node accessible from any other node in the
 
 ## Node Passthrough
 
-The **Node Passthrough** toggle controls whether the AI can automatically traverse through this node to the next one in a single message. When a visitor's input satisfies the current node's requirements and also matches a transition condition, the AI can skip ahead without waiting for another reply.
+The **Node Passthrough** toggle (in the panel's **Advanced** section) controls whether the AI can automatically traverse through this node to the next one in a single message. When a visitor's input satisfies the current node's requirements and also matches a transition condition, the AI can skip ahead without waiting for another reply.
 
 | Setting | Description |
 |---------|-------------|
@@ -43,13 +43,14 @@ The **Instruction** field is the core of each node. This is where you write the 
 
 ## Contact Collection
 
-Nodes with the **Contact Collection** type automatically prompt the visitor to provide their contact information. When this feature is active on a node, the configuration panel expands to show a **Contact Configuration** section where you can customize:
+Nodes with the **Contact Collection** type automatically prompt the visitor to provide their contact information. When this feature is active on a node, the configuration panel shows the contact settings:
 
 | Setting | Description |
 |---------|-------------|
-| **Required fields** | Choose which fields the agent should collect (for example, name, email, phone number). |
-| **Field labels and prompts** | Customize how the agent asks for each piece of information. |
-| **Validation rules** | Set rules for what constitutes a valid entry (for example, a properly formatted email address). |
+| **How do you want to collect contact information?** | **Collect information through conversation** (the agent asks for each detail in chat) or through a form shown in the chat. |
+| **Form Title** / **Submit Button Label** / **Success Message** | For the form option: the form's heading, its button text, and the message shown after it's submitted. |
+| **Contact Fields** | Which fields to collect (for example, name, email, phone number). |
+| **Sync contact to** | Connected apps (such as a CRM) to send the collected contact to. |
 
 ![A Contact Collection node on the canvas](/screenshots/flow-node-capture-contact.png)
 
@@ -62,6 +63,7 @@ Nodes with the **Schedule Meeting** type enable calendar-based booking directly 
 | Setting | Description |
 |---------|-------------|
 | **Calendar App** | Select the calendar integration (for example, Calendly or Cal.com) that the agent will use to check availability and create bookings. See [Scheduling & Booking with Agents](/integrations/scheduling-and-booking). |
+| **Chili Piper Booking Method** | Shown when the calendar app is Chili Piper: **Router** or **Direct Link**. |
 
 ![A Schedule Meeting node on the canvas](/screenshots/flow-node-schedule-meeting.png)
 
@@ -88,7 +90,7 @@ This toggle is only visible on nodes that are not configured for Contact Collect
 
 The **Tools** section lets you assign specific tools to a node. Tools are integrations or capabilities that the AI can invoke during the conversation -- for example, looking up customer data, querying an external system, or performing a calculation.
 
-Click **Add** to browse and attach available tools. Only the tools assigned to a node (plus any globally configured tools) are available to the AI when the conversation is at that stage. This gives you fine-grained control over what the agent can do at each step.
+Click **Add** to browse and attach available tools. Only the tools assigned to a node (plus any tools marked **Global Tool**) are available to the AI when the conversation is at that stage. This gives you fine-grained control over what the agent can do at each step. Logic Split, Extract Variables, and Code nodes don't have a Tools section.
 
 ## Automation
 
@@ -98,9 +100,21 @@ A common use is setting custom contact fields. For example, when a visitor reach
 
 Automations can also be configured on individual transitions (see [Creating and Connecting Nodes](/conversational-flow/creating-and-connecting-nodes)).
 
+## Logic Split, Extract Variables, and Code Nodes
+
+These three node types never send a message. They have no Instruction field, tools, or contact and meeting features. Instead:
+
+- **Logic Split** routes the conversation instantly with its transitions. Use **Rule** conditions for deterministic checks. Every Logic Split has an **Else** transition for when nothing else matches.
+- **Extract Variables** silently captures details from the conversation into variables. For each variable, set a **Name**, a **Description** of what to extract, and a **Type**: **Text**, **Number**, **Boolean**, **Enum**, or **List (Multi-Select)** (enums and lists take **Choices**). **Conversation History** sets how many recent turns the extraction reads; **Include Tool Results** lets it copy values that a tool already returned. Use the variables in later nodes as `{{name}}`.
+- **Code** runs JavaScript in a secure sandbox each time the conversation reaches the node — to call APIs, compute values, or set variables. Set a **Timeout (s)** for how long it may run.
+
+## Notes
+
+Add a note to any node to explain it to the next builder. Notes appear as bubbles above the node; use **Notes** in the toolbar to show or hide them all.
+
 ## Duplicating and Deleting Nodes
 
-At the bottom of the configuration panel, two buttons are available:
+Open the **Node options** menu (**⋯**) at the top of the configuration panel:
 
 | Action | Description |
 |--------|-------------|
@@ -112,14 +126,17 @@ At the bottom of the configuration panel, two buttons are available:
 | Setting | Available On | Purpose |
 |---------|-------------|---------|
 | Global Node | All nodes | Makes the node reachable from any point in the flow |
-| Node Passthrough | All nodes | Allows automatic multi-node traversal |
-| Instruction | All nodes | AI prompt for this conversation stage |
+| Node Passthrough | Conversation nodes | Allows automatic multi-node traversal |
+| Instruction | Conversation nodes | AI prompt for this conversation stage |
 | Contact Collection | Contact Collection nodes | Collects visitor contact details |
 | Schedule Meeting | Schedule Meeting nodes | Books meetings via connected calendar |
 | Render Testimonial | Normal Conversation nodes | Displays customer testimonials |
 | Human Escalation | Normal Conversation nodes | Enables live-agent handoff |
-| Tools | All nodes | Assigns specific tool capabilities |
-| Automation | All nodes | Triggers automatic actions (e.g., setting fields) |
+| Tools | Conversation nodes | Assigns specific tool capabilities |
+| Automation | Conversation nodes | Triggers automatic actions (e.g., setting fields) |
+| Extract Variables | Extract Variables nodes | Captures values into variables |
+| Code | Code nodes | Runs JavaScript in a sandbox |
+| Notes | All nodes | Explains the node to other builders |
 
 ## Best Practices
 
@@ -127,7 +144,7 @@ At the bottom of the configuration panel, two buttons are available:
 - **Place Contact Collection early in the flow** if capturing visitor information is a priority, but only after the visitor has shown enough interest -- collecting details too early can feel intrusive.
 - **Use Human Escalation on nodes where the AI is most likely to reach its limits**, such as complex technical support or sensitive topics.
 - **Assign tools sparingly.** Giving the AI access to too many tools at a single node can slow down responses and increase the chance of the wrong tool being called.
-- **Test each node's behavior in the Preview tab** after making changes to verify the agent behaves as expected.
+- **Test each node's behavior in the Preview tab** (website and SMS agents) after making changes to verify the agent behaves as expected.
 
 ## Next Steps
 

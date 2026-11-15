@@ -8,22 +8,25 @@ The Knowledge Base Settings control how your chat agent searches through your co
 
 ## Accessing Knowledge Settings
 
-1. Open your chat agent from the **Agents > Chat Agents** list.
+1. Open your chat agent from the **AI Agents > Chat Agents** list.
 2. Click the **Knowledge** tab.
 3. Click the **Settings** sub-tab.
 4. Click **Start Editing** if you are not already in editing mode.
 
-![The Knowledge Settings tab showing the Advanced Search toggle](/screenshots/knowledge-settings.png)
+![The Knowledge Settings tab showing the Advanced Search toggle](/screenshots/knowledge-base-editing.png)
 
-**Note:** Changes to knowledge settings take effect immediately. There is no need to publish a new version.
+**Note:** Changes to knowledge settings are saved to the agent's draft automatically. They take effect after you publish the agent. See [Publishing & Versioning](/getting-started/publishing-and-versioning).
 
-## Settings Reference
+The Settings sub-tab has two sections: **Advanced Search** and **Knowledge retrieval mode**.
 
-### Advanced Search
+## Advanced Search
 
 | Setting | Description |
 |---|---|
-| **Advanced Search toggle** | When enabled, activates enhanced search capabilities for faster and more accurate knowledge retrieval. |
+| **Advanced Search toggle** | Enables advanced search for faster and more accurate knowledge retrieval. When it's on, the settings below appear. |
+| **Minimum Match Quality** | How closely results must match the search, from 0 to 1. Higher values show only the most relevant results. Recommended: **0.8**. |
+| **Query Rewriting** | Rewrites the visitor's question into a better search query before searching. |
+| **Rewrite Prompt** | Shown when Query Rewriting is on. Instructions for how to rewrite queries to improve search accuracy. |
 
 **What Advanced Search does:** Advanced Search improves how your agent finds relevant content in your knowledge base. With this setting enabled, the search process uses additional techniques to match visitor questions with the right content, even when the wording does not match exactly.
 
@@ -38,22 +41,59 @@ The Knowledge Base Settings control how your chat agent searches through your co
 - You have a small, focused knowledge base where simple matching is sufficient.
 - You want to keep response times as fast as possible for very simple use cases.
 
+**Tuning Minimum Match Quality:** If the agent answers with loosely related content, raise the value. If it says it can't find answers that are in your knowledge base, lower it.
+
+## Knowledge Retrieval Mode
+
+This setting controls how the agent finds knowledge to answer questions.
+
+| Mode | How it works |
+|---|---|
+| **Semantic** (default) | Vector search over chunks of your content. Fast, broad recall. |
+| **Agentic search** | A sub-agent browses your knowledge like a set of folders and files to find the answer. Slower, but often more precise. |
+
+### Agentic Search Options
+
+When you choose **Agentic search**, these options appear:
+
+| Setting | Description |
+|---|---|
+| **Model** | The model the sub-agent uses to search. Defaults to **Inherit chatbot model**. A cheaper model reduces cost; the agent still writes the final reply with its main model. |
+| **Outline preload depth** | How much of the folder structure is given to the sub-agent up front, from **0** (none) to **6** (the full tree). **2** is recommended. Higher depth means fewer lookups but a larger prompt, so use 3 or more only for small knowledge bases. |
+| **Lookup thoroughness** | How hard the sub-agent searches before answering: **Fast** (default, fewest lookups, lowest latency), **Balanced** (more exploration), or **Thorough** (widest search, for large knowledge bases). Higher settings give better coverage at more cost and latency per reply. |
+| **Result format** | **Raw evidence** (default): the agent receives the source passages and writes the reply in its own voice. **Written answer**: the sub-agent writes a short answer from the evidence first and the agent relays it. This adds one more AI call, and keeps the reply close to the source text. |
+| **Custom prompt** | Optional. Tells the sub-agent how your content is organized, so it doesn't have to work it out by trial and error. |
+
+The sub-agent sees your content in three folders:
+
+- `/web/<host>/…` -- web pages from your sites, organized by URL path.
+- `/files/…` -- uploaded documents.
+- `/faqs/<collection>/…` -- FAQs grouped by collection.
+
+Use the custom prompt to describe conventions inside these folders. For example:
+
+```
+- Each product has its own folder under /web/host/products/<slug>/.
+- Fee schedules live in pricing.md inside each product folder.
+- Generic policies (refunds, shipping) live in /web/host/policies/.
+- /faqs/billing/ collects all billing-related FAQs.
+```
+
 ## How Search Works Behind the Scenes
 
 When a visitor asks your agent a question, the search process works in several steps:
 
-1. **Understanding the question** -- The agent analyzes the visitor's message to understand what they are asking about.
-2. **Searching the knowledge base** -- The agent searches across all attached sources (web pages, documents, and FAQs) to find content that matches the question.
-3. **Ranking results** -- The most relevant pieces of content are ranked by how well they match the question.
+1. **Understanding the question** -- The agent analyzes the visitor's message to understand what they are asking about. With Query Rewriting on, the question is rewritten into a better search query.
+2. **Searching the knowledge base** -- The agent searches the knowledge bases and FAQs attached to it, using the retrieval mode you chose.
+3. **Ranking results** -- The most relevant pieces of content are ranked by how well they match the question. Results below the Minimum Match Quality are left out.
 4. **Generating a response** -- The agent uses the top-ranked content to compose a natural, helpful answer.
-
-Advanced Search enhances steps 2 and 3, making the matching and ranking more sophisticated.
 
 ## Tips
 
 - **Start with Advanced Search enabled.** For most use cases, Advanced Search provides better results with no downside. You can always turn it off later if needed.
+- **Try Agentic search for large or well-structured knowledge bases.** If Semantic search returns the wrong passages, Agentic search with a custom prompt describing your folders is often more precise.
 - **Pair settings with good content.** Search settings can only improve how existing content is found. If the answer is not in your knowledge base, no search setting will help -- add the missing content first.
-- **Test after making changes.** After adjusting settings, use the **Preview** tab on your chat agent to test how the agent responds to various questions. This helps you verify that the changes improved behavior.
+- **Test after making changes.** After adjusting settings, use the **Test Knowledge** sub-tab to see which content the agent finds for a question. While you're editing, it tests your draft, so you can compare settings before publishing.
 - **Review knowledge gaps.** If your agent is still missing questions after enabling Advanced Search, check the [Knowledge Gaps](/knowledge-base/knowledge-gaps) page. The issue is likely missing content rather than a search configuration problem.
 
 ## Related Topics

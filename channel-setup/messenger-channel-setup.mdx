@@ -4,9 +4,9 @@ title: "Messenger Channel Setup"
 description: "Connect your Facebook Page to enable your Chat Agent to communicate via Facebook Messenger."
 ---
 
-> **Setup Required:** This channel requires initial technical setup by your account administrator before you can configure it here. This includes connecting a Facebook Page through Meta Business and granting Revve the required permissions. Contact your Revve team or administrator to get started.
+> **Setup Required:** An admin first connects your Facebook Page under **Settings > Channels > Messenger** — see [Setup Steps](#setup-steps) below.
 
-Once your administrator has completed the initial setup, you can configure the following settings directly from the dashboard:
+Once the Page is connected, you can configure the following settings directly from the dashboard:
 
 - Select which connected Facebook Page the agent uses
 - Configure outbound message templates for campaigns
@@ -15,16 +15,16 @@ Once your administrator has completed the initial setup, you can configure the f
 
 Revve AI Chat Agents can communicate through Facebook Messenger, allowing you to automatically respond to messages sent to your Facebook Page. This guide covers how to connect your Facebook Page and configure your Messenger Chat Agent.
 
-When you create a Chat Agent with the **Messenger** channel type, the Facebook Page connection is configured in the **Basic** tab under General Settings.
+When you create a Chat Agent with the **Messenger** channel type, you choose its Facebook Page on the agent's **Channel Settings** tab.
 
 ---
 
 ## Accessing Messenger Configuration
 
-1. Navigate to **Agents > Chat Agents**.
+1. Navigate to **AI Agents > Chat Agents**.
 2. Select your Messenger Chat Agent (or create a new one with the Messenger channel type).
-3. Click the **Basic** tab.
-4. In the General Settings section, locate the **Facebook Page** dropdown.
+3. Click the **Channel Settings** tab.
+4. Locate the **Facebook Page** dropdown.
 
 ![Messenger chatbot Basic tab showing the Facebook Page dropdown and general settings](/screenshots/messenger-basic-settings.png)
 
@@ -32,11 +32,11 @@ When you create a Chat Agent with the **Messenger** channel type, the Facebook P
 
 ## Configuration Fields
 
-The Messenger-specific field in General Settings:
+The Messenger-specific field on the **Channel Settings** tab:
 
 | Setting | Description |
 |---------|-------------|
-| **Facebook Page** | Select the Facebook Page that the agent will use for sending and receiving Messenger conversations. The dropdown lists all Facebook Pages that have been connected in your team's Settings. |
+| **Facebook Page** | Select the Facebook Page that the agent will use for sending and receiving Messenger conversations. The dropdown lists all Facebook Pages connected in **Settings > Channels > Messenger**. Choose **Connect new account** to connect another Page. |
 
 ---
 
@@ -46,20 +46,19 @@ The Messenger-specific field in General Settings:
 
 Before you can assign a Facebook Page to a Chat Agent, you need to connect it through your team settings.
 
-1. Go to **Settings** in the left sidebar.
-2. Navigate to the Facebook/Messenger integration section.
-3. Click to connect your Facebook account. You will be redirected to Facebook to authenticate and grant permissions.
-4. Select the Facebook Page(s) you want to connect to Revve AI.
-5. Complete the authorization process. Your connected pages will appear in the integration settings.
+1. Go to **Settings > Channels** and open the **Messenger** tab.
+2. Click **Connect**. You will be redirected to Facebook to authenticate and grant permissions.
+3. In the **Select Facebook Pages** dialog, choose the Page(s) you want to connect to Revve AI.
+4. Click **Connect Selected Pages**. Your connected Pages appear in the list on the Messenger tab.
 
 ### 2. Create and Configure the Messenger Chat Agent
 
-1. Go to **Agents > Chat Agents** and click **New Chat Agent**.
+1. Go to **AI Agents > Chat Agents** and click **New Agent**.
 2. Select **Messenger** as the channel type.
-3. In the **Basic** tab, fill in the general settings:
+3. On the **Channel Settings** tab, select your connected Facebook Page from the **Facebook Page** dropdown.
+4. On the **Basic** tab, fill in the general settings:
    - **Name** and **Description** for the agent.
-   - **AI Provider** and **Model** to power the agent.
-   - **Facebook Page** -- select your connected Facebook Page from the dropdown.
+   - **Model** to power the agent.
    - **Languages** -- add the languages your agent should support.
    - **Communication Tone** -- choose the tone that matches your brand.
    - **Role** -- define the agent's role and personality.
@@ -70,7 +69,7 @@ Before you can assign a Facebook Page to a Chat Agent, you need to connect it th
 If your Messenger agent will initiate conversations or send proactive messages, configure outbound templates.
 
 1. In the **Basic** tab, click **Outbound Templates** in the left sidebar.
-2. Click **Create Your First Template** to define message templates for outbound campaigns.
+2. Click **Create Your First Template** (or **Add** if you already have templates) to define message templates for outbound campaigns.
 
 ### 4. Publish the Agent
 
@@ -99,12 +98,27 @@ Facebook Messenger has specific policies that affect how your Chat Agent operate
 
 ---
 
+## Blocking Contacts
+
+You can block a Messenger contact from the Inbox, for example to stop spam or abuse.
+
+1. In the **Inbox**, open the menu on the conversation and choose **Block "*name*"**.
+2. Optionally enter a **Reason**, then click **Block**.
+
+The block is applied on your Facebook Page as well as in Revve. The contact can no longer message the Page, and any new messages from them are dropped, so the agent doesn't answer. To undo it, choose **Unblock "*name*"** from the same menu.
+
+<Note>
+Pages connected before blocking was released need to be reconnected first. If a Page needs this, its card under **Settings > Channels > Messenger** shows "Reconnect this Page to block customers from Messenger."
+</Note>
+
+---
+
 ## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
 | No Facebook Pages appear in the dropdown | Verify that your Facebook account is connected in Settings and that you selected the correct Pages during authorization. You may need to reconnect if permissions have changed. |
-| Agent does not respond to Messenger messages | Check that the agent has been published and that a Facebook Page is selected in the Basic tab. Also verify that the Messenger webhook is properly configured. |
+| Agent does not respond to Messenger messages | Check that the agent has been published and that a Facebook Page is selected on the Channel Settings tab. Check that the contact isn't blocked. Also verify that the Messenger webhook is properly configured. |
 | Permissions error during setup | Ensure you are an admin of the Facebook Page you are trying to connect. Non-admin users may not have sufficient permissions. |
 | Agent stopped responding after 24 hours | Facebook's 24-hour messaging window may have expired. The agent can only send standard messages within 24 hours of the customer's last message. |
 

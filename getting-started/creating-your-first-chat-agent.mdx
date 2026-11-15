@@ -8,19 +8,26 @@ This guide walks you through creating a Chat Agent from scratch, configuring its
 
 ## Step 1: Navigate to Chat Agents
 
-From the left sidebar, click **Agents** > **Chat Agents** to open the Chat Agents page. Here you'll see all your existing agents displayed as cards.
+From the left sidebar, click **AI Agents** > **Chat Agents** to open the Chat Agents page. Your agents are listed in a table, with a folders panel for organizing them. Use **Search agents...** to find an agent by name.
 
-![Chat Agents list showing all your agents with their channel type and engine type](/screenshots/chatbots-list.png)
+![Chat Agents list showing all your agents with their channel type and engine type](/screenshots/chatbots-table.png)
 
-Each card shows:
-- **Agent name** — The name you gave the agent.
-- **Engine type** — "Single Prompt" or "Conversational Flow".
-- **Channel icon** — Indicates the channel (website, email, WhatsApp, etc.).
-- **Description** — A brief summary of what the agent does.
+The table has these columns:
+- **Agent** — The agent's name, its channel icon (website, email, WhatsApp, etc.), its description, and its folder if it's in one.
+- **Engine** — "Single Prompt" or "Conversational Flow".
+- **Version** — The agent's current version.
+
+Each row also has a **⋮** menu:
+
+| Action | What it does |
+|--------|--------------|
+| **Move to folder** | Files the agent into a folder. |
+| **Duplicate as draft** | Creates a copy of the agent as an unpublished draft. |
+| **Delete** | Deletes the agent. |
 
 ## Step 2: Create a New Agent
 
-Click the **+ New Chat Agent** button in the top-right corner. You'll see two options:
+Click the **New Agent** button in the top-right corner. You'll see two options:
 
 ### Option A: Auto-Create from Website (Recommended for website agents)
 
@@ -30,7 +37,7 @@ Enter your **Website URL** and click **Create Chatbot**. Revve will:
 3. Set up a knowledge base from your web pages.
 4. Create conversation starters relevant to your business.
 
-This is the fastest way to get a working agent — you can fine-tune it afterward.
+This is the fastest way to get a working agent — you can fine-tune it afterward. When it finishes, a summary shows what was created (prompt, conversation starters, testimonials, indexed pages) and suggested next steps. Click **Go to Chatbot** to open the new agent.
 
 ![Auto-Create from Website dialog — enter your URL and Revve generates an agent automatically](/screenshots/new-agent-dialog.png)
 
@@ -41,8 +48,8 @@ Click **Build from scratch** if you want full control from the start. Fill in:
 | Field | Description |
 |-------|-------------|
 | **Chatbot Name** | A descriptive name for your agent (e.g., "Sales Assistant", "Support Bot"). |
-| **Description** | Optional. A brief note about what this agent does. |
-| **Channel Type** | The channel this agent will operate on: Website, Email, SMS, WhatsApp, Zalo, Zalo OA, or Messenger. |
+| **Description (Optional)** | A brief note about what this agent does. |
+| **Channel Type** | The channel this agent will operate on: Website, Email, SMS, WhatsApp, Zalo, Zalo OA, Messenger, or TikTok. |
 | **Chatbot Type** | **Simple Prompt** (instruction-based) or **Conversational Flow** (visual flow designer). |
 
 Click **Create Chatbot** to proceed.
@@ -55,22 +62,31 @@ After creation, you'll land on the agent's **Dashboard**. Click **Start Editing*
 
 ![Basic settings tab showing the agent's core configuration](/screenshots/chatbot-basic-settings.png)
 
-All Basic settings live under a single **General Settings** section. Here's what each field does:
+The Basic tab has up to three sub-tabs:
+
+| Sub-tab | When it appears |
+|---------|-----------------|
+| **General Settings** | Always. Covers the fields below. |
+| **Outbound Templates** | All channels except Website. |
+| **Connection Settings** | Zalo agents only. |
+
+Here's what each field under **General Settings** does:
 
 | Field | Description |
 |-------|-------------|
 | **Name** | The agent's display name (max 50 characters). |
 | **Description** | What this agent does (max 500 characters). |
-| **AI Provider** | The LLM provider: OpenAI or Anthropic (Claude). |
-| **Model** | The specific model to use — e.g., GPT-4.1, Claude Sonnet 4. More capable models produce better responses but may be slower. |
-| **Engine Configuration** | Shows whether this is a Single Prompt or Conversational Flow agent. |
+| **AI Provider** | The LLM provider. This is fixed to OpenAI. |
+| **Model** | The specific model to use: GPT-4o, GPT-4.1, or GPT-5. More capable models produce better responses but may be slower. See [Choosing an LLM Model](/general-configuration/choosing-an-llm-model). |
+| **Endpoint** | Only shown if your team has custom model endpoints. Choose **Team default**, one of your team's endpoints, or the platform default. The **Model** list shows only the models the selected endpoint supports. |
 | **Languages** | One or more languages the agent should respond in. Click **+ Add** to add more languages. |
-| **Communication Tone** | Sets the writing style — options include "Formal and Professional", "Friendly and Casual", "Technical and Precise", and more. |
+| **Communication Tone** | Sets the writing style — "Formal and Professional" (default) or "Casual and Friendly". |
 | **Role** | Describes the agent's persona — e.g., "You're a digital assistant, ready to engage website visitors through personalized conversation." |
+| **Engine Configuration** | Shows whether this is a Single Prompt or Conversational Flow agent. Conversational Flow agents also get an **Edit flow** button. |
 
 ### Objectives (Instructions)
 
-The **Objectives** text area is the most important field. This is where you tell the agent what to do:
+The **Objectives** text area is the most important field. This is where you tell the agent what to do. For Conversational Flow agents it's labeled **Global Objectives**, and the instructions apply to every node in the flow.
 
 - What is the agent's goal?
 - What topics should it cover?
@@ -83,11 +99,12 @@ The **Objectives** text area is the most important field. This is where you tell
 - Define the agent's boundaries (e.g., "Only answer questions about our products").
 - Keep instructions concise but comprehensive.
 
-## Step 4: Save and Continue
+## Step 4: Continue Configuring
 
-Click **Save Changes** to save your configuration. From here, you can continue to:
+There's no save button. Changes are saved to your draft automatically as you edit. The **Last saved** time next to the agent name shows when your changes were last saved. From here, you can continue to:
 
 - **Appearance** — Customize the chat widget look and feel (website agents only).
+- **Channel Settings** / **Email Settings** — Connect the account the agent uses on its channel (all other channels).
 - **Knowledge** — Add documents, web pages, and FAQs for the agent to reference.
 - **Installation** — Get the embed code to add the widget to your website.
 - **Advanced Settings** — Configure escalation, webhooks, tools, and more.
@@ -96,11 +113,15 @@ Click **Save Changes** to save your configuration. From here, you can continue t
 
 Once you're satisfied with your configuration:
 
-1. Navigate to the **Versions** tab (or click **Publish** in the top bar).
-2. Add an optional publish note describing your changes.
-3. Click **Publish** to make the agent live.
+1. Click **Publish** in the top bar. This opens the publish page, which lists the changes in your draft.
+2. Add optional **Version Notes** describing your changes.
+3. Click **Publish** (**Publish v1** for a first publish) to make the agent live.
 
 Your agent is now active and ready to receive conversations on its configured channel.
+
+<Note>
+If you don't have permission to publish, the button reads **Submit for Review** instead. An approver must approve the request before the version goes live. See [Publish Approval Workflow](/governance-access/publish-approval-workflow).
+</Note>
 
 <Tip>
 You can always come back and edit your agent. Changes are saved as a draft and only go live when you publish a new version. See [Publishing & Versioning](/getting-started/publishing-and-versioning) for details.
@@ -115,12 +136,15 @@ Once inside a Chat Agent, you'll see these tabs across the top:
 | **Basic** | Core configuration — name, model, language, tone, instructions. |
 | **Flow** | Visual conversation designer (Conversational Flow agents only). |
 | **Appearance** | Widget styling and behavior (website agents only). |
+| **Email Settings** | Email account and sending settings (email agents only). |
+| **Channel Settings** | The connected channel account (all channels except Website and Email). |
 | **Knowledge** | Manage knowledge base, FAQs, and content sources. |
 | **Installation** | Embed code and installation instructions. |
 | **Advanced Settings** | Escalation, tools, webhooks, notifications, and more. |
-| **Preview** | Test your agent in a simulated chat. |
+| **Preview** | Test your agent in a simulated chat (website and SMS agents only). |
 | **Evaluations** | Create and run test cases to validate agent behavior. |
 | **Versions** | View published versions and manage drafts. Past versions are read-only (**View**) — there's no restore/rollback. |
+| **Experiments** | Test a new version against the live one with a share of real traffic before rolling it out to everyone. |
 
 ![Chatbot dashboard showing all navigation tabs](/screenshots/chatbot-dashboard.png)
 

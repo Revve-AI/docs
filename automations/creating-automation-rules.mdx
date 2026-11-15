@@ -23,7 +23,7 @@ Everything you do in the builder saves immediately — there is no separate save
 
 ## Step 2: Choose the trigger event
 
-In the **When** section, open the Trigger Event dropdown and pick the event that should start this rule. There are 11 event types — call and chat analysis, contact and lead changes, campaign enrollment lifecycle, and action outcomes. The full catalog with each event's payload fields is on the [overview page](/automations/automation-rules-overview).
+In the **When** section, open the Trigger Event dropdown and pick the event that should start this rule. There are 12 event types — call start, call and chat analysis, call evaluation, contact and lead changes, campaign enrollment lifecycle, and action outcomes. The full catalog with each event's payload fields is on the [overview page](/automations/automation-rules-overview).
 
 Changing the trigger shows an "Event type updated" toast. Pick the trigger first: it determines which payload fields your conditions and action templates can reference.
 
@@ -100,7 +100,7 @@ The **Configure Create Ticket** dialog:
 - **Ticket Type** — from Settings → Ticket Types. If you have none, the dialog says "No active ticket types found. Create one in Settings > Ticket Types."
 - **Title** (templated) and optional **Description**.
 - **Contact ID** — defaults to `{{payload.contact.id}}`.
-- Event-specific link fields — Thread ID for Chat Analyzed triggers, Call Request ID for Call Analyzed.
+- Event-specific link fields — Thread ID for Chat Analyzed triggers, Call Request ID for Call Started and Call Analyzed.
 - **Assigned To** — "Leave unassigned to auto-assign to an available agent based on routing rules."
 - The ticket type's custom fields, with required ones validated.
 
@@ -109,7 +109,7 @@ The **Configure Create Ticket** dialog:
 The **Configure Enroll in Campaign** dialog: pick a **Campaign** (active campaigns only) and a **Contact ID** (defaults to the contact from the event payload). If the contact is already enrolled, the action still counts as a success. See [Creating a Campaign](/campaigns/creating-a-campaign) for setting up the campaign side.
 
 <Note>
-Some rules also show read-only **managed** action cards — Salesforce or HubSpot sync steps provisioned by CRM apps. You can't add or edit those in the builder.
+Some rules also show read-only **managed** action cards — Salesforce, HubSpot, or Gong sync steps (such as Gong **Upload Call**) provisioned by those apps' settings. You can't add or edit those in the builder.
 </Note>
 
 ## Template syntax

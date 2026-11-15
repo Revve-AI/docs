@@ -7,12 +7,26 @@ The **Conversational Flow** engine represents a call as connected stages. Each c
 
 ## Open the editor
 
-1. Start [creating a voice agent](/voice-agents/creating-your-first-voice-agent) and choose the **Blank** template. This template exposes the **Engine** choice.
+1. Start [creating a voice agent](/voice-agents/creating-your-first-voice-agent) and choose **Start blank**. This option exposes the **Engine** choice.
 2. Select **Conversational flow** and complete creation.
 3. Open the agent's **Conversational Flow** tab and select **Start Editing** to edit the draft.
 4. If the page shows **No Conversation Flow**, select **Create Conversation Flow**. Revve adds an **Initial Greeting** node for you to customize.
 
-Use **Add Node** to add stages, connect them on the canvas, and select a node to edit its configuration. The toolbar also provides JSON import and export, automatic arrangement, and search. Edit a draft, test it, and publish through the agent's [versioning workflow](/voice-agents/voice-agent-versioning).
+Use **Add Node** to add stages, connect them on the canvas, and select a node to edit its configuration. Adding a node takes two steps: pick the node type under **What Should This Node Do?**, then name and configure it. Edit a draft, test it, and publish through the agent's [versioning workflow](/voice-agents/voice-agent-versioning). Changes save to the draft automatically.
+
+The toolbar provides:
+
+| Control | What it does |
+| --- | --- |
+| **Import Flow** / **Export Flow** | Load or save the flow as JSON. |
+| **Auto arrange** | Lay out the nodes automatically. |
+| **Show all edges** | Edges into heavily targeted nodes are hidden at rest to reduce clutter. Toggle this to show them all. |
+| **Notes** | Show or hide the note bubbles above nodes. Add a note to a node to explain it to the next builder. |
+| **Add Node** | Add a stage. |
+| **Search** | Find a node by name. |
+| **Filler Audio** | Review, listen to, and regenerate the pre-generated filler phrases the agent says during transitions. |
+
+To try the flow without leaving the editor, open the **Test** widget on the flow page. Choose a voice call (talk with your microphone) or a text chat (type messages, no audio), fill in any call variables, and start the test. The widget shows which node the conversation is on.
 
 ![Voice-flow node picker in the Revve demo workspace, showing Normal Conversation, Transfer Call, Logic Split, Extract Variables, Code, Component, and Verify Voice.](/screenshots/voice-flow-node-types.jpg)
 
@@ -28,7 +42,19 @@ Use **Add Node** to add stages, connect them on the canvas, and select a node to
 | **Component** | Reuse a team-level flow component with named exits. |
 | **Verify Voice** | Compare recent caller speech with an enrolled voiceprint and route on the result. |
 
-Logic Split, Extract Variables, Code, and Verify Voice have an **Else** path for fallback handling. Connect this path as part of the flow. Components expose their configured exits, which connect back into the parent flow. There is no separate End node; every node has a built-in ability to end the call.
+Logic Split, Extract Variables, Code, and Verify Voice have an **Else** path for fallback handling. Connect this path as part of the flow. Components expose their configured exits, which connect back into the parent flow. There is no separate End node. Instead, each conversation node has an **Allow End Call** switch (under **Advanced**) that controls whether the agent can hang up while the caller is on that step. Turn it off when the agent must finish the step before the call can end.
+
+## Begin: how the call starts
+
+Every voice flow starts at a **Begin** marker. Select it to configure:
+
+| Setting | What it does |
+| --- | --- |
+| **Starts At** | The first node reached. It can be a silent step, such as a Code or Logic Split node, that runs before anything is said. |
+| **Who Speaks First** | **AI speaks first** or **Caller speaks first**. |
+| **Pause Before Speaking** | How long the agent waits after the call connects before opening. |
+| **Speak Anyway After Silence** | When the caller speaks first: if the caller says nothing for this long, the agent opens the call instead. Off means the agent waits indefinitely. |
+| **Agent State** | A prompt block added on every turn, in all nodes and subflows. Use it for state the agent must always see. |
 
 Scheduling and contact-collection capabilities are configured through the conversation and tool controls; they are not separate voice node types in the Add Node picker.
 
@@ -37,15 +63,41 @@ Scheduling and contact-collection capabilities are configured through the conver
 Conversation nodes offer two instruction modes:
 
 - **AI phrases it** gives the model instructions for the stage.
-- **Exact words** sends the configured wording directly to speech synthesis. Use it for approved disclosures, confirmations, and lines that must be read consistently. Supported variable templates can insert customer or service data.
+- **Exact words** sends the configured wording directly to speech synthesis. Use it for approved disclosures, confirmations, and lines that must be read consistently. Supported variable templates can insert customer or service data. Add several phrasings to have the agent say a random one each time, so repeated lines don't sound robotic.
 
 On eligible Exact words nodes, **Allow Interruption** controls whether the caller can talk over the line. Disable it for a disclosure that must finish, and enable it where the caller should be able to interrupt. End-of-call goodbye behavior is handled separately.
 
 Keep a mandatory disclosure separate from a question requiring the caller's answer. Completing playback is not the same as obtaining consent.
 
+**Skip Response** makes the agent say the node's content and then continue through its first transition immediately, without waiting for the caller to reply. Use it for disclaimers and announcements.
+
+### Checklist
+
+Add a **Checklist** of goals to a conversation node — the points the agent must cover before leaving the node. The agent tracks which goals are done and returns to unfinished ones after an interruption instead of drifting.
+
+### Per-node settings
+
+Conversation nodes have additional collapsible sections:
+
+| Section | What it does |
+| --- | --- |
+| **Privacy** | Mask sensitive data captured at this step. See [Sensitive Data in Voice Flows](/voice-agents/sensitive-data-handling). |
+| **Response timing** | Override how long the agent waits for the caller on this step. Turn on **Wait longer for the answer** and set **Pause before the bot replies** and **Longest the bot will wait** (in seconds). Leave a value empty to inherit the agent's setting. Useful for steps where callers read out a long number. |
+| **Prepare In Advance** | **Prepare This Node In Advance** lets the agent prepare this node while the caller is still on the previous step, so it answers faster on arrival. It only works when **Prepare Next Steps In Advance** is on in the agent's [Conversation settings](/voice-agents/voice-agent-settings). |
+| **Model settings** | **Use a different speech model** for this node, choosing its own speech recognition **Provider** and **Model**. |
+| **Variables** | Change variables when the caller arrives at or leaves this node: **Increment** a counter, **Set** a value (text with variable templates), or **Copy from** another variable. Rows run top to bottom, and the last write wins. |
+| **Knowledge Bases** | Choose which knowledge bases the agent can search on this node. |
+
 ## Route on data and conversation
 
-Transitions connect a condition to a destination. Deterministic comparisons, such as `{{retry_count}} >= 3`, are evaluated before AI-judged conversational conditions. Use comparisons for counters, thresholds, and verified API results. Use natural-language conditions for conversational intent.
+Transitions connect a condition to a destination. Each transition has a **Name**, a **Condition**, and a **Destination**. The condition has two modes:
+
+- **AI decides** — a natural-language condition the model judges, for conversational intent.
+- **Rule** — a deterministic comparison built from a **Variable**, a **Check**, and a **Value**. Combine several with **Match: All** or **Any**.
+
+Rules, such as `{{retry_count}} >= 3`, are evaluated before AI-judged conditions. Use them for counters, thresholds, and verified API results.
+
+To avoid dead air while the agent moves to the next step, turn on **Speak During Transition** to have the agent say a filler message, or **Play Typing Sound** to play a soft keyboard sound. Filler phrases are pre-generated as audio; review them with **Filler Audio** in the toolbar.
 
 A useful service flow is:
 
@@ -68,26 +120,29 @@ Use captured variables for business fields such as customer references, payment 
 
 ## Global nodes and reusable components
 
-A **Global Node** can be reached when its configured condition occurs elsewhere in the conversation. Use this for requests to speak with a person, opt-outs, or urgent situations. Configure its outgoing transitions and return behavior deliberately so the caller resumes at the appropriate stage.
+A **Global Node** can be reached when its configured **Condition** occurs elsewhere in the conversation. Use this for requests to speak with a person, opt-outs, or urgent situations. Configure its outgoing transitions and return behavior deliberately so the caller resumes at the appropriate stage:
 
-A **Component** packages a reusable sequence with named exits. Use components for common steps such as identity checks or standard disclosures, then connect each exit to the appropriate destination in the parent flow.
+- **Prevent Immediate Re-trigger** — the flow can't jump back to this node on the very next turn after leaving it.
+- **Go Back To Previous Node** — after handling the request, return to where the caller was interrupted. Set **Go Back When** to the condition for returning.
+
+A **Component** packages a reusable sequence with named exits. Use components for common steps such as identity checks or standard disclosures, then connect each exit to the appropriate destination in the parent flow. Components are built and versioned on the team's **AI Agents > Flow Components** page.
 
 ## Transfer a call
 
-A Transfer Call node supports **Revve User**, **SIP Address**, and **Phone Number** destinations. Configure the destination, transfer message, and optional summary prompt.
+A Transfer Call node supports **Revve User**, **SIP Address**, and **Phone Number** destinations. Configure the destination, transfer message, and optional summary prompt. For Revve User transfers, choose who gets the call — any available agent, or a group with its own routing rule. For phone/SIP bridges, **Wait before summary** (0–30 seconds, default 1) sets how long to wait after the destination answers before the summary is spoken.
 
 **Bridge Transfer** brings the transferee into the call while the AI stays silent and logging continues. **Cold Transfer** hands the call off with SIP REFER; Revve does not continue logging the subsequent customer-agent conversation. Choose the mode that fits your telephony system and recording requirements. See [Call Transfer](/voice-agents/call-transfer).
 
 To move on when a transfer cannot connect:
 
 1. Select the **Transfer Call** node in your draft.
-2. Set **Connection timeout (seconds)** to a whole number from **1 to 180**. This setting applies to in-app transfers and phone/SIP bridges.
+2. Set **Call duration (seconds)** to a whole number from **1 to 180**. This setting applies to in-app transfers and phone/SIP bridges.
 3. Connect **Transfer Failed** to a node that explains the failed transfer and offers the caller a next step.
 4. Test answered, unanswered, and fallback attempts before publishing the agent version.
 
 Without a saved timeout, phone/SIP bridges use **45 seconds** and in-app transfers use **30 seconds**. Older transfer nodes can retain a 30-second default. Each fallback attempt gets its own connection window, so the complete handoff can take longer. The **Transfer Failed** transition runs after all attempts fail; without a destination for it, the AI apologizes and continues helping.
 
-The timeout does not identify whether a human answered. Voicemail, recorded greetings, and queues can count as an answer. See [connection timeout behavior](/voice-agents/call-transfer#set-how-long-to-wait-for-a-connection) before using it with a phone queue.
+The call duration does not identify whether a human answered. Voicemail, recorded greetings, and queues can count as an answer. See [connection timeout behavior](/voice-agents/call-transfer#set-how-long-to-wait-for-a-connection) before using it with a phone queue.
 
 ## Protect verification steps
 
